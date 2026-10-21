@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b6b4a">
+<title>바로길 사용법</title>
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#eef2ef; --surface:#ffffff; --fg:#14201b; --muted:#5c6b64; --line:#d3ddd7;
+  --sign:#0b6b4a; --sign-fg:#ffffff; --amber:#f2a900; --amber-fg:#1d1600; --danger:#b3261e;
+  --display:"Black Han Sans","IBM Plex Sans KR",system-ui,sans-serif;
+  --body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0d1411; --surface:#16201b; --fg:#e7efea; --muted:#93a39b; --line:#26332d;
+  --sign:#14945f; --amber:#ffbe2e; --danger:#ff8a80; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.65}
+.wrap{max-width:560px;margin:0 auto;
+  padding-top:max(20px,env(safe-area-inset-top,0px));padding-bottom:max(48px,env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:22px}
+.logo{font-family:var(--display);font-size:30px;display:flex;align-items:center;gap:8px}
+.logo .mark{background:var(--sign);color:var(--amber);border-radius:6px;padding:2px 8px 0;font-size:24px}
+.lead{margin:0;color:var(--muted)}
+h2{font-family:var(--display);font-weight:400;font-size:22px;margin:0;display:flex;align-items:center;gap:10px}
+h2 .tag{font-family:var(--body);font-weight:700;font-size:12px;letter-spacing:.06em;background:var(--sign);color:var(--sign-fg);border-radius:999px;padding:2px 10px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;counter-reset:s}
+ol.steps li{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;counter-increment:s}
+ol.steps li::before{content:counter(s);width:36px;height:36px;border-radius:8px;background:var(--amber);color:var(--amber-fg);
+  font:700 18px var(--body);display:flex;align-items:center;justify-content:center}
+ol.steps b{display:block}
+ol.steps span{color:var(--muted);font-size:15px}
+.who{font-size:13px;font-weight:700;color:var(--sign);letter-spacing:.04em}
+.btnlike{display:inline-block;background:var(--fg);color:var(--bg);border-radius:6px;padding:0 8px;font-size:14px;font-weight:700;white-space:nowrap}
+.navs{display:inline-flex;gap:4px;flex-wrap:wrap}
+.navs i{font-style:normal;background:var(--amber);color:var(--amber-fg);border-radius:6px;padding:0 8px;font-size:14px;font-weight:700}
+.warn{border-left:4px solid var(--danger);background:var(--surface);border-radius:0 12px 12px 0;padding:14px 16px}
+.warn b{color:var(--danger)}
+dl{margin:0;display:flex;flex-direction:column;gap:14px}
+dt{font-weight:700}
+dd{margin:4px 0 0;color:var(--muted);font-size:15px}
+.open{display:flex;align-items:center;justify-content:center;min-height:56px;border-radius:10px;background:var(--sign);color:var(--sign-fg);
+  text-decoration:none;font:700 18px var(--body)}
+a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+</style>
+<link rel="stylesheet" href="../ads.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="logo"><span class="mark">→</span>바로길 사용법</div>
+  <p class="lead">콜 받는 폰에서 주소를 보내면 내비 폰에 바로 떠요. 내비 폰에서 버튼 한 번이면 길안내가 시작돼요.</p>
+
+  <section class="card">
+    <h2>준비 <span class="tag">처음 한 번만</span></h2>
+    <ol class="steps">
+      <li><div><b>두 폰에서 바로길 주소를 크롬으로 열기</b><span>받은 링크를 콜 폰과 내비 폰 둘 다에서 엽니다.</span></div></li>
+      <li><div><b>홈 화면에 추가 (추천)</b><span>크롬 오른쪽 위 메뉴(⋮) → ‘홈 화면에 추가’. 다음부터 앱처럼 아이콘으로 열려요.</span></div></li>
+      <li><div><b>두 폰 연결하기</b><span>한 폰에서 <span class="btnlike">새 연결 코드 만들기</span> → <span class="btnlike">연결 링크 복사</span>를 누르고, 그 링크를 카톡 ‘나와의 채팅’으로 보내서 다른 폰에서 엽니다. 링크 대신 화면의 10자리 코드를 직접 입력해도 돼요.</span></div></li>
+      <li><div><b>폰마다 역할 고르기</b><span>화면 위쪽에서 콜 폰은 ‘콜 받는 폰’, 내비 폰은 ‘내비 폰’을 누릅니다. 한 번 고르면 기억해요.</span></div></li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <h2>콜 받을 때 <span class="tag">매번</span></h2>
+    <ol class="steps">
+      <li><div><div class="who">콜 받는 폰</div><b>콜 앱에서 주소 복사</b><span>주소를 길게 눌러 복사합니다.</span></div></li>
+      <li><div><div class="who">콜 받는 폰</div><b>바로길에 붙여넣고 보내기</b><span>주소 칸에 붙여넣고 <span class="btnlike">내비 폰으로 보내기</span>. 층수·공동현관 비번 같은 건 메모 칸에 적으면 같이 가요.</span></div></li>
+      <li><div><div class="who">내비 폰</div><b>원하는 내비 누르기</b><span>소리·진동과 함께 목적지가 뜨면 <span class="navs"><i>카카오맵</i><i>티맵</i><i>네이버</i></span> 중 하나를 누르면 길안내가 시작돼요.</span></div></li>
+    </ol>
+  </section>
+
+  <div class="warn"><b>연결 코드와 연결 링크는 남에게 보내지 마세요.</b> 그걸 가진 사람은 내 목적지를 볼 수 있어요. 바로길 사이트 주소는 마음껏 나눠도 괜찮아요. 사람마다 자기 코드로 따로 연결돼요.</div>
+
+  <section class="card">
+    <h2>잘 안 될 때</h2>
+    <dl>
+      <div><dt>목적지가 안 떠요</dt><dd>내비 폰에서 바로길 화면이 열려 있어야 바로 받아요. 다른 앱을 쓰다가 바로길로 돌아오면 그사이 온 주소를 자동으로 불러와요. 위쪽 표시가 ‘연결됨’인지 확인하세요.</dd></div>
+      <div><dt>내비 버튼을 눌러도 반응이 없어요</dt><dd>그 내비 앱이 깔려 있는지 확인하세요. 안 되면 아래 ‘웹 지도’ 링크를 쓰거나 ‘주소 복사’ 후 내비 앱에 직접 붙여넣으세요.</dd></div>
+      <div><dt>화면이 자꾸 꺼져요</dt><dd>내비 폰에서 ‘이 화면 켜두기’를 체크하세요.</dd></div>
+      <div><dt>폰을 바꿨거나 다시 연결하고 싶어요</dt><dd>‘연결 코드’ 버튼 → ‘연결 끊기’를 누른 뒤 준비 3번부터 다시 하세요.</dd></div>
+      <div><dt>소리가 안 나요</dt><dd>바로길 화면을 한 번 터치해 두면 소리가 나요. ‘새 목적지 오면 소리·진동’이 체크돼 있는지도 확인하세요.</dd></div>
+    </dl>
+  </section>
+
+<div class="ad-slot" data-size="box"></div>
+  <a class="open" href="./">바로길 열기</a>
+</div>
+<script src="../site-config.js"></script>
+<script src="../ads.js"></script>
+</body>
+</html>

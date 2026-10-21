@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14201b">
+<title>라이더 도구함 — 배달기사 무료 앱 모음</title>
+<meta name="description" content="배달·퀵 기사님을 위한 무료 웹앱. 콜 폰에서 내비 폰으로 주소를 바로 보내는 바로길, 쿠팡이츠·배민커넥트 수익과 주유비를 기록하는 라이더 장부.">
+<meta property="og:title" content="라이더 도구함">
+<meta property="og:description" content="배달기사님을 위한 무료 앱 — 바로길(주소 전달), 라이더 장부(수익 기록)">
+<meta property="og:type" content="website">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="ads.css">
+<style>
+/* 세로 한 줄: 소개 → 앱 카드 2개 → 광고 → 자주 묻는 질문 → 바닥글 */
+:root{
+  --bg:#f2f4f1; --surface:#ffffff; --fg:#14201b; --muted:#5d6a63; --line:#d6ddd8;
+  --green:#0b6b4a; --navy:#1f3a5f; --amber:#f2a900; --amber-fg:#1d1600;
+  --display:"Black Han Sans","Gothic A1",system-ui,sans-serif;
+  --body:"Gothic A1",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0d1310; --surface:#151e1a; --fg:#e6eee9; --muted:#95a39b; --line:#25322c;
+  --green:#14945f; --navy:#2b5283; --amber:#ffbe2e; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;
+  padding-top:max(28px,env(safe-area-inset-top,0px));padding-bottom:max(32px,env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:28px}
+.top{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font-weight:800;font-size:13px;color:var(--green);letter-spacing:.08em}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,9vw,52px);line-height:1.15;margin:0;text-wrap:balance}
+h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--amber) 62%)}
+.lead{margin:0;color:var(--muted);font-size:17px;max-width:34em}
+.apps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.apps{grid-template-columns:1fr}}
+.app{border-radius:16px;padding:20px;color:#fff;display:flex;flex-direction:column;gap:12px;text-decoration:none;min-width:0}
+.app.barogil{background:var(--green)} .app.rider{background:var(--navy)}
+.app .name{font-family:var(--display);font-size:28px;display:flex;align-items:center;gap:10px}
+.app .name img{width:40px;height:40px;border-radius:9px;background:rgba(255,255,255,.12)}
+.app p{margin:0;opacity:.92}
+.app ul{margin:0;padding-left:18px;opacity:.9;font-size:15px}
+.app .go{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+.app .go span{background:var(--amber);color:var(--amber-fg);font-weight:800;border-radius:10px;padding:10px 14px}
+.app .go a{color:#fff;font-weight:600;padding:10px 4px;text-decoration:underline}
+.app:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+h2{font-size:20px;margin:0 0 8px;font-weight:800}
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 16px}
+details+details{margin-top:8px}
+summary{cursor:pointer;font-weight:700;padding:14px 0}
+details p{margin:0 0 14px;color:var(--muted);font-size:15px}
+footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px}
+footer a{color:inherit}
+.ad-slot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">배달·퀵 기사님용 무료 도구</div>
+    <h1>콜 받고, 길 찾고, <em>얼마 벌었는지</em>까지</h1>
+    <p class="lead">설치 없이 폰 크롬에서 바로 쓰는 웹앱이에요. 홈 화면에 추가하면 앱처럼 열려요. 회원가입도 필요 없어요.</p>
+  </header>
+
+  <section class="apps" aria-label="앱">
+    <a class="app barogil" href="barogil/">
+      <div class="name"><img src="barogil/icon-192.png" alt="">바로길</div>
+      <p>콜 받는 폰에서 주소를 보내면 내비 폰에 바로 떠요.</p>
+      <ul>
+        <li>카카오맵·티맵·네이버 원터치 길안내</li>
+        <li>층수·공동현관 메모 같이 전달</li>
+        <li>주소는 암호화돼서 나만 봐요</li>
+      </ul>
+      <div class="go"><span>바로길 열기</span></div>
+    </a>
+    <a class="app rider" href="rider/">
+      <div class="name"><img src="rider/icon-192.png" alt="">라이더 장부</div>
+      <p>쿠팡이츠·배민커넥트 수익을 정산 화면 캡처 한 장으로 기록해요.</p>
+      <ul>
+        <li>플랫폼별 수익·건수·건당 평균</li>
+        <li>원천세 3.3% 등 차감액 자동 계산</li>
+        <li>주유비·식비 기록하고 실수익 확인</li>
+      </ul>
+      <div class="go"><span>라이더 장부 열기</span></div>
+    </a>
+  </section>
+
+  <div class="ad-slot" data-size="banner"></div>
+
+  <section>
+    <h2>자주 묻는 질문</h2>
+    <details><summary>정말 무료예요?</summary><p>네, 두 앱 모두 무료예요. 사이트에 표시되는 광고로 운영해요.</p></details>
+    <details><summary>앱스토어에서 설치해야 하나요?</summary><p>아니요. 폰 크롬에서 주소를 열고, 메뉴(⋮) → ‘홈 화면에 추가’를 누르면 앱처럼 쓸 수 있어요.</p></details>
+    <details><summary>내 수익 기록은 어디에 저장돼요?</summary><p>라이더 장부의 기록은 내 폰 안에만 저장되고 서버로 보내지 않아요. 폰을 바꿀 때는 설정의 ‘백업 파일 저장’으로 옮기세요.</p></details>
+    <details><summary>바로길 주소를 다른 사람이 볼 수 있나요?</summary><p>주소는 두 폰을 연결한 코드로 암호화돼서 전달돼요. 연결 코드를 모르는 사람은 내용을 볼 수 없어요. 연결 코드는 남에게 알려주지 마세요.</p></details>
+    <details><summary>바로길 사용법이 궁금해요</summary><p><a href="barogil/guide.html">바로길 사용법 보기</a></p></details>
+  </section>
+
+  <div class="ad-slot" data-size="box"></div>
+
+  <footer>
+    <span>© 라이더 도구함</span>
+    <a href="privacy.html">개인정보처리방침</a>
+    <span id="contact" hidden></span>
+  </footer>
+</div>
+<script src="site-config.js"></script>
+<script>
+(function(){var c=(window.SITE_CONFIG||{}).contactEmail;if(c){var e=document.getElementById('contact');e.textContent='문의: '+c;e.hidden=false}})();
+</script>
+<script src="ads.js"></script>
+</body>
+</html>

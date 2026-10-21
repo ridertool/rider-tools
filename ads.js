@@ -1,0 +1,72 @@
+// 광고 자리 채우기: <div class="ad-slot" data-size="banner|box"></div>
+// 우선순위: 애드센스 → 애드핏 → 쿠팡파트너스. 설정이 없으면 자리를 숨김.
+(function () {
+  var C = window.SITE_CONFIG || {};
+  var slots = [].slice.call(document.querySelectorAll('.ad-slot'));
+  if (!slots.length) return;
+
+  function load(src, attrs) {
+    var s = document.createElement('script');
+    s.async = true; s.src = src;
+    if (attrs) for (var k in attrs) s.setAttribute(k, attrs[k]);
+    document.head.appendChild(s);
+    return s;
+  }
+
+  var hasSense = C.adsense && C.adsense.client && C.adsense.slot;
+  var hasFit = C.adfit && (C.adfit.banner || C.adfit.box);
+  var hasCoupang = C.coupang && C.coupang.id && C.coupang.trackingCode;
+  var senseLoaded = false, fitLoaded = false, coupangN = 0, usedCoupang = false;
+
+  slots.forEach(function (el) {
+    var size = el.getAttribute('data-size') || 'banner';
+    var label = document.createElement('div');
+    label.className = 'ad-label'; label.textContent = '광고';
+
+    if (hasSense) {
+      if (!senseLoaded) { load('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + C.adsense.client, { crossorigin: 'anonymous' }); senseLoaded = true; }
+      var ins = document.createElement('ins');
+      ins.className = 'adsbygoogle'; ins.style.display = 'block';
+      ins.setAttribute('data-ad-client', C.adsense.client);
+      ins.setAttribute('data-ad-slot', C.adsense.slot);
+      ins.setAttribute('data-ad-format', 'auto');
+      ins.setAttribute('data-full-width-responsive', 'true');
+      el.append(label, ins);
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      return;
+    }
+    var unit = hasFit && (size === 'box' ? (C.adfit.box || C.adfit.banner) : (C.adfit.banner || C.adfit.box));
+    if (unit) {
+      var isBox = unit === C.adfit.box && !!C.adfit.box;
+      var a = document.createElement('ins');
+      a.className = 'kakao_ad_area'; a.style.display = 'none';
+      a.setAttribute('data-ad-unit', unit);
+      a.setAttribute('data-ad-width', isBox ? '300' : '320');
+      a.setAttribute('data-ad-height', isBox ? '250' : '100');
+      el.append(label, a);
+      if (!fitLoaded) { load('https://t1.daumcdn.net/kas/static/ba.min.js'); fitLoaded = true; }
+      return;
+    }
+    if (hasCoupang) {
+      var id = 'cp-ad-' + (coupangN++);
+      var box = document.createElement('div'); box.id = id;
+      var h = size === 'box' ? 250 : 100;
+      el.append(label, box);
+      var run = function () {
+        try { new window.PartnersCoupang.G({ id: Number(C.coupang.id), template: 'carousel', trackingCode: C.coupang.trackingCode, width: '100%', height: String(h), tsource: '', container: id }); } catch (e) {}
+      };
+      if (window.PartnersCoupang) run(); else { var s = load('https://ads-partners.coupang.com/g.js'); s.addEventListener('load', run); }
+      usedCoupang = true;
+      return;
+    }
+    el.hidden = true;
+  });
+
+  // 쿠팡파트너스 필수 고지 문구
+  if (usedCoupang) {
+    var n = document.createElement('p');
+    n.className = 'ad-notice';
+    n.textContent = '이 사이트는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.';
+    document.body.appendChild(n);
+  }
+})();

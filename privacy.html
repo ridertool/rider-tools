@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>개인정보처리방침 — 라이더 도구함</title>
+<link rel="icon" href="icon-192.png">
+<style>
+:root{--bg:#f2f4f1;--fg:#14201b;--muted:#5d6a63;--line:#d6ddd8;--green:#0b6b4a;color-scheme:light}
+@media (prefers-color-scheme: dark){:root{--bg:#0d1310;--fg:#e6eee9;--muted:#95a39b;--line:#25322c;--green:#3cc48a;color-scheme:dark}}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:"Gothic A1",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.75;font-size:16px}
+main{max-width:680px;margin:0 auto;padding-block:32px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:26px;margin:0 0 4px}
+h2{font-size:18px;margin:28px 0 6px;padding-top:16px;border-top:1px solid var(--line)}
+p,li{color:var(--muted)}
+ul{padding-left:20px}
+a{color:var(--green)}
+</style>
+</head>
+<body>
+<main>
+  <h1>개인정보처리방침</h1>
+  <p>시행일: 2026년 10월 21일</p>
+  <p>라이더 도구함(이하 ‘사이트’)은 바로길과 라이더 장부를 무료로 제공하며, 이용자의 개인정보를 최소한으로만 다룹니다.</p>
+
+  <h2>1. 수집하는 정보</h2>
+  <ul>
+    <li>사이트는 회원가입이 없고, 이름·전화번호·이메일 같은 정보를 받지 않습니다.</li>
+    <li><b>라이더 장부</b>의 수익·지출 기록과 설정은 이용자의 기기(브라우저 저장소)에만 저장되며 사이트 운영자에게 전송되지 않습니다. 캡처 이미지의 글자 인식도 기기 안에서 처리됩니다.</li>
+    <li><b>바로길</b>로 보내는 주소와 메모는 이용자 기기에서 연결 코드로 암호화된 뒤, 전달을 위해 공개 메시지 서버(ntfy.sh)를 거칩니다. 서버에는 암호화된 내용만 최대 12시간 보관되며, 연결 코드가 없으면 내용을 볼 수 없습니다. 최근 목적지 기록은 이용자 기기에만 저장됩니다.</li>
+  </ul>
+
+  <h2>2. 광고와 쿠키</h2>
+  <p>사이트는 운영을 위해 다음 광고를 표시할 수 있습니다. 광고 제공자는 광고 노출과 성과 측정을 위해 쿠키나 기기 식별 정보를 사용할 수 있습니다.</p>
+  <ul>
+    <li>Google 애드센스: Google을 포함한 제3자 공급업체는 쿠키를 사용해 이용자의 이전 방문 기록을 바탕으로 광고를 게재할 수 있습니다. 맞춤 광고는 <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google 광고 설정</a>에서 해제할 수 있습니다.</li>
+    <li>카카오 애드핏: <a href="https://www.kakao.com/policy/privacy" target="_blank" rel="noopener">카카오 개인정보처리방침</a>을 따릅니다.</li>
+    <li>쿠팡 파트너스: 이 사이트는 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</li>
+  </ul>
+  <p>브라우저 설정에서 쿠키를 차단할 수 있으며, 차단해도 두 앱의 기능은 그대로 쓸 수 있습니다.</p>
+
+  <h2>3. 보관과 삭제</h2>
+  <p>기기에 저장된 기록은 이용자가 앱에서 삭제하거나 브라우저의 사이트 데이터를 지우면 함께 삭제됩니다. 운영자는 이용자의 기록을 보관하지 않습니다.</p>
+
+  <h2>4. 문의</h2>
+  <p id="contact">개인정보 관련 문의는 사이트 하단의 문의처로 연락해 주세요.</p>
+
+  <p><a href="./">← 라이더 도구함으로</a></p>
+</main>
+<script src="site-config.js"></script>
+<script>
+(function(){var c=(window.SITE_CONFIG||{}).contactEmail;if(c)document.getElementById('contact').textContent='개인정보 관련 문의: '+c;})();
+</script>
+</body>
+</html>

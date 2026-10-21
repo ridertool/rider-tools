@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b6b4a">
+<meta name="description" content="콜 받는 폰에서 주소를 보내면 내비 폰에 바로 떠서 카카오맵·티맵·네이버 길안내를 원터치로 시작">
+<title>바로길</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#eef2ef; --surface:#ffffff; --fg:#14201b; --muted:#5c6b64; --line:#d3ddd7;
+  --sign:#0b6b4a; --sign-fg:#ffffff; --amber:#f2a900; --amber-fg:#1d1600; --danger:#b3261e;
+  --display:"Black Han Sans","IBM Plex Sans KR",system-ui,sans-serif;
+  --body:"IBM Plex Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#0d1411; --surface:#16201b; --fg:#e7efea; --muted:#93a39b; --line:#26332d;
+  --sign:#14945f; --amber:#ffbe2e; --danger:#ff8a80; color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:520px;margin:0 auto;
+  padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(40px,env(safe-area-inset-bottom,0px));
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-family:var(--display);font-size:28px;display:flex;align-items:center;gap:8px}
+.logo .mark{background:var(--sign);color:var(--amber);border-radius:6px;padding:2px 8px 0;font-size:22px}
+.role{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.role button{border:0;background:none;color:var(--muted);font:500 14px var(--body);padding:8px 14px;cursor:pointer}
+.role button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.status{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.dot.on{background:var(--sign)} .dot.off{background:var(--danger)}
+.status button{margin-left:auto}
+
+.dest{background:var(--sign);color:var(--sign-fg);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.85),inset 0 0 0 6px var(--sign)}
+.dest .lbl{font-size:12px;letter-spacing:.12em;opacity:.85;display:flex;justify-content:space-between;gap:8px}
+.dest .addr{font-family:var(--display);font-size:clamp(24px,7vw,32px);line-height:1.25;word-break:keep-all;overflow-wrap:anywhere}
+.dest .memo{font-size:15px;opacity:.92;overflow-wrap:anywhere}
+.dest.fresh{animation:pop .7s ease}
+@keyframes pop{0%{transform:scale(.97);box-shadow:inset 0 0 0 3px var(--amber),inset 0 0 0 6px var(--sign),0 0 0 8px var(--amber)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.dest.fresh{animation:none}}
+.navs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.navs a{display:flex;align-items:center;justify-content:center;min-height:60px;border-radius:10px;text-decoration:none;
+  background:var(--amber);color:var(--amber-fg);font:700 17px var(--body);text-align:center;padding:4px}
+.webs{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+.webs a,.webs button{color:var(--sign-fg);opacity:.9;background:none;border:0;padding:0;font:inherit;text-decoration:underline;cursor:pointer}
+.empty{border:2px dashed var(--line);border-radius:14px;padding:22px;color:var(--muted);text-align:center}
+.empty strong{display:block;color:var(--fg);font-size:17px;margin-bottom:4px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+h2{font-size:16px;margin:0;font-weight:700}
+p{margin:0}
+label{font-size:13px;color:var(--muted)}
+textarea,input{width:100%;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:500 17px var(--body);padding:12px}
+textarea{min-height:84px;resize:vertical}
+input.code{font:700 24px ui-monospace,Menlo,monospace;letter-spacing:.2em;text-transform:uppercase;text-align:center}
+textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.btn{border:0;border-radius:10px;background:var(--fg);color:var(--bg);font:700 18px var(--body);min-height:56px;cursor:pointer;padding:0 16px}
+.btn.alt{background:none;color:var(--fg);border:1px solid var(--line);font-weight:500;font-size:16px;min-height:48px}
+.btn:disabled{opacity:.45;cursor:default}
+.small{border:1px solid var(--line);background:none;color:var(--fg);border-radius:8px;padding:6px 10px;font:500 13px var(--body);cursor:pointer}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1 1 140px}
+.msg{font-size:14px;min-height:1.5em;color:var(--muted)} .msg.err{color:var(--danger)} .msg.ok{color:var(--sign)}
+.codebox{font:700 28px ui-monospace,Menlo,monospace;letter-spacing:.18em;text-align:center;padding:10px;border-radius:10px;background:var(--bg);user-select:all}
+.hist{list-style:none;margin:0;padding:0}
+.hist li{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.hist li:first-child{border-top:0}
+.hist .t{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;width:44px;flex:none}
+.hist .a{flex:1;min-width:0;overflow-wrap:anywhere}
+.foot{font-size:12px;color:var(--muted);line-height:1.6}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px}
+</style>
+<link rel="stylesheet" href="../ads.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo"><span class="mark">→</span>바로길</div>
+    <div class="role" role="group" aria-label="이 폰의 역할" id="roleBox" hidden>
+      <button id="roleCall" type="button">콜 받는 폰</button>
+      <button id="roleNavi" type="button">내비 폰</button>
+    </div>
+  </header>
+
+  <!-- 1) 처음: 두 폰 연결 -->
+  <section class="card" id="pairCard" hidden>
+    <h2>두 폰 연결하기</h2>
+    <p>한 폰에서 연결 코드를 만들고, 다른 폰에서 그 코드를 입력하세요. 한 번만 하면 계속 기억해요. <a href="guide.html" style="color:var(--sign);font-weight:700">사용법 보기</a></p>
+    <button class="btn" id="newCodeBtn" type="button">새 연결 코드 만들기</button>
+    <label for="codeIn">이미 코드가 있다면</label>
+    <input class="code" id="codeIn" maxlength="12" autocomplete="off" autocapitalize="characters" placeholder="코드 입력">
+    <button class="btn alt" id="joinBtn" type="button">이 코드로 연결</button>
+    <div class="msg" id="pairMsg"></div>
+  </section>
+
+  <!-- 2) 연결 후 -->
+  <div id="app" hidden style="display:contents">
+    <div class="status"><span class="dot" id="dot"></span><span id="statusText">연결 중…</span>
+      <button class="small" id="showCodeBtn" type="button">연결 코드</button></div>
+
+    <section class="card" id="codeCard" hidden>
+      <h2>연결 코드</h2>
+      <div class="codebox" id="codeShow"></div>
+      <p class="foot">다른 폰에서 이 코드를 입력하거나, 아래 링크를 카톡 ‘나와의 채팅’으로 보내서 열면 바로 연결돼요. 코드를 아는 사람만 주소를 볼 수 있으니 남에게 알려주지 마세요.</p>
+      <div class="row">
+        <button class="btn alt" id="copyLinkBtn" type="button">연결 링크 복사</button>
+        <button class="btn alt" id="unpairBtn" type="button">연결 끊기</button>
+      </div>
+      <div class="msg" id="codeMsg"></div>
+    </section>
+
+    <section id="destBox" aria-live="polite">
+      <div class="empty" id="emptyBox"><strong>아직 받은 목적지가 없어요</strong>콜 받는 폰에서 주소를 보내면 여기에 바로 떠요.</div>
+    </section>
+
+    <section class="card" id="sendCard">
+      <h2>목적지 보내기</h2>
+      <label for="addr">주소 (콜 앱에서 복사해서 붙여넣기)</label>
+      <textarea id="addr" placeholder="예) 서울 동대문구 무학로 45"></textarea>
+      <label for="memo">메모 (선택)</label>
+      <input id="memo" placeholder="예) 3층 / 공동현관 1234# / 도착 전 전화">
+      <button class="btn" id="sendBtn" type="button" disabled>내비 폰으로 보내기</button>
+      <div class="msg" id="msg"></div>
+    </section>
+
+    <section class="card" id="settingsCard">
+      <label class="toggle"><input type="checkbox" id="wakeChk" style="width:auto"> 이 화면 켜두기 (내비 폰 추천)</label>
+      <label class="toggle"><input type="checkbox" id="soundChk" style="width:auto" checked> 새 목적지 오면 소리·진동</label>
+    </section>
+
+    <section class="card">
+      <h2>최근 목적지</h2>
+      <ul class="hist" id="hist"></ul>
+    </section>
+
+<div class="ad-slot" data-size="banner"></div>
+    <p class="foot">주소는 이 기기에서 암호화된 뒤 전달돼서, 연결 코드가 없는 사람은 내용을 볼 수 없어요. 전달 기록은 서버에 12시간까지만 남아요. 홈 화면에 추가하면 앱처럼 쓸 수 있어요. <a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · <a href="guide.html" style="color:inherit;font-weight:700">사용법 보기</a></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const ls={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}},del(k){try{localStorage.removeItem(k)}catch(e){}}};
+  const SERVER='https://ntfy.sh';
+  const isAndroid=/Android/i.test(navigator.userAgent);
+  const enc=encodeURIComponent;
+  const ALPHA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+  let role=ls.get('bg.role')||'navi';
+  let code=null, topic=null, key=null, es=null;
+  let items=[]; try{items=JSON.parse(ls.get('bg.hist')||'[]')}catch(e){}
+  let current=items[0]||null, seen=new Set(items.map(h=>h.id));
+  const emptyEl=$('emptyBox');
+
+  // ---------- 암호화 ----------
+  async function derive(c){
+    const raw=new TextEncoder().encode('barogil:'+c);
+    const h=new Uint8Array(await crypto.subtle.digest('SHA-256',raw));
+    const t=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('topic:'+c)));
+    topic='barogil_'+[...t.slice(0,16)].map(b=>b.toString(16).padStart(2,'0')).join('');
+    key=await crypto.subtle.importKey('raw',h,'AES-GCM',false,['encrypt','decrypt']);
+  }
+  const b64=u=>btoa(String.fromCharCode(...u));
+  const unb64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+  async function seal(obj){
+    const iv=crypto.getRandomValues(new Uint8Array(12));
+    const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(JSON.stringify(obj))));
+    return 'bg1.'+b64(iv)+'.'+b64(ct);
+  }
+  async function open(s){
+    const [v,iv,ct]=String(s).split('.'); if(v!=='bg1') return null;
+    try{const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(iv)},key,unb64(ct));return JSON.parse(new TextDecoder().decode(pt))}catch(e){return null}
+  }
+
+  // ---------- 화면 ----------
+  function setRole(r){
+    role=r; ls.set('bg.role',r);
+    $('roleCall').setAttribute('aria-pressed',r==='call'); $('roleNavi').setAttribute('aria-pressed',r==='navi');
+    const app=$('app');
+    if(r==='call') app.insertBefore($('sendCard'),$('destBox')); else app.insertBefore($('destBox'),$('sendCard'));
+  }
+  $('roleCall').onclick=()=>setRole('call'); $('roleNavi').onclick=()=>setRole('navi');
+
+  function status(kind,text){$('dot').className='dot '+(kind||'');$('statusText').textContent=text}
+  function say(id,text,kind){const m=$(id);m.textContent=text;m.className='msg '+(kind||'')}
+  function hhmm(ts){const d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+  function a(href,text){const el=document.createElement('a');el.href=href;el.textContent=text;if(/^https:/.test(href)){el.target='_blank';el.rel='noopener'}return el}
+
+  function appLinks(addr){
+    const q=enc(addr);
+    if(isAndroid) return [
+      a('intent://search?q='+q+'#Intent;scheme=kakaomap;package=net.daum.android.map;end','카카오맵'),
+      a('intent://search?name='+q+'#Intent;scheme=tmap;package=com.skt.tmap.ku;end','티맵'),
+      a('intent://search?query='+q+'&appname=barogil#Intent;scheme=nmap;package=com.nhn.android.nmap;end','네이버')];
+    return [a('kakaomap://search?q='+q,'카카오맵'),a('tmap://search?name='+q,'티맵'),a('nmap://search?query='+q+'&appname=barogil','네이버')];
+  }
+
+  async function copy(text,btn,fallbackEl){
+    try{await navigator.clipboard.writeText(text);btn.textContent='복사됨'}
+    catch(e){if(fallbackEl){const r=document.createRange();r.selectNodeContents(fallbackEl);const s=getSelection();s.removeAllRanges();s.addRange(r)}btn.textContent='길게 눌러 복사'}
+  }
+
+  function renderDest(fresh){
+    const box=$('destBox'); box.textContent='';
+    const c=current; if(!c){box.appendChild(emptyEl);return}
+    const d=document.createElement('div'); d.className='dest'+(fresh?' fresh':'');
+    const lbl=document.createElement('div'); lbl.className='lbl';
+    const l1=document.createElement('span'); l1.textContent='받은 목적지';
+    const l2=document.createElement('span'); l2.textContent=hhmm(c.ts); lbl.append(l1,l2);
+    const ad=document.createElement('div'); ad.className='addr'; ad.textContent=c.addr;
+    d.append(lbl,ad);
+    if(c.memo){const m=document.createElement('div');m.className='memo';m.textContent=c.memo;d.appendChild(m)}
+    const navs=document.createElement('div'); navs.className='navs'; navs.append(...appLinks(c.addr));
+    const q=enc(c.addr), webs=document.createElement('div'); webs.className='webs';
+    webs.append(a('https://map.kakao.com/link/search/'+q,'카카오 웹 지도'),a('https://map.naver.com/p/search/'+q,'네이버 웹 지도'),a('https://www.google.com/maps/dir/?api=1&destination='+q,'구글 길찾기'));
+    const cp=document.createElement('button'); cp.type='button'; cp.textContent='주소 복사'; cp.onclick=()=>copy(c.addr,cp,ad);
+    webs.appendChild(cp); d.append(navs,webs); box.appendChild(d);
+  }
+
+  function renderHist(){
+    const ul=$('hist'); ul.textContent='';
+    if(!items.length){const li=document.createElement('li');const s=document.createElement('span');s.className='a';s.style.color='var(--muted)';s.textContent='주고받은 목적지가 여기에 쌓여요. 최근 15건까지 이 폰에 보관해요.';li.appendChild(s);ul.appendChild(li);return}
+    items.forEach(h=>{
+      const li=document.createElement('li');
+      const t=document.createElement('span');t.className='t';t.textContent=hhmm(h.ts);
+      const s=document.createElement('span');s.className='a';s.textContent=h.addr+(h.memo?' · '+h.memo:'');
+      const b=document.createElement('button');b.type='button';b.className='small';
+      if(role==='navi'){b.textContent='길안내';b.onclick=()=>{current=h;renderDest(true);scrollTo({top:0,behavior:'smooth'})}}
+      else{b.textContent='다시 보내기';b.onclick=()=>send(h.addr,h.memo)}
+      li.append(t,s,b);ul.appendChild(li);
+    });
+  }
+
+  // ---------- 알림 ----------
+  let actx=null;
+  document.addEventListener('pointerdown',()=>{if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}else if(actx.state==='suspended')actx.resume()},{passive:true});
+  function ding(){
+    if(!$('soundChk').checked) return;
+    try{navigator.vibrate&&navigator.vibrate([200,80,200])}catch(e){}
+    if(!actx) return;
+    [880,1320].forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.frequency.value=f;o.connect(g);g.connect(actx.destination);
+      const t=actx.currentTime+i*0.18;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(0.3,t+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t+0.16);o.start(t);o.stop(t+0.17)});
+  }
+  let lock=null;
+  async function wake(on){
+    ls.set('bg.wake',on?'1':'0');
+    try{if(on&&'wakeLock' in navigator){lock=await navigator.wakeLock.request('screen')}else if(lock){await lock.release();lock=null}}catch(e){}
+  }
+  $('wakeChk').onchange=e=>wake(e.target.checked);
+  $('soundChk').onchange=e=>ls.set('bg.sound',e.target.checked?'1':'0');
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'){if($('wakeChk').checked)wake(true);connect()}});
+
+  // ---------- 수신 ----------
+  async function accept(id,body,live){
+    if(seen.has(id)) return; seen.add(id);
+    const m=await open(body); if(!m||!m.addr) return;
+    const item={id,addr:m.addr,memo:m.memo||'',ts:m.ts||Date.now()};
+    items=[item,...items.filter(h=>h.id!==id)].sort((x,y)=>y.ts-x.ts).slice(0,15);
+    ls.set('bg.hist',JSON.stringify(items));
+    const newest=items[0]===item;
+    if(newest){current=item;renderDest(live);if(live&&role==='navi')ding()}
+    renderHist();
+  }
+  async function catchUp(){
+    try{
+      const r=await fetch(SERVER+'/'+topic+'/json?poll=1&since=12h');
+      const txt=await r.text();
+      for(const line of txt.split('\n')){if(!line.trim())continue;try{const e=JSON.parse(line);if(e.event==='message')await accept(e.id,e.message,false)}catch(_){}}
+    }catch(e){}
+  }
+  function connect(){
+    if(!topic) return;
+    if(es&&es.readyState!==2) return;
+    status('','연결 중…');
+    catchUp();
+    es=new EventSource(SERVER+'/'+topic+'/sse');
+    es.onopen=()=>status('on','연결됨 · 다른 폰과 실시간 공유 중');
+    es.onmessage=ev=>{try{const e=JSON.parse(ev.data);if(e.event==='message')accept(e.id,e.message,true)}catch(_){}};
+    es.onerror=()=>{status('off','연결이 끊겼어요. 자동으로 다시 연결하는 중…')};
+  }
+
+  // ---------- 전송 ----------
+  const addrEl=$('addr'), sendBtn=$('sendBtn');
+  function syncBtn(){sendBtn.disabled=!key||!addrEl.value.trim()}
+  addrEl.addEventListener('input',syncBtn);
+  async function send(addr,memo){
+    addr=(addr||'').replace(/\s+/g,' ').trim(); memo=(memo||'').trim();
+    if(!addr||!key) return;
+    sendBtn.disabled=true; say('msg','보내는 중…');
+    try{
+      const body=await seal({addr,memo,ts:Date.now()});
+      const r=await fetch(SERVER+'/'+topic,{method:'POST',body});
+      if(!r.ok) throw new Error(r.status);
+      const j=await r.json().catch(()=>null);
+      if(j&&j.id) await accept(j.id,body,false);
+      say('msg','보냈어요. 내비 폰 화면에 바로 떠요.','ok');
+      addrEl.value=''; $('memo').value='';
+    }catch(e){say('msg','보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.','err')}
+    finally{syncBtn()}
+  }
+  sendBtn.onclick=()=>send(addrEl.value,$('memo').value);
+
+  // ---------- 연결 코드 ----------
+  function newCode(){const r=crypto.getRandomValues(new Uint8Array(10));return [...r].map(b=>ALPHA[b%ALPHA.length]).join('')}
+  function clean(c){return String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'')}
+  async function pair(c){
+    code=c; ls.set('bg.code',c); await derive(c);
+    $('pairCard').hidden=true; $('app').hidden=false; $('roleBox').hidden=false;
+    $('codeShow').textContent=c.replace(/(.{5})/,'$1 ');
+    setRole(role); renderDest(false); renderHist(); syncBtn(); connect();
+  }
+  $('newCodeBtn').onclick=async()=>{await pair(newCode());$('codeCard').hidden=false;say('codeMsg','이제 다른 폰에서 이 코드를 입력하세요.','ok')};
+  $('joinBtn').onclick=()=>{const c=clean($('codeIn').value);if(c.length<8){say('pairMsg','코드는 10자리예요. 다시 확인해 주세요.','err');return}pair(c)};
+  $('showCodeBtn').onclick=()=>{$('codeCard').hidden=!$('codeCard').hidden};
+  $('copyLinkBtn').onclick=e=>copy(location.origin+location.pathname+'#'+code,e.target,$('codeShow'));
+  $('unpairBtn').onclick=e=>{
+    if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='한 번 더 누르면 끊어요';return}
+    ls.del('bg.code');ls.del('bg.hist');location.hash='';location.reload();
+  };
+
+  // ---------- 시작 ----------
+  if(!window.crypto||!crypto.subtle){
+    $('pairCard').hidden=false;say('pairMsg','이 주소는 보안 연결(https)이 아니라서 쓸 수 없어요. https 주소로 열어 주세요.','err');return;
+  }
+  $('soundChk').checked=ls.get('bg.sound')!=='0';
+  if(ls.get('bg.wake')==='1'){$('wakeChk').checked=true;wake(true)}
+  const fromLink=clean(location.hash.slice(1));
+  if(fromLink.length>=8){window.history.replaceState(null,'',location.pathname);ls.del('bg.hist');items=[];current=null;seen.clear();pair(fromLink)}
+  else if(ls.get('bg.code')) pair(ls.get('bg.code'));
+  else $('pairCard').hidden=false;
+
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+})();
+</script>
+<script src="../site-config.js"></script>
+<script src="../ads.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# GitHub에 올리면 Netlify가 이 폴더를 그대로 공개합니다 (빌드 과정 없음)
+[build]
+  publish = "."
+
+# 앱 화면과 캐시 파일은 항상 최신본을 확인하게 해서 업데이트가 바로 보이도록
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+[[headers]]
+  for = "/*/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/site-config.js"
+  [headers.values]
+    Cache-Control = "no-cache"
