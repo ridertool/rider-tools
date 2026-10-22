@@ -126,6 +126,25 @@ input.money{font-family:var(--num)}
 .filter{display:flex;gap:6px;flex-wrap:wrap}
 .filter button{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 14px;font:700 14px var(--body);cursor:pointer}
 .filter button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.cal-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cal-h b{font-weight:800;font-size:15px}
+.cal-h span{font-size:12px;color:var(--muted)}
+.cal-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px}
+.cal-w{font-size:11px;text-align:center;color:var(--muted);padding:2px 0}
+.cal-w:first-child,.cal-d.sun .dn{color:var(--minus)}
+.cal-w:last-child,.cal-d.sat .dn{color:var(--coupang)}
+.cal-d{border:0;background:var(--bg);border-radius:8px;min-height:52px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;color:var(--fg);cursor:default}
+.cal-d.has{cursor:pointer}
+.cal-d.empty{background:none}
+.cal-d .dn{font-size:12px;font-weight:600}
+.cal-d .am{font-family:var(--num);font-size:11px;font-weight:600;line-height:1.1;white-space:nowrap}
+.cal-d .am.neg{color:var(--minus)}
+.cal-d .ct{font-size:10px;color:var(--muted);line-height:1}
+.cal-d.today{outline:2px solid var(--gold);outline-offset:-2px}
+.day.flash{animation:flash 1.2s ease}
+@keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.day.flash{animation:none}}
 .listhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 @media (max-width:380px){.kpis{grid-template-columns:1fr 1fr}}
 </style>
@@ -173,6 +192,11 @@ input.money{font-family:var(--num)}
     <input type="file" id="ocrFile" accept="image/*" hidden>
   </section>
 
+  <section class="cal" aria-label="달력">
+    <div class="cal-h"><b id="calTitle">달력</b><span>칸의 금액 = 그날 남은 돈 (만원)</span></div>
+    <div class="cal-g" id="calGrid"></div>
+  </section>
+
   <div class="listhead">
     <h2 id="listTitle">날짜별 장부</h2>
     <div class="filter" role="group" aria-label="장부 보기" id="filter">
@@ -204,7 +228,7 @@ input.money{font-family:var(--num)}
   </details>
 
 <div class="ad-slot" data-size="banner"></div>
-  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v6</span></p>
+  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v7</span></p>
 </div>
 
 <!-- 수익 입력 -->
@@ -323,9 +347,40 @@ input.money{font-family:var(--num)}
     });
     if(!inc){const s=document.createElement('span');s.textContent='쿠팡이츠·배민커넥트 수입 비율이 여기에 표시돼요';lg.appendChild(s)}
     renderPlats(E);
-    renderDays(filt==='all'?E:E.filter(e=>e.platform===filt),filt==='all'?X:[]);
+    const fE=filt==='all'?E:E.filter(e=>e.platform===filt), fX=filt==='all'?X:[];
+    renderCal(fE,fX);
+    renderDays(fE,fX);
   }
 
+  function shortWon(n){const a=Math.abs(n);let t;
+    if(a>=10000)t=(Math.round(a/1000)/10).toFixed(a>=1000000?0:1).replace(/\.0$/,'')+'만';else t=Math.round(a).toLocaleString('ko-KR');
+    return (n<0?'−':'')+t}
+  function renderCal(E,X){
+    const g=$('calGrid');g.textContent='';
+    $('calTitle').textContent=ym[1]+'월 달력'+(filt!=='all'?' · '+PLAT[filt]:'');
+    '일월화수목금토'.split('').forEach(w=>{const c=document.createElement('div');c.className='cal-w';c.textContent=w;g.appendChild(c)});
+    const first=new Date(ym[0],ym[1]-1,1), days=new Date(ym[0],ym[1],0).getDate(), td=today();
+    for(let i=0;i<first.getDay();i++){const c=document.createElement('div');c.className='cal-d empty';g.appendChild(c)}
+    for(let d=1;d<=days;d++){
+      const dt=ymKey()+'-'+pad(d), de=E.filter(e=>e.date===dt), dx=X.filter(x=>x.date===dt);
+      const has=de.length||dx.length;
+      const net=de.reduce((s,e)=>s+e.income-dedOf(e),0)-dx.reduce((s,x)=>s+x.amount,0);
+      const cnt=de.reduce((s,e)=>s+(e.count||0),0);
+      const wd=new Date(ym[0],ym[1]-1,d).getDay();
+      const c=document.createElement('button');c.type='button';
+      c.className='cal-d'+(has?' has':'')+(wd===0?' sun':wd===6?' sat':'')+(dt===td?' today':'');
+      const dn=document.createElement('span');dn.className='dn';dn.textContent=d;c.appendChild(dn);
+      if(has){
+        const am=document.createElement('span');am.className='am'+(net<0?' neg':'');am.textContent=shortWon(net);c.appendChild(am);
+        if(cnt){const ct=document.createElement('span');ct.className='ct';ct.textContent=cnt+'건';c.appendChild(ct)}
+        // 수입이 클수록 진하게
+        c.style.background=net<0?'color-mix(in srgb, var(--minus) 12%, var(--bg))':'color-mix(in srgb, var(--plus) '+Math.min(35,Math.max(8,Math.round(net/6000)))+'%, var(--bg))';
+        c.setAttribute('aria-label',(ym[1])+'월 '+d+'일 남은 돈 '+won(net)+'원'+(cnt?' '+cnt+'건':''));
+        c.onclick=()=>{const card=document.getElementById('day-'+dt);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash')}};
+      } else c.disabled=true;
+      g.appendChild(c);
+    }
+  }
   let filt='all';
   $('filter').querySelectorAll('button').forEach(b=>b.onclick=()=>{filt=b.dataset.f;$('filter').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
   function renderPlats(E){
@@ -359,7 +414,7 @@ input.money{font-family:var(--num)}
       const de=E.filter(e=>e.date===dt), dx=X.filter(x=>x.date===dt);
       const net=de.reduce((s,e)=>s+e.income-dedOf(e),0)-dx.reduce((s,x)=>s+x.amount,0);
       const cnt=de.reduce((s,e)=>s+(e.count||0),0);
-      const card=document.createElement('div');card.className='day';
+      const card=document.createElement('div');card.className='day';card.id='day-'+dt;
       const h=document.createElement('div');h.className='day-h';
       const d=new Date(dt+'T00:00:00');
       const t=document.createElement('b');t.textContent=(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+W[d.getDay()]+')'+(cnt?' · '+cnt+'건':'');
