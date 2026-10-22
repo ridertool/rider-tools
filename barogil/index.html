@@ -56,6 +56,9 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;fl
 .dest.fresh{animation:pop .7s ease}
 @keyframes pop{0%{transform:scale(.97);box-shadow:inset 0 0 0 3px var(--amber),inset 0 0 0 6px var(--sign),0 0 0 8px var(--amber)}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){.dest.fresh{animation:none}}
+.gobtn{display:flex;align-items:center;justify-content:center;min-height:72px;border-radius:14px;background:var(--amber,#ffb52e);color:#241a00!important;font-weight:800;font-size:22px;text-decoration:none!important;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.clip .ct{font-size:13px;opacity:.8}
+.clip .ca{font-weight:800;font-size:18px;word-break:keep-all;overflow-wrap:anywhere;margin:4px 0 10px}
 .navs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .navs a{display:flex;align-items:center;justify-content:center;min-height:60px;border-radius:10px;text-decoration:none;
   background:var(--amber);color:var(--amber-fg);font:700 17px var(--body);text-align:center;padding:4px}
@@ -142,6 +145,12 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
       <div class="empty" id="emptyBox"><strong>아직 받은 목적지가 없어요</strong>콜 받는 폰에서 주소를 보내면 여기에 바로 떠요.</div>
     </section>
 
+    <section class="card clip" id="clipBox" hidden>
+      <div class="ct">방금 복사한 주소</div>
+      <div class="ca" id="clipAddr"></div>
+      <div class="row"><button class="btn" id="clipSend" type="button">이 주소 보내기</button><button class="btn alt" id="clipNo" type="button">닫기</button></div>
+    </section>
+
     <section class="card" id="sendCard">
       <h2>목적지 보내기</h2>
       <label for="addr">주소 (콜 앱에서 복사해서 붙여넣기)</label>
@@ -167,6 +176,8 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
     <section class="card" id="settingsCard">
       <label class="toggle"><input type="checkbox" id="wakeChk" style="width:auto"> 이 화면 켜두기 (내비 폰 추천)</label>
       <label class="toggle"><input type="checkbox" id="soundChk" style="width:auto" checked> 새 목적지 오면 소리·진동</label>
+      <label class="toggle"><input type="checkbox" id="autoGoChk" style="width:auto" checked> 새 목적지 오면 자동으로 길안내 시도 (내비 폰)</label>
+      <label class="toggle"><input type="checkbox" id="autoShareChk" style="width:auto" checked> ‘공유’로 받은 주소는 바로 전송 (콜 폰)</label>
     </section>
 
     <section class="card">
@@ -219,7 +230,7 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
     role=r; ls.set('bg.role',r);
     $('roleCall').setAttribute('aria-pressed',r==='call'); $('roleNavi').setAttribute('aria-pressed',r==='navi');
     const app=$('app');
-    if(r==='call') app.insertBefore($('sendCard'),$('destBox')); else app.insertBefore($('destBox'),$('sendCard'));
+    if(r==='call'){app.insertBefore($('sendCard'),$('destBox'));app.insertBefore($('clipBox'),$('sendCard'))} else {app.insertBefore($('destBox'),$('sendCard'));app.insertBefore($('clipBox'),$('sendCard'));$('clipBox').hidden=true}
   }
   $('roleCall').onclick=()=>setRole('call'); $('roleNavi').onclick=()=>setRole('navi');
 
@@ -228,6 +239,8 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
   function hhmm(ts){const d=new Date(ts);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
   function a(href,text){const el=document.createElement('a');el.href=href;el.textContent=text;if(/^https:/.test(href)){el.target='_blank';el.rel='noopener'}return el}
 
+  const MAPNAMES=['카카오맵','티맵','네이버'];
+  let mapPref=Math.min(2,Math.max(0,+ls.get('bg.map')||0));
   function appLinks(addr){
     const q=enc(addr);
     if(isAndroid) return [
@@ -252,11 +265,14 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
     const ad=document.createElement('div'); ad.className='addr'; ad.textContent=c.addr;
     d.append(lbl,ad);
     if(c.memo){const m=document.createElement('div');m.className='memo';m.textContent=c.memo;d.appendChild(m)}
-    const navs=document.createElement('div'); navs.className='navs'; navs.append(...appLinks(c.addr));
+    const links=appLinks(c.addr);
+    links.forEach((l,i)=>l.addEventListener('click',()=>{mapPref=i;ls.set('bg.map',String(i))}));
+    const go=links[mapPref].cloneNode(true); go.className='gobtn'; go.textContent='길안내 시작 · '+MAPNAMES[mapPref]; go.addEventListener('click',()=>{});
+    const navs=document.createElement('div'); navs.className='navs'; navs.append(...links);
     const q=enc(c.addr), webs=document.createElement('div'); webs.className='webs';
     webs.append(a('https://map.kakao.com/link/search/'+q,'카카오 웹 지도'),a('https://map.naver.com/p/search/'+q,'네이버 웹 지도'),a('https://www.google.com/maps/dir/?api=1&destination='+q,'구글 길찾기'));
     const cp=document.createElement('button'); cp.type='button'; cp.textContent='주소 복사'; cp.onclick=()=>copy(c.addr,cp,ad);
-    webs.appendChild(cp); d.append(navs,webs); box.appendChild(d);
+    webs.appendChild(cp); d.append(go,navs,webs); box.appendChild(d);
   }
 
   function renderHist(){
@@ -300,7 +316,9 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
     items=[item,...items.filter(h=>h.id!==id)].sort((x,y)=>y.ts-x.ts).slice(0,15);
     ls.set('bg.hist',JSON.stringify(items));
     const newest=items[0]===item;
-    if(newest){current=item;renderDest(live);if(live&&role==='navi')ding()}
+    if(newest){current=item;renderDest(live);if(live&&role==='navi'){ding();
+      // 브라우저가 막으면 열리지 않아요. 그땐 화면의 ‘길안내 시작’ 버튼 한 번이면 돼요
+      if($('autoGoChk').checked&&document.visibilityState==='visible'){try{location.href=appLinks(item.addr)[mapPref].href}catch(e){}}}}
     renderHist();
   }
   async function catchUp(){
@@ -341,6 +359,36 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
     finally{syncBtn()}
   }
   sendBtn.onclick=()=>send(addrEl.value,$('memo').value);
+
+  // ---------- 복사한 주소 감지 · 공유로 받기 (콜 폰) ----------
+  const looksAddr=t=>t.length>=6&&t.length<=140&&/[가-힣]/.test(t)&&/(시|도|구|군|동|읍|면|리|로|길)\s*\d/.test(t);
+  let clipText='';
+  async function checkClip(){
+    try{
+      if(role!=='call'||!key||!navigator.clipboard||!navigator.clipboard.readText||document.visibilityState!=='visible')return;
+      const t=(await navigator.clipboard.readText()||'').replace(/\s+/g,' ').trim();
+      if(!looksAddr(t)||t===ls.get('bg.lastclip')||addrEl.value.trim()===t)return;
+      clipText=t;$('clipAddr').textContent=t;$('clipBox').hidden=false;
+    }catch(e){}
+  }
+  $('clipSend').onclick=()=>{ls.set('bg.lastclip',clipText);$('clipBox').hidden=true;send(clipText,'')};
+  $('clipNo').onclick=()=>{ls.set('bg.lastclip',clipText);$('clipBox').hidden=true};
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(checkClip,300)});
+  function sharedText(){
+    const p=new URLSearchParams(location.search);
+    const raw=[p.get('text'),p.get('title')].filter(Boolean).join(' ');
+    return raw.replace(/https?:\/\/\S+/g,' ').replace(/\s+/g,' ').trim();
+  }
+  async function handleShare(){
+    const t=sharedText(); if(!/[?&](text|title|url)=/.test(location.search))return;
+    history.replaceState(null,'',location.pathname);
+    if(!t||!key)return;
+    setRole('call');
+    if($('autoShareChk').checked){ls.set('bg.lastclip',t);await send(t,'')}
+    else{addrEl.value=t;syncBtn();addrEl.focus()}
+  }
+  $('autoShareChk').onchange=e=>ls.set('bg.autoshare',e.target.checked?'1':'0');
+  $('autoGoChk').onchange=e=>ls.set('bg.autogo',e.target.checked?'1':'0');
 
   // ---------- 연결 코드 ----------
   function newCode(){const r=crypto.getRandomValues(new Uint8Array(10));return [...r].map(b=>ALPHA[b%ALPHA.length]).join('')}
@@ -422,9 +470,12 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
   $('soundChk').checked=ls.get('bg.sound')!=='0';
   if(ls.get('bg.wake')==='1'){$('wakeChk').checked=true;wake(true)}
   const fromLink=clean(location.hash.slice(1));
-  if(fromLink.length>=8){window.history.replaceState(null,'',location.pathname);ls.del('bg.hist');items=[];current=null;seen.clear();pair(fromLink)}
-  else if(ls.get('bg.code')) pair(ls.get('bg.code'));
+  $('autoShareChk').checked=ls.get('bg.autoshare')!=='0'; $('autoGoChk').checked=ls.get('bg.autogo')!=='0';
+  let started=Promise.resolve();
+  if(fromLink.length>=8){window.history.replaceState(null,'',location.pathname);ls.del('bg.hist');items=[];current=null;seen.clear();started=pair(fromLink)}
+  else if(ls.get('bg.code')) started=pair(ls.get('bg.code'));
   else $('pairCard').hidden=false;
+  started.then(()=>{handleShare().then(()=>setTimeout(checkClip,600))});
 
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();

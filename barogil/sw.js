@@ -1,5 +1,5 @@
 // 앱 화면을 캐시해서 홈 화면 아이콘으로 빠르게 열리게 함 (주소 데이터는 캐시하지 않음)
-const CACHE = 'barogil-v5';
+const CACHE = 'barogil-v6';
 const FILES = ['./', './index.html', './guide.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
