@@ -78,6 +78,17 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
 .hist .t{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;width:44px;flex:none}
 .hist .a{flex:1;min-width:0;overflow-wrap:anywhere}
 .foot{font-size:12px;color:var(--muted);line-height:1.6}
+.km{display:flex;align-items:baseline;gap:6px}
+.km b{font-family:var(--display);font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.km span{font-size:18px;font-weight:700}
+.kmsub{font-size:13px;color:var(--muted)}
+.kmdays{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:12px;color:var(--muted)}
+.kmdays li{display:flex;flex-direction:column;gap:2px;align-items:center}
+.kmdays i{display:block;width:100%;max-width:28px;border-radius:4px 4px 0 0;background:var(--sign);min-height:2px}
+.kmdays .bar{height:48px;display:flex;align-items:flex-end;justify-content:center;width:100%}
+.kmdays em{font-style:normal;font-variant-numeric:tabular-nums;color:var(--fg);font-weight:700}
+.btn.track{background:var(--sign);color:var(--sign-fg)}
+.btn.track.on{background:var(--danger);color:#fff}
 .toggle{display:flex;align-items:center;gap:8px;font-size:14px}
 </style>
 <link rel="stylesheet" href="../ads.css">
@@ -131,6 +142,18 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
       <input id="memo" placeholder="예) 3층 / 공동현관 1234# / 도착 전 전화">
       <button class="btn" id="sendBtn" type="button" disabled>내비 폰으로 보내기</button>
       <div class="msg" id="msg"></div>
+    </section>
+
+    <section class="card" id="kmCard">
+      <h2>오늘 주행 거리</h2>
+      <div class="km"><b id="kmToday">0.0</b><span>km</span></div>
+      <div class="kmsub" id="kmStatus">‘측정 시작’을 누르면 GPS로 거리를 재요.</div>
+      <div class="row">
+        <button class="btn track" id="trackBtn" type="button">측정 시작</button>
+        <button class="btn alt" id="kmReset" type="button">오늘 기록 지우기</button>
+      </div>
+      <ul class="kmdays" id="kmDays" aria-label="최근 7일 주행 거리"></ul>
+      <p class="foot">바로길 화면이 떠 있는 동안 정확하게 재요. 내비 앱을 쓰는 동안에는 GPS가 멈추고, 바로길로 돌아오면 그사이 이동한 거리를 직선거리로 더해요. 그래서 실제보다 조금 적게 나올 수 있어요. 위치 정보는 이 폰에만 저장돼요.</p>
     </section>
 
     <section class="card" id="settingsCard">
@@ -328,6 +351,61 @@ textarea:focus,input:focus,button:focus-visible,a:focus-visible{outline:3px soli
     if(e.target.dataset.sure!=='1'){e.target.dataset.sure='1';e.target.textContent='한 번 더 누르면 끊어요';return}
     ls.del('bg.code');ls.del('bg.hist');location.hash='';location.reload();
   };
+
+  // ---------- 주행 거리 (GPS) ----------
+  let kmData={}; try{kmData=JSON.parse(ls.get('bg.km')||'{}')}catch(e){}
+  let watchId=null, lastFix=null;
+  const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+  function hav(a,b){const R=6371000,t=x=>x*Math.PI/180;const dLa=t(b.lat-a.lat),dLo=t(b.lng-a.lng);
+    const h=Math.sin(dLa/2)**2+Math.cos(t(a.lat))*Math.cos(t(b.lat))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+  function addMeters(m){const k=dayKey();kmData[k]=(kmData[k]||0)+m;
+    const keys=Object.keys(kmData).sort();while(keys.length>60)delete kmData[keys.shift()];
+    ls.set('bg.km',JSON.stringify(kmData));renderKm()}
+  function renderKm(){
+    $('kmToday').textContent=((kmData[dayKey()]||0)/1000).toFixed(1);
+    const ul=$('kmDays');ul.textContent='';const W='일월화수목금토';const days=[];
+    for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');days.push([k,d])}
+    const max=Math.max(1,...days.map(([k])=>kmData[k]||0));
+    days.forEach(([k,d],i)=>{const v=(kmData[k]||0)/1000;const li=document.createElement('li');
+      const bar=document.createElement('div');bar.className='bar';const b=document.createElement('i');b.style.height=Math.round((kmData[k]||0)/max*100)+'%';bar.appendChild(b);
+      const em=document.createElement('em');em.textContent=v>=10?Math.round(v):v.toFixed(1);
+      const lab=document.createElement('span');lab.textContent=i===6?'오늘':W[d.getDay()];
+      li.append(bar,em,lab);ul.appendChild(li)});
+  }
+  function onFix(p){
+    const c=p.coords, f={lat:c.latitude,lng:c.longitude,t:p.timestamp||Date.now(),acc:c.accuracy};
+    if(f.acc>60){$('kmStatus').textContent='GPS 신호가 약해요 (오차 '+Math.round(f.acc)+'m). 잠시 기다려 주세요.';return}
+    if(!lastFix){lastFix=f;$('kmStatus').textContent='측정 중 · 위치를 잡았어요';return}
+    const d=hav(lastFix,f), dt=Math.max(1,(f.t-lastFix.t)/1000), v=d/dt*3.6;
+    if(v>130){lastFix=f;return}                       // 튀는 값 무시
+    if(d<Math.max(15,f.acc*0.8))return;               // 제자리 흔들림 무시
+    addMeters(d);
+    $('kmStatus').textContent=(dt>60?'돌아온 사이 이동한 '+(d/1000).toFixed(1)+'km를 더했어요':'측정 중')+' · 오차 '+Math.round(f.acc)+'m';
+    lastFix=f;
+  }
+  function onErr(e){
+    if(e.code===1){stopTrack();$('kmStatus').textContent='위치 권한이 꺼져 있어요. 크롬 주소창 왼쪽 자물쇠 → 권한 → 위치를 허용해 주세요.'}
+    else $('kmStatus').textContent='위치를 찾는 중이에요…';
+  }
+  function startTrack(){
+    if(!('geolocation' in navigator)){$('kmStatus').textContent='이 폰에서는 위치 측정을 쓸 수 없어요.';return}
+    if(watchId!=null)return;
+    watchId=navigator.geolocation.watchPosition(onFix,onErr,{enableHighAccuracy:true,maximumAge:5000,timeout:30000});
+    ls.set('bg.track','1');$('trackBtn').textContent='측정 멈추기';$('trackBtn').classList.add('on');
+    $('kmStatus').textContent='위치를 찾는 중이에요…';
+    if(!$('wakeChk').checked){$('wakeChk').checked=true;wake(true)}
+  }
+  function stopTrack(){
+    if(watchId!=null)navigator.geolocation.clearWatch(watchId);watchId=null;lastFix=null;
+    ls.set('bg.track','0');$('trackBtn').textContent='측정 시작';$('trackBtn').classList.remove('on');
+    $('kmStatus').textContent='측정을 멈췄어요.';
+  }
+  $('trackBtn').onclick=()=>watchId==null?startTrack():stopTrack();
+  $('kmReset').onclick=e=>{const b=e.target;if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='한 번 더 누르면 지워요';setTimeout(()=>{b.dataset.sure='';b.textContent='오늘 기록 지우기'},4000);return}
+    delete kmData[dayKey()];ls.set('bg.km',JSON.stringify(kmData));b.dataset.sure='';b.textContent='오늘 기록 지우기';renderKm()};
+  renderKm();
+  if(ls.get('bg.track')==='1')startTrack();
+  setInterval(renderKm,60000); // 자정 넘어가면 오늘로 바뀌게
 
   // ---------- 시작 ----------
   if(!window.crypto||!crypto.subtle){
