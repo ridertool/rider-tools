@@ -138,7 +138,15 @@ footer a{color:inherit}
     <a id="sponsor-mail" href="#">메일로 문의하기</a>
   </section>
 
+  <section class="sponsor" id="feedback" hidden>
+    <h2>건의·후기 보내기</h2>
+    <p>쓰다가 불편한 점이나 있었으면 하는 기능을 알려 주세요. 읽고 앱에 반영할게요.</p>
+    <a id="feedback-mail" href="#">메일로 보내기</a>
+    <a id="chat-link" href="#" target="_blank" rel="noopener noreferrer" hidden>오픈채팅 참여</a>
+  </section>
+
   <footer>
+    <span id="visits" hidden></span>
     <span>© 라이더 도구함</span>
     <a href="privacy.html">개인정보처리방침</a>
     <span id="contact" hidden></span>
@@ -146,7 +154,19 @@ footer a{color:inherit}
 </div>
 <script src="site-config.js"></script>
 <script>
-(function(){var c=(window.SITE_CONFIG||{}).contactEmail;if(c){var e=document.getElementById('contact');e.textContent='문의: '+c;e.hidden=false;var s=document.getElementById('sponsor');s.hidden=false;document.getElementById('sponsor-mail').href='mailto:'+c+'?subject='+encodeURIComponent('[라이더 도구함] 제휴·광고 문의')}})();
+(function(){var c=(window.SITE_CONFIG||{}).contactEmail;if(c){var e=document.getElementById('contact');e.textContent='문의: '+c;e.hidden=false;var s=document.getElementById('sponsor');s.hidden=false;document.getElementById('sponsor-mail').href='mailto:'+c+'?subject='+encodeURIComponent('[라이더 도구함] 제휴·광고 문의');document.getElementById('feedback').hidden=false;document.getElementById('feedback-mail').href='mailto:'+c+'?subject='+encodeURIComponent('[라이더 도구함] 건의·후기')}
+  var u=(window.SITE_CONFIG||{}).chatUrl;if(u){var a=document.getElementById('chat-link');a.href=u;a.hidden=false}
+  // 방문자 수: 하루 한 번만 올리고, 서버가 없거나 실패하면 조용히 숨김
+  try{
+    var d=new Date(Date.now()+9*3600e3).toISOString().slice(0,10),k='rt.visit',seen=false;
+    try{seen=localStorage.getItem(k)===d}catch(e){}
+    fetch('/api/hit'+(seen?'':'?count=1'),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){
+      if(!j||!j.ok)return;
+      try{localStorage.setItem(k,d)}catch(e){}
+      var v=document.getElementById('visits');v.textContent='오늘 '+j.today.toLocaleString('ko-KR')+' · 전체 '+j.total.toLocaleString('ko-KR');v.hidden=false;
+    }).catch(function(){});
+  }catch(e){}
+})();
 </script>
 <script src="ads.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});</script>

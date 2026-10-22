@@ -10,6 +10,9 @@ window.SITE_CONFIG = {
   // 카카오 애드핏 광고단위 ID (예: DAN-xxxxxxxxxxxx) — 크기별로 따로 발급
   adfit: { banner: 'DAN-HX7prUxVGlSpWrwF', box: 'DAN-DP5i2vZqJ7cllOIa' },   // banner: 320x100, box: 300x250
 
+  // 카카오 오픈채팅 주소(예: https://open.kakao.com/o/xxxx) — 넣으면 건의 박스에 참여 버튼이 생김
+  chatUrl: '',
+
   // 구글 애드센스 (승인 후) — 게시자 ID(ca-pub-...)와 광고 단위 슬롯 번호
   adsense: { client: '', slot: '' }
 };
