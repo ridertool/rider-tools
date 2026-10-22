@@ -67,6 +67,15 @@ details p{margin:0 0 14px;color:var(--muted);font-size:15px}
 footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px}
 footer a{color:inherit}
 .ad-slot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:600px){.links{grid-template-columns:1fr}}
+.links a{display:flex;flex-direction:column;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--fg);text-decoration:none}
+.links a b{font-size:15px}
+.links a span{font-size:13px;color:var(--muted)}
+.sponsor{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:16px}
+.sponsor h2{margin-bottom:4px}
+.sponsor p{margin:0 0 10px;color:var(--muted);font-size:15px}
+.sponsor a{display:inline-block;background:var(--amber);color:var(--amber-fg);font-weight:800;border-radius:10px;padding:10px 14px;text-decoration:none}
 </style>
 </head>
 <body>
@@ -103,6 +112,16 @@ footer a{color:inherit}
   <div class="ad-slot" data-size="banner"></div>
 
   <section>
+    <h2>라이더 바로가기</h2>
+    <div class="links">
+      <a href="https://www.thecheat.co.kr" target="_blank" rel="noopener noreferrer"><b>사기피해 사례 조회</b><span>전화번호·계좌번호로 확인 (더치트)</span></a>
+      <a href="https://www.opinet.co.kr" target="_blank" rel="noopener noreferrer"><b>주유소 최저가</b><span>지역별 유가 비교 (오피넷)</span></a>
+      <a href="barogil/guide.html"><b>바로길 사용법</b><span>콜 폰 → 내비 폰 연결 방법</span></a>
+      <a href="rider/"><b>오늘 수익 기록하기</b><span>캡처 한 장으로 장부 입력</span></a>
+    </div>
+  </section>
+
+  <section>
     <h2>자주 묻는 질문</h2>
     <details><summary>정말 무료예요?</summary><p>네, 두 앱 모두 무료예요. 사이트에 표시되는 광고로 운영해요.</p></details>
     <details><summary>앱스토어에서 설치해야 하나요?</summary><p>아니요. 폰 크롬에서 주소를 열고, 메뉴(⋮) → ‘홈 화면에 추가’를 누르면 앱처럼 쓸 수 있어요.</p></details>
@@ -113,6 +132,12 @@ footer a{color:inherit}
 
   <div class="ad-slot" data-size="box"></div>
 
+  <section class="sponsor" id="sponsor" hidden>
+    <h2>제휴·광고 문의</h2>
+    <p>배달·퀵 기사님께 도움이 되는 업체라면 이 자리에 소개할 수 있어요. 광고 위치와 비용은 메일로 문의해 주세요.</p>
+    <a id="sponsor-mail" href="#">메일로 문의하기</a>
+  </section>
+
   <footer>
     <span>© 라이더 도구함</span>
     <a href="privacy.html">개인정보처리방침</a>
@@ -121,7 +146,7 @@ footer a{color:inherit}
 </div>
 <script src="site-config.js"></script>
 <script>
-(function(){var c=(window.SITE_CONFIG||{}).contactEmail;if(c){var e=document.getElementById('contact');e.textContent='문의: '+c;e.hidden=false}})();
+(function(){var c=(window.SITE_CONFIG||{}).contactEmail;if(c){var e=document.getElementById('contact');e.textContent='문의: '+c;e.hidden=false;var s=document.getElementById('sponsor');s.hidden=false;document.getElementById('sponsor-mail').href='mailto:'+c+'?subject='+encodeURIComponent('[라이더 도구함] 제휴·광고 문의')}})();
 </script>
 <script src="ads.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});</script>
