@@ -137,6 +137,12 @@ input.money{font-family:var(--num)}
 .mt{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
 .mt-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .mt-h b{font-weight:800;font-size:15px}
+#mtBody{display:flex;flex-direction:column;gap:10px}
+#mtBody[hidden]{display:none}
+.mt-t{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;color:var(--fg);padding:0;font:inherit;cursor:pointer;text-align:left}
+.mt-t b{font-weight:800;font-size:15px}
+.mt-badge{background:var(--minus);color:var(--bg);border-radius:99px;padding:2px 8px;font:700 12px var(--body)}
+.mt-arrow{margin-left:auto;font:600 13px var(--body);color:var(--muted)}
 .mt-h button,.mt li button{border:1px solid var(--line);background:none;color:var(--fg);border-radius:8px;padding:5px 10px;font:600 13px var(--body);cursor:pointer;flex:none}
 .mt-odo{display:grid;grid-template-columns:1fr 120px auto;gap:6px;align-items:center}
 .mt-odo label{font-size:13px;color:var(--muted)}
@@ -226,14 +232,19 @@ input.money{font-family:var(--num)}
   </section>
 
   <section class="mt" id="mtCard" aria-label="정비 알림">
-    <div class="mt-h"><b>오토바이 정비 알림</b><button type="button" id="mtEdit">교체 주기 바꾸기</button></div>
-    <div class="mt-odo">
-      <label for="mtOdo">지금 계기판 주행거리</label>
-      <input class="money" id="mtOdo" inputmode="numeric" placeholder="예) 23,450">
-      <button type="button" id="mtOdoSave">저장</button>
+    <button type="button" class="mt-t" id="mtToggle" aria-expanded="false" aria-controls="mtBody">
+      <b>오토바이 정비 알림</b><span class="mt-badge" id="mtBadge" hidden></span><span class="mt-arrow" id="mtArrow">보기 ▾</span>
+    </button>
+    <div id="mtBody" hidden>
+      <div class="mt-h"><span></span><button type="button" id="mtEdit">교체 주기 바꾸기</button></div>
+      <div class="mt-odo">
+        <label for="mtOdo">지금 계기판 주행거리</label>
+        <input class="money" id="mtOdo" inputmode="numeric" placeholder="예) 23,450">
+        <button type="button" id="mtOdoSave">저장</button>
+      </div>
+      <ul id="mtList"></ul>
+      <p class="note">교체 주기는 흔히 쓰는 기준이에요. 내 오토바이 설명서나 정비소 안내에 맞게 바꿔 쓰세요. 정비 기록을 남길 때 계기판 km를 같이 적으면 다음 교체까지 남은 거리를 계산해요.</p>
     </div>
-    <ul id="mtList"></ul>
-    <p class="note">교체 주기는 흔히 쓰는 기준이에요. 내 오토바이 설명서나 정비소 안내에 맞게 바꿔 쓰세요. 정비 기록을 남길 때 계기판 km를 같이 적으면 다음 교체까지 남은 거리를 계산해요.</p>
   </section>
 
   <section class="cal" aria-label="달력">
@@ -481,6 +492,9 @@ input.money{font-family:var(--num)}
     const m=data.maint, ul=$('mtList'); ul.textContent='';
     if(document.activeElement!==$('mtOdo'))$('mtOdo').value=m.odo?won(m.odo):'';
     $('mtEdit').textContent=mtEditing?'다 바꿨어요':'교체 주기 바꾸기';
+    // 접혀 있어도 교체할 때가 된 항목 수는 보이게
+    const due=m.odo?m.items.filter(i=>i.last!=null&&(i.interval-Math.max(0,m.odo-i.last))<=i.interval*0.15).length:0;
+    const bd=$('mtBadge');bd.hidden=!due;bd.textContent='교체 '+due+'곳';
     m.items.forEach(it=>{
       const li=document.createElement('li');
       const nm=document.createElement('span');nm.className='nm';nm.textContent=it.name;
@@ -507,6 +521,7 @@ input.money{font-family:var(--num)}
       li.append(nm,btn,st,bar);ul.appendChild(li);
     });
   }
+  $('mtToggle').onclick=()=>{const open=$('mtBody').hidden;$('mtBody').hidden=!open;$('mtToggle').setAttribute('aria-expanded',open);$('mtArrow').textContent=open?'접기 ▴':'보기 ▾'};
   $('mtEdit').onclick=()=>{mtEditing=!mtEditing;renderMaint();if(!mtEditing)toast('교체 주기를 저장했어요')};
   $('mtOdo').addEventListener('input',e=>{const v=e.target.value.replace(/[^\d]/g,'');e.target.value=v?(+v).toLocaleString('ko-KR'):''});
   $('mtOdoSave').onclick=()=>{const v=toInt($('mtOdo').value);if(!v){$('mtOdo').focus();return}data.maint.odo=v;save();renderMaint();toast('계기판 km를 저장했어요')};
