@@ -5,7 +5,7 @@ window.SITE_CONFIG = {
   contactEmail: '',            // 개인정보처리방침·문의에 표시할 이메일
 
   // 쿠팡파트너스 다이나믹 배너 (파트너스 > 광고 만들기 > 다이나믹 배너에서 발급)
-  coupang: { id: '', trackingCode: '' },
+  coupang: { id: '1042011', trackingCode: 'AF2837675' },
 
   // 카카오 애드핏 광고단위 ID (예: DAN-xxxxxxxxxxxx) — 크기별로 따로 발급
   adfit: { banner: '', box: '' },   // banner: 320x100, box: 300x250

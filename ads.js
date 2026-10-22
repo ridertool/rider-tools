@@ -53,7 +53,7 @@
       var h = size === 'box' ? 250 : 100;
       el.append(label, box);
       var run = function () {
-        try { new window.PartnersCoupang.G({ id: Number(C.coupang.id), template: 'carousel', trackingCode: C.coupang.trackingCode, width: '100%', height: String(h), tsource: '', container: id }); } catch (e) {}
+        try { new window.PartnersCoupang.G({ id: Number(C.coupang.id), template: 'carousel', trackingCode: C.coupang.trackingCode, width: String(Math.min(680, Math.max(300, el.clientWidth || 320))), height: String(h), tsource: '', container: box }); } catch (e) {}
       };
       if (window.PartnersCoupang) run(); else { var s = load('https://ads-partners.coupang.com/g.js'); s.addEventListener('load', run); }
       usedCoupang = true;
