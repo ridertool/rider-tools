@@ -50,10 +50,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;opacity:.9}
 .legend b{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:0}
 
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;min-width:0}
-.kpi span{display:block;font-size:12px;color:var(--muted)}
-.kpi b{font-family:var(--num);font-weight:600;font-size:clamp(14px,4.2vw,17px);display:block;overflow-wrap:anywhere}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 8px;min-width:0}
+.kpi span{display:block;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi b{font-family:var(--num);font-weight:600;font-size:clamp(11px,3.4vw,16px);display:block;white-space:nowrap;letter-spacing:-.02em}
 
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .btn{border:0;border-radius:12px;min-height:54px;font:800 16px var(--body);cursor:pointer;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:6px}
@@ -126,6 +126,27 @@ input.money{font-family:var(--num)}
 .filter{display:flex;gap:6px;flex-wrap:wrap}
 .filter button{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:6px 14px;font:700 14px var(--body);cursor:pointer}
 .filter button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.mt{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.mt-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mt-h b{font-weight:800;font-size:15px}
+.mt-h button,.mt li button{border:1px solid var(--line);background:none;color:var(--fg);border-radius:8px;padding:5px 10px;font:600 13px var(--body);cursor:pointer;flex:none}
+.mt-odo{display:grid;grid-template-columns:1fr 120px auto;gap:6px;align-items:center}
+.mt-odo label{font-size:13px;color:var(--muted)}
+.mt-odo input{min-height:40px;padding:6px 10px;font-size:16px;text-align:right}
+.mt-odo button{border:0;background:var(--fg);color:var(--bg);border-radius:8px;padding:0 12px;min-height:40px;font:700 14px var(--body);cursor:pointer}
+.mt ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.mt li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;padding:9px 0;border-top:1px dashed var(--line)}
+.mt li:first-child{border-top:0}
+.mt .nm{font-weight:700;font-size:14px}
+.mt .st{grid-column:1/2;font-size:12px;color:var(--muted)}
+.mt .st.warn{color:var(--gold);font-weight:700}
+.mt .st.over{color:var(--minus);font-weight:700}
+.mt .bar{grid-column:1/-1;height:6px;border-radius:99px;background:var(--bg);overflow:hidden}
+.mt .bar i{display:block;height:100%;background:var(--plus);border-radius:99px}
+.mt .bar i.warn{background:var(--gold)} .mt .bar i.over{background:var(--minus)}
+.mt .iv{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
+.mt .iv input{width:84px;min-height:34px;padding:4px 8px;font-size:14px;text-align:right}
+.mt .note{font-size:12px;color:var(--muted);margin:0}
 .cal{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .cal-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .cal-h b{font-weight:800;font-size:15px}
@@ -148,7 +169,7 @@ input.money{font-family:var(--num)}
 @keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--gold)}100%{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.day.flash{animation:none}}
 .listhead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
-@media (max-width:380px){.kpis{grid-template-columns:1fr 1fr}}
+@media (max-width:340px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 <link rel="stylesheet" href="../ads.css">
 </head>
@@ -182,16 +203,29 @@ input.money{font-family:var(--num)}
     <div class="kpi"><span>배달 건수</span><b id="kCount">0건</b></div>
     <div class="kpi"><span>건당 평균</span><b id="kPer">0원</b></div>
     <div class="kpi"><span>일한 날</span><b id="kDays">0일</b></div>
-    <div class="kpi"><span>하루 평균 실수익</span><b id="kDay">0원</b></div>
+    <div class="kpi"><span>하루 평균</span><b id="kDay">0원</b></div>
     <div class="kpi"><span>주유비</span><b id="kFuel">0원</b></div>
     <div class="kpi"><span>식비</span><b id="kFood">0원</b></div>
+    <div class="kpi"><span>정비비</span><b id="kRepair">0원</b></div>
+    <div class="kpi"><span>기타 지출</span><b id="kEtc">0원</b></div>
   </section>
 
   <section class="actions">
     <button class="btn primary wide" type="button" id="ocrBtn">정산 화면 캡처로 입력</button>
     <button class="btn dark" type="button" id="addIncome">+ 수익 직접 입력</button>
-    <button class="btn ghost" type="button" id="addExp">+ 주유·식비</button>
+    <button class="btn ghost" type="button" id="addExp">+ 주유·식비·정비</button>
     <input type="file" id="ocrFile" accept="image/*" hidden>
+  </section>
+
+  <section class="mt" id="mtCard" aria-label="정비 알림">
+    <div class="mt-h"><b>오토바이 정비 알림</b><button type="button" id="mtEdit">교체 주기 바꾸기</button></div>
+    <div class="mt-odo">
+      <label for="mtOdo">지금 계기판 주행거리</label>
+      <input class="money" id="mtOdo" inputmode="numeric" placeholder="예) 23,450">
+      <button type="button" id="mtOdoSave">저장</button>
+    </div>
+    <ul id="mtList"></ul>
+    <p class="note">교체 주기는 흔히 쓰는 기준이에요. 내 오토바이 설명서나 정비소 안내에 맞게 바꿔 쓰세요. 정비 기록을 남길 때 계기판 km를 같이 적으면 다음 교체까지 남은 거리를 계산해요.</p>
   </section>
 
   <section class="cal" aria-label="달력">
@@ -230,7 +264,7 @@ input.money{font-family:var(--num)}
   </details>
 
 <div class="ad-slot" data-size="banner"></div>
-  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v8</span></p>
+  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v9</span></p>
 </div>
 
 <!-- 수익 입력 -->
@@ -265,13 +299,18 @@ input.money{font-family:var(--num)}
     <div class="seg" role="group" aria-label="지출 종류" id="expSeg">
       <button type="button" data-t="fuel">주유</button>
       <button type="button" data-t="food">식비</button>
+      <button type="button" data-t="repair">정비</button>
       <button type="button" data-t="etc">기타</button>
+    </div>
+    <div class="two" id="eRepair" hidden>
+      <div class="f"><label for="ePart">정비 항목</label><select id="ePart"></select></div>
+      <div class="f"><label for="eOdo">계기판 km (선택)</label><input class="money" id="eOdo" inputmode="numeric" placeholder="예) 23,450"></div>
     </div>
     <div class="two">
       <div class="f"><label for="eDate">날짜</label><input type="date" id="eDate" required></div>
       <div class="f"><label for="eAmt">금액 (원)</label><input class="money" id="eAmt" inputmode="numeric" placeholder="0" required></div>
     </div>
-    <div class="f"><label for="eMemo">메모 (선택)</label><input id="eMemo" placeholder="예) GS칼텍스 / 점심 김밥 / 오일 교환"></div>
+    <div class="f"><label for="eMemo">메모 (선택)</label><input id="eMemo" placeholder="예) GS칼텍스 / 점심 김밥 / ○○모터스"></div>
     <div class="row">
       <button class="btn ghost" type="button" data-close>취소</button>
       <button class="btn primary" type="submit">저장</button>
@@ -310,13 +349,24 @@ input.money{font-family:var(--num)}
   const $=id=>document.getElementById(id);
   const KEY='riderbook.v1';
   const PLAT={coupang:'쿠팡이츠',baemin:'배민커넥트',etc:'기타'};
-  const EXP={fuel:'주유',food:'식비',etc:'기타 지출'};
+  const EXP={fuel:'주유',food:'식비',repair:'정비',etc:'기타 지출'};
   const DEF={tax:3.3,emp:0,ind:0,fee:{coupang:0,baemin:0,etc:0}};
 
   // ---------- 저장 ----------
   let data={entries:[],expenses:[],rates:JSON.parse(JSON.stringify(DEF))};
   try{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&Array.isArray(s.entries))data=Object.assign(data,s);}catch(e){}
   data.rates=Object.assign(JSON.parse(JSON.stringify(DEF)),data.rates||{});data.rates.fee=Object.assign({},DEF.fee,data.rates.fee||{});
+  const MT_DEF=[
+    {id:'oil',name:'엔진오일',interval:2000},{id:'gear',name:'기어오일',interval:6000},
+    {id:'brake',name:'브레이크 패드',interval:8000},{id:'tireR',name:'뒤 타이어',interval:8000},
+    {id:'tireF',name:'앞 타이어',interval:12000},{id:'belt',name:'구동벨트·체인',interval:15000},
+    {id:'air',name:'에어필터',interval:6000}];
+  function fixMaint(){
+    const m=data.maint&&typeof data.maint==='object'?data.maint:{};
+    const old={};(Array.isArray(m.items)?m.items:[]).forEach(i=>old[i.id]=i);
+    data.maint={odo:+m.odo||0,items:MT_DEF.map(d=>Object.assign({last:null},d,old[d.id]?{interval:+old[d.id].interval||d.interval,last:old[d.id].last??null}:{}))};
+  }
+  fixMaint();
   function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){toast('저장 공간이 없어 기록하지 못했어요')}}
 
   // ---------- 유틸 ----------
@@ -352,6 +402,9 @@ input.money{font-family:var(--num)}
     $('kDays').textContent=workDays+'일'; $('kDay').textContent=workDays?won(net/workDays)+'원':'—';
     $('kFuel').textContent=won(X.filter(x=>x.type==='fuel').reduce((s,x)=>s+x.amount,0))+'원';
     $('kFood').textContent=won(X.filter(x=>x.type==='food').reduce((s,x)=>s+x.amount,0))+'원';
+    $('kRepair').textContent=won(X.filter(x=>x.type==='repair').reduce((s,x)=>s+x.amount,0))+'원';
+    $('kEtc').textContent=won(X.filter(x=>x.type==='etc').reduce((s,x)=>s+x.amount,0))+'원';
+    renderMaint();
     // 플랫폼 비율
     const by={coupang:0,baemin:0,etc:0};E.forEach(e=>by[e.platform]=(by[e.platform]||0)+e.income);
     const sp=$('split'),lg=$('legend');sp.textContent='';lg.textContent='';
@@ -413,6 +466,45 @@ input.money{font-family:var(--num)}
   $('dayView').onclick=()=>{$('dayDlg').close();const card=document.getElementById('day-'+pickedDate);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash')}};
   let ocrDate=null;
   $('ocrBtn').addEventListener('click',()=>{ocrDate=null},true);
+
+  // ---------- 오토바이 정비 ----------
+  let mtEditing=false;
+  function renderMaint(){
+    const m=data.maint, ul=$('mtList'); ul.textContent='';
+    if(document.activeElement!==$('mtOdo'))$('mtOdo').value=m.odo?won(m.odo):'';
+    $('mtEdit').textContent=mtEditing?'다 바꿨어요':'교체 주기 바꾸기';
+    m.items.forEach(it=>{
+      const li=document.createElement('li');
+      const nm=document.createElement('span');nm.className='nm';nm.textContent=it.name;
+      if(mtEditing){
+        const iv=document.createElement('label');iv.className='iv';
+        const inp=document.createElement('input');inp.className='money';inp.inputMode='numeric';inp.value=won(it.interval);inp.setAttribute('aria-label',it.name+' 교체 주기 km');
+        inp.addEventListener('change',()=>{const v=toInt(inp.value);if(v>0){it.interval=v;save()}inp.value=won(it.interval)});
+        iv.append(inp,'km마다');li.append(nm,iv);ul.appendChild(li);return;
+      }
+      const btn=document.createElement('button');btn.type='button';btn.textContent='교체함';
+      btn.onclick=()=>openExp(null,{type:'repair',part:it.id,odo:m.odo||'',memo:''});
+      const st=document.createElement('span');st.className='st';
+      const bar=document.createElement('div');bar.className='bar';const fill=document.createElement('i');bar.appendChild(fill);
+      if(it.last==null||!m.odo){
+        st.textContent=it.last==null?'마지막 교체 기록이 없어요 · 교체했으면 ‘교체함’을 눌러 남겨 두세요':'계기판 km를 위에 입력하면 남은 거리를 계산해요';
+        fill.style.width='0%';
+      }else{
+        const used=Math.max(0,m.odo-it.last), left=it.interval-used, ratio=Math.min(1,used/it.interval);
+        fill.style.width=Math.round(ratio*100)+'%';
+        if(left<=0){st.textContent=won(-left)+'km 지났어요 · 교체할 때예요';st.classList.add('over');fill.classList.add('over')}
+        else if(left<=it.interval*0.15){st.textContent='다음 교체까지 '+won(left)+'km · 곧 교체';st.classList.add('warn');fill.classList.add('warn')}
+        else st.textContent='다음 교체까지 '+won(left)+'km ('+won(it.last)+'km에 교체)';
+      }
+      li.append(nm,btn,st,bar);ul.appendChild(li);
+    });
+  }
+  $('mtEdit').onclick=()=>{mtEditing=!mtEditing;renderMaint();if(!mtEditing)toast('교체 주기를 저장했어요')};
+  $('mtOdo').addEventListener('input',e=>{const v=e.target.value.replace(/[^\d]/g,'');e.target.value=v?(+v).toLocaleString('ko-KR'):''});
+  $('mtOdoSave').onclick=()=>{const v=toInt($('mtOdo').value);if(!v){$('mtOdo').focus();return}data.maint.odo=v;save();renderMaint();toast('계기판 km를 저장했어요')};
+  function fillParts(sel){const s=$('ePart');s.textContent='';data.maint.items.concat([{id:'other',name:'기타 정비'}]).forEach(i=>{const o=document.createElement('option');o.value=i.id;o.textContent=i.name;s.appendChild(o)});s.value=sel||'oil'}
+  function toggleRepair(){$('eRepair').hidden=segVal($('expSeg'),'t')!=='repair'}
+  $('eOdo').addEventListener('input',e=>{const v=e.target.value.replace(/[^\d]/g,'');e.target.value=v?(+v).toLocaleString('ko-KR'):''});
 
   let filt='all';
   $('filter').querySelectorAll('button').forEach(b=>b.onclick=()=>{filt=b.dataset.f;$('filter').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
@@ -531,12 +623,13 @@ input.money{font-family:var(--num)}
 
   // ---------- 지출 ----------
   let editExp=null;
-  $('expSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>seg($('expSeg'),'t',b.dataset.t));
+  $('expSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{seg($('expSeg'),'t',b.dataset.t);toggleRepair()});
   function openExp(x,pre){
     editExp=x||null; const v=x||pre||{};
     $('expTitle').textContent=x?'지출 수정':'지출 입력';
     seg($('expSeg'),'t',v.type||'fuel'); $('eDate').value=v.date||today();
     $('eAmt').value=v.amount?won(v.amount):''; $('eMemo').value=v.memo||'';
+    fillParts(v.part); $('eOdo').value=v.odo?won(v.odo):''; toggleRepair();
     $('expDel').hidden=!x; $('expDlg').showModal();
   }
   $('expForm').addEventListener('submit',ev=>{
@@ -544,6 +637,13 @@ input.money{font-family:var(--num)}
     const amt=toInt($('eAmt').value); if(!amt){$('eAmt').focus();return}
     const x=editExp||{id:uid()};
     x.type=segVal($('expSeg'),'t')||'fuel'; x.date=$('eDate').value||today(); x.amount=amt; x.memo=$('eMemo').value.trim();
+    if(x.type==='repair'){
+      x.part=$('ePart').value; x.odo=toInt($('eOdo').value)||null;
+      const it=data.maint.items.find(i=>i.id===x.part);
+      if(!x.memo)x.memo=it?it.name:'기타 정비';
+      if(it&&x.odo){it.last=x.odo}
+      if(x.odo&&x.odo>data.maint.odo)data.maint.odo=x.odo;
+    }else{delete x.part;delete x.odo}
     if(!editExp)data.expenses.push(x);
     save(); $('expDlg').close(); jump(x.date); toast(editExp?'수정했어요':'저장했어요');
   });
@@ -690,7 +790,7 @@ input.money{font-family:var(--num)}
   $('importFile').onchange=async ev=>{
     const f=ev.target.files[0];ev.target.value='';if(!f)return;
     try{const s=JSON.parse(await f.text());if(!Array.isArray(s.entries)||!Array.isArray(s.expenses))throw 0;
-      data={entries:s.entries,expenses:s.expenses,rates:Object.assign(JSON.parse(JSON.stringify(DEF)),s.rates||{})};
+      data={entries:s.entries,expenses:s.expenses,rates:Object.assign(JSON.parse(JSON.stringify(DEF)),s.rates||{}),maint:s.maint};fixMaint();
       save();Object.entries(rateIds).forEach(([id,p])=>$(id).value=p.length===1?data.rates[p[0]]:data.rates.fee[p[1]]);render();toast('백업을 불러왔어요');
     }catch(e){toast('라이더 장부 백업 파일이 아니에요')}
   };
