@@ -1,0 +1,24 @@
+{
+  "id": "/",
+  "name": "라이더 도구함",
+  "short_name": "라이더도구함",
+  "description": "배달·퀵 기사님용 무료 도구. 콜 폰에서 내비 폰으로 주소를 보내는 바로길, 쿠팡이츠·배민커넥트 수익을 기록하는 라이더 장부.",
+  "lang": "ko",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d1310",
+  "theme_color": "#14201b",
+  "categories": ["business", "productivity", "navigation"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "바로길", "short_name": "바로길", "description": "콜 폰에서 내비 폰으로 주소 보내기", "url": "/barogil/", "icons": [{ "src": "/barogil/icon-192.png", "sizes": "192x192", "type": "image/png" }] },
+    { "name": "라이더 장부", "short_name": "장부", "description": "쿠팡이츠·배민커넥트 수익 기록", "url": "/rider/", "icons": [{ "src": "/rider/icon-192.png", "sizes": "192x192", "type": "image/png" }] }
+  ]
+}

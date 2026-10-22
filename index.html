@@ -9,7 +9,9 @@
 <meta property="og:title" content="라이더 도구함">
 <meta property="og:description" content="배달기사님을 위한 무료 앱 — 바로길(주소 전달), 라이더 장부(수익 기록)">
 <meta property="og:type" content="website">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="ads.css">
 <style>
@@ -114,5 +116,6 @@ footer a{color:inherit}
 (function(){var c=(window.SITE_CONFIG||{}).contactEmail;if(c){var e=document.getElementById('contact');e.textContent='문의: '+c;e.hidden=false}})();
 </script>
 <script src="ads.js"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});</script>
 </body>
 </html>
