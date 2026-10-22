@@ -23,75 +23,130 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="ads.css">
 <style>
-/* 세로 한 줄: 소개 → 앱 카드 2개 → 광고 → 자주 묻는 질문 → 바닥글 */
+/* 소개 페이지형: 큰 소개 → 기능 카드 → 사용 3단계 → 앱 → 광고 → 질문 → 문의 */
 :root{
-  --bg:#f2f4f1; --surface:#ffffff; --fg:#14201b; --muted:#5d6a63; --line:#d6ddd8;
-  --green:#0b6b4a; --navy:#1f3a5f; --amber:#f2a900; --amber-fg:#1d1600;
+  --bg:#0e0f10; --surface:#17191c; --fg:#f1f3f2; --muted:#9ba3a0; --line:#262a2d;
+  --green:#2fbf8a; --green-fg:#04251a; --amber:#ffb52e; --amber-fg:#241a00; --navy:#2b5283;
   --display:"Black Han Sans","Gothic A1",system-ui,sans-serif;
   --body:"Gothic A1",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  color-scheme:light;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root{
-  --bg:#0d1310; --surface:#151e1a; --fg:#e6eee9; --muted:#95a39b; --line:#25322c;
-  --green:#14945f; --navy:#2b5283; --amber:#ffbe2e; color-scheme:dark}}
+@media (prefers-color-scheme: light){:root{
+  --bg:#f2f4f1; --surface:#ffffff; --fg:#14201b; --muted:#5d6a63; --line:#d6ddd8;
+  --green:#0b6b4a; --green-fg:#ffffff; --amber:#f2a900; color-scheme:light}}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.6}
 .wrap{max-width:720px;margin:0 auto;
-  padding-top:max(28px,env(safe-area-inset-top,0px));padding-bottom:max(32px,env(safe-area-inset-bottom,0px));
+  padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(32px,env(safe-area-inset-bottom,0px));
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:flex;flex-direction:column;gap:28px}
-.top{display:flex;flex-direction:column;gap:10px}
-.eyebrow{font-weight:800;font-size:13px;color:var(--green);letter-spacing:.08em}
-h1{font-family:var(--display);font-weight:400;font-size:clamp(34px,9vw,52px);line-height:1.15;margin:0;text-wrap:balance}
-h1 em{font-style:normal;background:linear-gradient(transparent 62%,var(--amber) 62%)}
+  display:flex;flex-direction:column;gap:32px}
+a{color:inherit}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:800}
+.nav .lg{display:flex;align-items:center;gap:8px;font-size:17px}
+.nav .lg img{width:30px;height:30px;border-radius:8px}
+.nav .tag{font-size:12px;font-weight:700;color:var(--muted)}
+.hero{display:flex;flex-direction:column;gap:16px;padding:8px 0 4px}
+.badge{align-self:flex-start;font-size:13px;font-weight:800;color:var(--green);background:color-mix(in srgb,var(--green) 14%,transparent);border-radius:99px;padding:5px 12px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(36px,10vw,56px);line-height:1.15;margin:0;text-wrap:balance}
+h1 em{font-style:normal;color:var(--amber)}
 .lead{margin:0;color:var(--muted);font-size:17px;max-width:34em}
+.cta{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 22px;border-radius:16px;font-weight:800;font-size:16px;text-decoration:none}
+.btn.p{background:var(--amber);color:var(--amber-fg);box-shadow:0 8px 20px rgba(255,181,46,.25)}
+.btn.g{background:var(--surface);border:1px solid var(--line);color:var(--fg)}
+h2{font-size:22px;margin:0 0 14px;font-weight:800;display:flex;align-items:center;gap:10px}
+h2::before{content:"";width:5px;height:20px;border-radius:3px;background:var(--amber)}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:340px){.feat{grid-template-columns:1fr}}
+@media (max-width:480px){.card{padding:14px}.card b{font-size:15px}.card span{font-size:13px}.new{top:10px;right:10px}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:4px;position:relative}
+.card .ic{font-size:26px;line-height:1}
+.card b{font-size:16px;margin-top:6px}
+.card span{font-size:14px;color:var(--muted)}
+.new{position:absolute;top:12px;right:12px;font-size:11px;font-weight:800;background:var(--amber);color:var(--amber-fg);border-radius:6px;padding:1px 7px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 16px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--green);color:var(--green-fg);font-weight:800;font-size:20px}
+.steps b{display:block}
+.steps span{font-size:14px;color:var(--muted)}
 .apps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:600px){.apps{grid-template-columns:1fr}}
-.app{border-radius:16px;padding:20px;color:#fff;display:flex;flex-direction:column;gap:12px;text-decoration:none;min-width:0}
-.app.barogil{background:var(--green)} .app.rider{background:var(--navy)}
+.app{border-radius:20px;padding:20px;color:#fff;display:flex;flex-direction:column;gap:12px;text-decoration:none;min-width:0}
+.app.barogil{background:linear-gradient(135deg,#0b6b4a,#13926a)} .app.rider{background:linear-gradient(135deg,#1f3a5f,#2f5a92)}
 .app .name{font-family:var(--display);font-size:28px;display:flex;align-items:center;gap:10px}
 .app .name img{width:40px;height:40px;border-radius:9px;background:rgba(255,255,255,.12)}
 .app p{margin:0;opacity:.92}
 .app ul{margin:0;padding-left:18px;opacity:.9;font-size:15px}
-.app .go{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
-.app .go span{background:var(--amber);color:var(--amber-fg);font-weight:800;border-radius:10px;padding:10px 14px}
-.app .go a{color:#fff;font-weight:600;padding:10px 4px;text-decoration:underline}
-.app:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
-h2{font-size:20px;margin:0 0 8px;font-weight:800}
-details{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:0 16px}
+.app .go{margin-top:auto}
+.app .go span{display:inline-block;background:var(--amber);color:var(--amber-fg);font-weight:800;border-radius:12px;padding:10px 16px}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:600px){.links{grid-template-columns:1fr}}
+.links a{display:flex;flex-direction:column;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-decoration:none}
+.links a b{font-size:15px}
+.links a span{font-size:13px;color:var(--muted)}
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:0 16px}
 details+details{margin-top:8px}
 summary{cursor:pointer;font-weight:700;padding:14px 0}
 details p{margin:0 0 14px;color:var(--muted);font-size:15px}
+.ad-slot{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px}
+.sponsor{background:var(--surface);border:1px dashed var(--line);border-radius:18px;padding:18px}
+.sponsor h2{font-size:18px;margin-bottom:6px}
+.sponsor p{margin:0 0 12px;color:var(--muted);font-size:15px}
+.sponsor a{display:inline-block;background:var(--amber);color:var(--amber-fg);font-weight:800;border-radius:12px;padding:10px 16px;text-decoration:none;margin-right:6px}
 footer{border-top:1px solid var(--line);padding-top:16px;font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px}
 footer a{color:inherit}
-.ad-slot{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px}
-.links{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-@media (max-width:600px){.links{grid-template-columns:1fr}}
-.links a{display:flex;flex-direction:column;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--fg);text-decoration:none}
-.links a b{font-size:15px}
-.links a span{font-size:13px;color:var(--muted)}
-.sponsor{background:var(--surface);border:1px dashed var(--line);border-radius:12px;padding:16px}
-.sponsor h2{margin-bottom:4px}
-.sponsor p{margin:0 0 10px;color:var(--muted);font-size:15px}
-.sponsor a{display:inline-block;background:var(--amber);color:var(--amber-fg);font-weight:800;border-radius:10px;padding:10px 14px;text-decoration:none}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header class="top">
-    <div class="eyebrow">배달·퀵 기사님용 무료 도구</div>
-    <h1>콜 받고, 길 찾고, <em>얼마 벌었는지</em>까지</h1>
-    <p class="lead">설치 없이 폰 크롬에서 바로 쓰는 웹앱이에요. 홈 화면에 추가하면 앱처럼 열려요. 회원가입도 필요 없어요.</p>
+  <nav class="nav">
+    <div class="lg"><img src="icon-192.png" alt="">라이더 도구함</div>
+    <span class="tag">배달·퀵 기사님용</span>
+  </nav>
+
+  <header class="hero">
+    <span class="badge">무료 · 가입 없음 · 설치 없음</span>
+    <h1>콜 받고, 길 찾고,<br><em>얼마 벌었는지</em>까지</h1>
+    <p class="lead">폰 크롬에서 바로 쓰는 웹앱이에요. 홈 화면에 추가하면 앱처럼 열려요. 주소 전달부터 수익 정리까지 한곳에서 해결하세요.</p>
+    <div class="cta">
+      <a class="btn p" href="barogil/">바로길 열기</a>
+      <a class="btn g" href="rider/">라이더 장부 열기</a>
+    </div>
   </header>
+
+  <section>
+    <h2>이런 걸 할 수 있어요</h2>
+    <div class="feat">
+      <div class="card"><span class="ic">📲</span><b>주소 바로 전달</b><span>콜 폰에서 보내면 내비 폰에 바로 떠요</span></div>
+      <div class="card"><span class="ic">🗺️</span><b>원터치 길안내</b><span>카카오맵·티맵·네이버지도 중 골라서</span></div>
+      <div class="card"><span class="ic">🔒</span><b>암호화해서 전달</b><span>연결 코드를 아는 폰만 내용을 볼 수 있어요</span></div>
+      <div class="card"><span class="ic">📸</span><b>캡처로 수익 입력</b><span>정산 화면을 공유하면 바로 읽어요</span><i class="new">NEW</i></div>
+      <div class="card"><span class="ic">🧾</span><b>세금 자동 계산</b><span>원천세 3.3% 등 차감액을 알아서 빼요</span></div>
+      <div class="card"><span class="ic">📅</span><b>달력으로 한눈에</b><span>날짜별로 남은 돈이 달력에 찍혀요</span></div>
+      <div class="card"><span class="ic">🛵</span><b>정비 알림</b><span>엔진오일 등 교체 시기를 놓치지 않게</span><i class="new">NEW</i></div>
+      <div class="card"><span class="ic">📍</span><b>하루 주행거리</b><span>바로길에서 오늘 탄 km를 기록해요</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>시작은 3단계</h2>
+    <ol class="steps">
+      <li><div><b>폰 크롬에서 주소 열기</b><span>ridertool.netlify.app</span></div></li>
+      <li><div><b>메뉴(⋮) → 홈 화면에 추가</b><span>앱 아이콘이 생겨요</span></div></li>
+      <li><div><b>앱처럼 열어서 쓰기</b><span>회원가입은 필요 없어요</span></div></li>
+    </ol>
+  </section>
+
+  <div class="ad-slot" data-size="banner"></div>
 
   <section class="apps" aria-label="앱">
     <a class="app barogil" href="barogil/">
       <div class="name"><img src="barogil/icon-192.png" alt="">바로길</div>
       <p>콜 받는 폰에서 주소를 보내면 내비 폰에 바로 떠요.</p>
       <ul>
-        <li>카카오맵·티맵·네이버 원터치 길안내</li>
         <li>층수·공동현관 메모 같이 전달</li>
         <li>주소는 암호화돼서 나만 봐요</li>
       </ul>
@@ -99,17 +154,14 @@ footer a{color:inherit}
     </a>
     <a class="app rider" href="rider/">
       <div class="name"><img src="rider/icon-192.png" alt="">라이더 장부</div>
-      <p>쿠팡이츠·배민커넥트 수익을 정산 화면 캡처 한 장으로 기록해요.</p>
+      <p>쿠팡이츠·배민커넥트 수익을 캡처 한 장으로 기록해요.</p>
       <ul>
         <li>플랫폼별 수익·건수·건당 평균</li>
-        <li>원천세 3.3% 등 차감액 자동 계산</li>
         <li>주유비·식비 기록하고 실수익 확인</li>
       </ul>
       <div class="go"><span>라이더 장부 열기</span></div>
     </a>
   </section>
-
-  <div class="ad-slot" data-size="banner"></div>
 
   <section>
     <h2>라이더 바로가기</h2>
@@ -125,6 +177,7 @@ footer a{color:inherit}
     <h2>자주 묻는 질문</h2>
     <details><summary>정말 무료예요?</summary><p>네, 두 앱 모두 무료예요. 사이트에 표시되는 광고로 운영해요.</p></details>
     <details><summary>앱스토어에서 설치해야 하나요?</summary><p>아니요. 폰 크롬에서 주소를 열고, 메뉴(⋮) → ‘홈 화면에 추가’를 누르면 앱처럼 쓸 수 있어요.</p></details>
+    <details><summary>정산 화면 캡처를 더 빨리 넣는 방법이 있나요?</summary><p>라이더 장부를 홈 화면에 추가해 두면, 갤러리에서 캡처를 ‘공유 → 라이더 장부’로 보내 바로 읽을 수 있어요. 안드로이드에서 쓸 수 있어요.</p></details>
     <details><summary>내 수익 기록은 어디에 저장돼요?</summary><p>라이더 장부의 기록은 내 폰 안에만 저장되고 서버로 보내지 않아요. 폰을 바꿀 때는 설정의 ‘백업 파일 저장’으로 옮기세요.</p></details>
     <details><summary>바로길 주소를 다른 사람이 볼 수 있나요?</summary><p>주소는 두 폰을 연결한 코드로 암호화돼서 전달돼요. 연결 코드를 모르는 사람은 내용을 볼 수 없어요. 연결 코드는 남에게 알려주지 마세요.</p></details>
     <details><summary>바로길 사용법이 궁금해요</summary><p><a href="barogil/guide.html">바로길 사용법 보기</a></p></details>
