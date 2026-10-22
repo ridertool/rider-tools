@@ -135,7 +135,9 @@ input.money{font-family:var(--num)}
 .cal-w:first-child,.cal-d.sun .dn{color:var(--minus)}
 .cal-w:last-child,.cal-d.sat .dn{color:var(--coupang)}
 .cal-d{border:0;background:var(--bg);border-radius:8px;min-height:52px;padding:4px 2px;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;color:var(--fg);cursor:default}
-.cal-d.has{cursor:pointer}
+.cal-d{cursor:pointer}
+.daymenu{display:flex;flex-direction:column;gap:8px}
+.daymenu .sum{font-size:14px;color:var(--muted)}
 .cal-d.empty{background:none}
 .cal-d .dn{font-size:12px;font-weight:600}
 .cal-d .am{font-family:var(--num);font-size:11px;font-weight:600;line-height:1.1;white-space:nowrap}
@@ -228,7 +230,7 @@ input.money{font-family:var(--num)}
   </details>
 
 <div class="ad-slot" data-size="banner"></div>
-  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v7</span></p>
+  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v8</span></p>
 </div>
 
 <!-- 수익 입력 -->
@@ -276,6 +278,19 @@ input.money{font-family:var(--num)}
     </div>
     <button class="del" type="button" id="expDel" hidden>이 기록 삭제</button>
   </form>
+</dialog>
+
+<!-- 달력 날짜 메뉴 -->
+<dialog id="dayDlg">
+  <div class="sheet daymenu">
+    <h3 id="dayTitle">날짜</h3>
+    <p class="sum" id="daySum"></p>
+    <button class="btn primary" type="button" id="dayOcr">정산 화면 캡처로 입력</button>
+    <button class="btn dark" type="button" id="dayInc">+ 수익 직접 입력</button>
+    <button class="btn ghost" type="button" id="dayExp">+ 주유·식비</button>
+    <button class="btn ghost" type="button" id="dayView" hidden>이날 기록 보기</button>
+    <button class="btn ghost" type="button" data-close>닫기</button>
+  </div>
 </dialog>
 
 <!-- 캡처 읽는 중 -->
@@ -376,11 +391,29 @@ input.money{font-family:var(--num)}
         // 수입이 클수록 진하게
         c.style.background=net<0?'color-mix(in srgb, var(--minus) 12%, var(--bg))':'color-mix(in srgb, var(--plus) '+Math.min(35,Math.max(8,Math.round(net/6000)))+'%, var(--bg))';
         c.setAttribute('aria-label',(ym[1])+'월 '+d+'일 남은 돈 '+won(net)+'원'+(cnt?' '+cnt+'건':''));
-        c.onclick=()=>{const card=document.getElementById('day-'+dt);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash')}};
-      } else c.disabled=true;
+      }
+      if(!has)c.setAttribute('aria-label',(ym[1])+'월 '+d+'일 기록 추가');
+      c.onclick=()=>openDay(dt,has?{net,cnt}:null);
       g.appendChild(c);
     }
   }
+  // ---------- 달력 날짜 메뉴 ----------
+  let pickedDate=null;
+  function openDay(dt,info){
+    pickedDate=dt;
+    const d=new Date(dt+'T00:00:00');
+    $('dayTitle').textContent=(d.getMonth()+1)+'월 '+d.getDate()+'일 ('+'일월화수목금토'[d.getDay()]+')';
+    $('daySum').textContent=info?('남은 돈 '+won(info.net)+'원'+(info.cnt?' · '+info.cnt+'건':'')+' — 아래 버튼으로 이날 기록을 더할 수 있어요.'):'아직 기록이 없어요. 이날 기록을 추가해 보세요.';
+    $('dayView').hidden=!info;
+    $('dayDlg').showModal();
+  }
+  $('dayOcr').onclick=()=>{$('dayDlg').close();ocrDate=pickedDate;$('ocrFile').click()};
+  $('dayInc').onclick=()=>{$('dayDlg').close();openIncome(null,{date:pickedDate})};
+  $('dayExp').onclick=()=>{$('dayDlg').close();openExp(null,{date:pickedDate})};
+  $('dayView').onclick=()=>{$('dayDlg').close();const card=document.getElementById('day-'+pickedDate);if(card){card.scrollIntoView({behavior:'smooth',block:'center'});card.classList.remove('flash');void card.offsetWidth;card.classList.add('flash')}};
+  let ocrDate=null;
+  $('ocrBtn').addEventListener('click',()=>{ocrDate=null},true);
+
   let filt='all';
   $('filter').querySelectorAll('button').forEach(b=>b.onclick=()=>{filt=b.dataset.f;$('filter').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});
   function renderPlats(E){
@@ -499,8 +532,8 @@ input.money{font-family:var(--num)}
   // ---------- 지출 ----------
   let editExp=null;
   $('expSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>seg($('expSeg'),'t',b.dataset.t));
-  function openExp(x){
-    editExp=x||null; const v=x||{};
+  function openExp(x,pre){
+    editExp=x||null; const v=x||pre||{};
     $('expTitle').textContent=x?'지출 수정':'지출 입력';
     seg($('expSeg'),'t',v.type||'fuel'); $('eDate').value=v.date||today();
     $('eAmt').value=v.amount?won(v.amount):''; $('eMemo').value=v.memo||'';
@@ -566,6 +599,7 @@ input.money{font-family:var(--num)}
         }catch(e){ if(ocrCancel)return; }
       }
       $('ocrDlg').close();
+      if(ocrDate){r.date=ocrDate;ocrDate=null}
       const miss=[]; if(!r.income)miss.push('수입'); if(!r.count)miss.push('건수');
       openIncome(null,r,miss.length
         ?{text:'캡처에서 '+miss.join('·')+'을(를) 찾지 못했어요. 비어 있는 칸을 채운 뒤 저장하세요.',warn:true}
@@ -575,7 +609,8 @@ input.money{font-family:var(--num)}
       // 멈춘 엔진은 버리고 다음에 새로 띄움
       if(e&&e.message==='timeout'&&ocrWorker){try{ocrWorker.terminate()}catch(_){}ocrWorker=null}
       $('ocrDlg').close();
-      openIncome(null,{},{text:e&&e.message==='timeout'
+      const keep=ocrDate?{date:ocrDate}:{};ocrDate=null;
+      openIncome(null,keep,{text:e&&e.message==='timeout'
         ?'캡처를 읽는 데 너무 오래 걸려서 멈췄어요. 이번에는 숫자를 직접 넣어 주세요. 다음 캡처는 처음보다 빨라요.'
         :'캡처를 읽지 못했어요. 인터넷 연결을 확인하고, 이번에는 숫자를 직접 넣어 주세요.',warn:true});
     }
