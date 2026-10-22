@@ -204,7 +204,7 @@ input.money{font-family:var(--num)}
   </details>
 
 <div class="ad-slot" data-size="banner"></div>
-  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v5</span></p>
+  <p class="foot"><a href="../" style="color:inherit;font-weight:700">라이더 도구함</a> · 홈 화면에 추가하면 앱처럼 쓸 수 있어요. 세금·보험 계산은 기록용 추정치이며, 실제 금액은 플랫폼 정산 명세서와 홈택스를 기준으로 하세요. <span class="num">v6</span></p>
 </div>
 
 <!-- 수익 입력 -->
@@ -478,31 +478,51 @@ input.money{font-family:var(--num)}
       s.onload=()=>res(window.Tesseract);s.onerror=()=>rej(new Error('load'));document.head.appendChild(s);
     });
   }
+  // 글자 인식 엔진은 한 번만 띄워서 계속 재사용 (매번 새로 띄우면 폰에서 아주 느려짐)
+  let ocrWorker=null;
+  const ocrLog=m=>{if(m.progress!=null)$('ocrBar').style.width=Math.max(5,Math.round(m.progress*100))+'%';if(m.status==='recognizing text')$('ocrMsg').textContent=ocrStage;};
+  let ocrStage='글자를 읽고 있어요…';
+  async function getWorker(){
+    if(ocrWorker)return ocrWorker;
+    const T=await loadTess();
+    ocrWorker=await T.createWorker('kor+eng',1,{logger:ocrLog});
+    return ocrWorker;
+  }
+  const withTimeout=(p,ms)=>Promise.race([p,new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),ms))]);
   $('ocrFile').onchange=async ev=>{
     const f=ev.target.files[0]; ev.target.value=''; if(!f)return;
     ocrCancel=false; $('ocrBar').style.width='5%'; $('ocrMsg').textContent='처음 한 번은 글자 인식 데이터를 받느라 30초 정도 걸려요.'; $('ocrDlg').showModal();
     try{
-      const T=await loadTess();
-      const log={logger:m=>{if(m.progress!=null)$('ocrBar').style.width=Math.max(5,Math.round(m.progress*100))+'%';if(m.status==='recognizing text')$('ocrMsg').textContent='글자를 읽고 있어요…'}};
+      ocrStage='글자를 읽고 있어요…';
+      const W=await withTimeout(getWorker(),60000);
+      if(ocrCancel)return;
       // 1단계: 화면 윗부분만 읽기 (총 배달료는 맨 위에 있음)
-      const top=await T.recognize(await prep(f,0.4),'kor+eng',log);
+      const top=await withTimeout(W.recognize(await prep(f,0.4)),40000);
       if(ocrCancel)return;
       const r=parse(top.data.text,top.data.words||[]);
-      // 2단계: 빠진 값이 있으면 전체 화면에서 찾아 채우기 (수입은 윗부분 값을 우선)
+      // 2단계: 빠진 값이 있으면 화면 위쪽 70%를 한 번 더 (최대 25초, 넘으면 읽은 값으로 진행)
       if(!r.income||!r.count||!r.date){
-        $('ocrMsg').textContent='나머지 부분도 읽고 있어요…';
-        const all=await T.recognize(await prep(f,1),'kor+eng',log);
-        if(ocrCancel)return;
-        const r2=parse(all.data.text,all.data.words||[]);
-        ['income','count','date','platform'].forEach(k=>{if(!r[k]&&r2[k])r[k]=r2[k]});
+        ocrStage='나머지 부분도 읽고 있어요…'; $('ocrMsg').textContent=ocrStage; $('ocrBar').style.width='5%';
+        try{
+          const more=await withTimeout(W.recognize(await prep(f,0.7)),25000);
+          if(ocrCancel)return;
+          const r2=parse(more.data.text,more.data.words||[]);
+          ['income','count','date','platform'].forEach(k=>{if(!r[k]&&r2[k])r[k]=r2[k]});
+        }catch(e){ if(ocrCancel)return; }
       }
+      $('ocrDlg').close();
       const miss=[]; if(!r.income)miss.push('수입'); if(!r.count)miss.push('건수');
       openIncome(null,r,miss.length
         ?{text:'캡처에서 '+miss.join('·')+'을(를) 찾지 못했어요. 비어 있는 칸을 채운 뒤 저장하세요.',warn:true}
         :{text:'캡처에서 읽은 값이에요. 숫자가 맞는지 확인하고 저장하세요.'});
     }catch(e){
       if(ocrCancel)return;
-      $('ocrMsg').textContent='캡처를 읽지 못했어요. 인터넷 연결을 확인하거나, 직접 입력으로 기록해 주세요.';
+      // 멈춘 엔진은 버리고 다음에 새로 띄움
+      if(e&&e.message==='timeout'&&ocrWorker){try{ocrWorker.terminate()}catch(_){}ocrWorker=null}
+      $('ocrDlg').close();
+      openIncome(null,{},{text:e&&e.message==='timeout'
+        ?'캡처를 읽는 데 너무 오래 걸려서 멈췄어요. 이번에는 숫자를 직접 넣어 주세요. 다음 캡처는 처음보다 빨라요.'
+        :'캡처를 읽지 못했어요. 인터넷 연결을 확인하고, 이번에는 숫자를 직접 넣어 주세요.',warn:true});
     }
   };
   // 큰 캡처는 글자가 너무 커서 인식이 안 됨 → 폭 420px로 줄이고 흑백으로 또렷하게
@@ -511,7 +531,8 @@ input.money{font-family:var(--num)}
     return new Promise((res,rej)=>{
       const url=URL.createObjectURL(file),im=new Image();
       im.onload=()=>{
-        const sh=Math.round(im.naturalHeight*frac),sc=Math.min(1,420/im.naturalWidth),w=Math.round(im.naturalWidth*sc),h=Math.round(sh*sc);
+        const sc=Math.min(1,420/im.naturalWidth);let sh=Math.round(im.naturalHeight*frac);if(sh*sc>1400)sh=Math.round(1400/sc); /* 아주 긴 캡처는 위쪽만 */
+        const w=Math.round(im.naturalWidth*sc),h=Math.round(sh*sc);
         const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');
         g.imageSmoothingQuality='high';g.drawImage(im,0,0,im.naturalWidth,sh,0,0,w,h);
         const d=g.getImageData(0,0,w,h),p=d.data;let sum=0;
