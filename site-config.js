@@ -8,7 +8,7 @@ window.SITE_CONFIG = {
   coupang: { id: '1042011', trackingCode: 'AF2837675' },
 
   // 카카오 애드핏 광고단위 ID (예: DAN-xxxxxxxxxxxx) — 크기별로 따로 발급
-  adfit: { banner: '', box: '' },   // banner: 320x100, box: 300x250
+  adfit: { banner: 'DAN-HX7prUxVGlSpWrwF', box: '' },   // banner: 320x100, box: 300x250
 
   // 구글 애드센스 (승인 후) — 게시자 ID(ca-pub-...)와 광고 단위 슬롯 번호
   adsense: { client: '', slot: '' }

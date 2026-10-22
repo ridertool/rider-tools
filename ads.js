@@ -35,7 +35,8 @@
       (window.adsbygoogle = window.adsbygoogle || []).push({});
       return;
     }
-    var unit = hasFit && (size === 'box' ? (C.adfit.box || C.adfit.banner) : (C.adfit.banner || C.adfit.box));
+    // 애드핏은 해당 크기의 광고단위가 있을 때만, 없으면 쿠팡 배너로
+    var unit = hasFit && (size === 'box' ? C.adfit.box : C.adfit.banner);
     if (unit) {
       var isBox = unit === C.adfit.box && !!C.adfit.box;
       var a = document.createElement('ins');
@@ -44,7 +45,7 @@
       a.setAttribute('data-ad-width', isBox ? '300' : '320');
       a.setAttribute('data-ad-height', isBox ? '250' : '100');
       el.append(label, a);
-      if (!fitLoaded) { load('https://t1.daumcdn.net/kas/static/ba.min.js'); fitLoaded = true; }
+      if (!fitLoaded) { load('https://t1.kakaocdn.net/kas/static/ba.min.js'); fitLoaded = true; }
       return;
     }
     if (hasCoupang) {
