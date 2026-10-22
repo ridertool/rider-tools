@@ -2,7 +2,7 @@
 // 비어 있는 항목은 광고 자리를 숨깁니다.
 window.SITE_CONFIG = {
   siteName: '라이더 도구함',
-  contactEmail: '',            // 개인정보처리방침·문의에 표시할 이메일
+  contactEmail: 'photopmh@naver.com',            // 개인정보처리방침·문의에 표시할 이메일
 
   // 쿠팡파트너스 다이나믹 배너 (파트너스 > 광고 만들기 > 다이나믹 배너에서 발급)
   coupang: { id: '1042011', trackingCode: 'AF2837675' },
