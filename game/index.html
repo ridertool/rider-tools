@@ -12,9 +12,9 @@
 </script>
 <meta name="theme-color" content="#f5efe3">
 <title>대기 시간 미니게임 — 라이더 도구함</title>
-<meta name="description" content="가게 앞에서 음식 기다리는 5~15분, 한 손으로 가볍게 즐기는 무료 미니게임. 2048, 카드 짝맞추기, 숫자 야구.">
+<meta name="description" content="가게 앞에서 음식 기다리는 5~15분, 한 손으로 가볍게 즐기는 무료 미니게임. 2048, 벽돌깨기, 카드 짝맞추기, 숫자 야구.">
 <meta property="og:title" content="대기 시간 미니게임">
-<meta property="og:description" content="음식 기다리는 동안 한 손으로 가볍게! 2048·짝맞추기·숫자야구">
+<meta property="og:description" content="음식 기다리는 동안 한 손으로 가볍게! 2048·벽돌깨기·짝맞추기·숫자야구">
 <meta property="og:type" content="website">
 <link rel="icon" href="../icon-192.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;800&display=swap">
@@ -42,10 +42,10 @@ h1{font-family:var(--display);font-weight:400;font-size:clamp(32px,9vw,46px);lin
 h1 mark{background:linear-gradient(transparent 62%,var(--yellow) 62%);color:inherit;padding:0 .06em}
 .lead{margin:0 0 14px;color:var(--muted);font-weight:600;word-break:keep-all}
 .warn{margin:0 0 18px;padding:10px 14px;border:2px solid var(--ink);border-radius:12px;background:#ffe9a8;font-size:14px;font-weight:700;word-break:keep-all}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.tab{appearance:none;cursor:pointer;min-height:52px;border:2px solid var(--ink);border-radius:14px;background:var(--card);font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px}
+.tab{appearance:none;cursor:pointer;min-height:52px;border:2px solid var(--ink);border-radius:14px;background:var(--card);font-weight:800;font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;padding:0 2px}
 .tab[aria-selected="true"]{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
-.tab small{font-weight:600;font-size:11px;color:var(--muted)}
+.tab small{font-weight:600;font-size:10.5px;color:var(--muted)}
 .bar{display:flex;align-items:stretch;gap:8px;margin-bottom:12px}
 .stat{flex:1;background:var(--ink);color:var(--bg);border-radius:12px;padding:6px 12px;text-align:center;line-height:1.2}
 .stat small{display:block;font-size:11px;opacity:.75;font-weight:700}
@@ -83,6 +83,9 @@ h1 mark{background:linear-gradient(transparent 62%,var(--yellow) 62%);color:inhe
 .hist em{font-style:normal;font-family:var(--display);font-size:20px;letter-spacing:.1em}
 .hist span{color:var(--teal)}
 
+
+/* 벽돌깨기 */
+#bk{display:block;width:100%;aspect-ratio:3/4;border:2px solid var(--ink);border-radius:16px;background:#16282b;touch-action:none;user-select:none;-webkit-user-select:none}
 .adband{margin-top:34px;padding:16px 0 18px;background:#ece3d0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 footer{margin-top:44px;background:var(--ink);color:#c9d3d0;padding:26px 0 calc(26px + env(safe-area-inset-bottom,0px));font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px}
@@ -105,6 +108,7 @@ footer a{color:var(--bg)}
     <button class="tab" role="tab" id="t-a" aria-selected="true" aria-controls="g-a">2048<small>밀어서 합치기</small></button>
     <button class="tab" role="tab" id="t-b" aria-selected="false" aria-controls="g-b">짝맞추기<small>같은 그림 찾기</small></button>
     <button class="tab" role="tab" id="t-c" aria-selected="false" aria-controls="g-c">숫자야구<small>3자리 맞히기</small></button>
+    <button class="tab" role="tab" id="t-d" aria-selected="false" aria-controls="g-d">벽돌깨기<small>공 튕기기</small></button>
   </div>
 
   <section id="g-a" role="tabpanel" aria-labelledby="t-a">
@@ -141,6 +145,18 @@ footer a{color:var(--bg)}
     <p class="hint">서로 다른 숫자 3개를 맞혀요. 자리와 숫자가 맞으면 S(스트라이크), 숫자만 맞으면 B(볼)예요. 9번 안에 맞히면 성공!</p>
   </section>
 
+  <section id="g-d" role="tabpanel" aria-labelledby="t-d" hidden>
+    <div class="bar">
+      <div class="stat"><small>점수</small><b id="k-score">0</b></div>
+      <div class="stat"><small>목숨</small><b id="k-life">♥♥♥</b></div>
+      <div class="stat"><small>최고</small><b id="k-best">0</b></div>
+      <button class="btn" id="k-new" type="button">새 게임</button>
+    </div>
+    <canvas id="bk" width="360" height="480" aria-label="벽돌깨기 게임판. 손가락으로 좌우로 끌어 막대를 움직이세요"></canvas>
+    <p class="msg" id="k-msg" role="status"></p>
+    <p class="hint">화면을 톡 눌러 공을 쏘고, 손가락을 좌우로 끌어 막대로 받아내요. 벽돌을 다 깨면 다음 판은 더 빨라져요.</p>
+  </section>
+
   <div class="adband" style="margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)"><div class="wrap"><div class="ad-slot" data-size="banner"></div></div></div>
 </main>
 
@@ -158,7 +174,7 @@ footer a{color:var(--bg)}
   function ev(n){if(window.gtag)gtag('event',n)}
 
   /* 탭 */
-  var tabs=['a','b','c'];
+  var tabs=['a','b','c','d'];
   tabs.forEach(function(k){$('t-'+k).addEventListener('click',function(){
     tabs.forEach(function(j){var on=j===k;$('t-'+j).setAttribute('aria-selected',on);$('g-'+j).hidden=!on});
     sset('game_tab',k);ev('game_tab_'+k);
@@ -285,6 +301,76 @@ footer a{color:var(--bg)}
   });
   pad.appendChild(ok);
   $('c-new').addEventListener('click',cnew);cnew();
+
+  /* ===== 벽돌깨기 ===== */
+  (function(){
+    var cv=$('bk'),cx=cv.getContext('2d'),W=360,H=480;
+    var COLS=8,ROWS=5,BW=W/COLS,BH=20,TOP=50,PW0=76,PH=10,PY=H-34,R=7;
+    var bricks,px,ball,score,lives,level,state,kbest=+sget('gbrick_best')||0,raf=0,last=0,keys={};
+    var COL=['#f0523a','#ff9f5a','#ffd43b','#4fb5a5','#8ed0c4'];
+    function spd(){return 230+level*30}
+    function mk(){bricks=[];for(var r=0;r<ROWS;r++)for(var c=0;c<COLS;c++)bricks.push({x:c*BW+2,y:TOP+r*(BH+3),w:BW-4,h:BH,r:r,a:true})}
+    function hud(){$('k-score').textContent=score;$('k-best').textContent=kbest;$('k-life').textContent=lives>0?new Array(lives+1).join('♥'):'-'}
+    function reset(full){
+      if(full){score=0;lives=3;level=0}
+      mk();px=W/2;ball={x:W/2,y:PY-R-1,vx:0,vy:0};state='ready';
+      $('k-msg').textContent=full?'화면을 톡 눌러 시작!':'다음 판! 화면을 눌러 시작';hud();
+    }
+    function launch(){if(state!=='ready')return;var a=(Math.random()*.8-.4);ball.vx=Math.sin(a)*spd();ball.vy=-Math.cos(a)*spd();state='play';$('k-msg').textContent='';last=0;ev('game_brick_start')}
+    function pw(){return Math.max(46,PW0-level*4)}
+    function step(dt){
+      if(keys.l)px-=360*dt;if(keys.r)px+=360*dt;
+      var w=pw();px=Math.max(w/2,Math.min(W-w/2,px));
+      if(state==='ready'){ball.x=px;ball.y=PY-R-1;return}
+      var n=Math.ceil(dt*spd()/4)||1,d=dt/n;
+      for(var i=0;i<n;i++){
+        ball.x+=ball.vx*d;ball.y+=ball.vy*d;
+        if(ball.x<R){ball.x=R;ball.vx=Math.abs(ball.vx)}
+        if(ball.x>W-R){ball.x=W-R;ball.vx=-Math.abs(ball.vx)}
+        if(ball.y<R){ball.y=R;ball.vy=Math.abs(ball.vy)}
+        // 막대
+        if(ball.vy>0&&ball.y+R>=PY&&ball.y+R<=PY+PH+6&&ball.x>=px-w/2-R&&ball.x<=px+w/2+R){
+          var off=(ball.x-px)/(w/2),sp=Math.min(spd()*1.25,Math.hypot(ball.vx,ball.vy)*1.01),ang=off*1.05;
+          ball.vx=Math.sin(ang)*sp;ball.vy=-Math.cos(ang)*sp;ball.y=PY-R;
+        }
+        // 벽돌
+        for(var b=0;b<bricks.length;b++){var k=bricks[b];if(!k.a)continue;
+          if(ball.x+R>k.x&&ball.x-R<k.x+k.w&&ball.y+R>k.y&&ball.y-R<k.y+k.h){
+            k.a=false;score+=10*(ROWS-k.r);
+            var ox=Math.min(ball.x+R-k.x,k.x+k.w-(ball.x-R)),oy=Math.min(ball.y+R-k.y,k.y+k.h-(ball.y-R));
+            if(ox<oy)ball.vx=-ball.vx;else ball.vy=-ball.vy;
+            if(score>kbest){kbest=score;sset('gbrick_best',kbest)}hud();break}
+        }
+        if(!bricks.some(function(k){return k.a})){level++;reset(false);return}
+        if(ball.y>H+R){
+          lives--;hud();
+          if(lives<=0){state='over';$('k-msg').textContent='게임 종료! 점수 '+score+'점 · 새 게임을 눌러 보세요';ev('game_brick_over')}
+          else{state='ready';ball.vx=ball.vy=0;$('k-msg').textContent='목숨이 '+lives+'개 남았어요. 눌러서 다시 시작'}
+          return}
+      }
+    }
+    function draw(){
+      cx.clearRect(0,0,W,H);
+      bricks.forEach(function(k){if(!k.a)return;cx.fillStyle=COL[k.r%COL.length];cx.beginPath();cx.roundRect?cx.roundRect(k.x,k.y,k.w,k.h,5):cx.rect(k.x,k.y,k.w,k.h);cx.fill()});
+      var w=pw();cx.fillStyle='#ffd43b';cx.beginPath();cx.roundRect?cx.roundRect(px-w/2,PY,w,PH,5):cx.rect(px-w/2,PY,w,PH);cx.fill();
+      cx.fillStyle='#fffaf0';cx.beginPath();cx.arc(ball.x,ball.y,R,0,7);cx.fill();
+      cx.fillStyle='rgba(255,250,240,.6)';cx.font='bold 13px sans-serif';cx.textAlign='right';cx.fillText('LEVEL '+(level+1),W-8,20);
+    }
+    function loop(t){
+      if(!document.hidden&&!$('g-d').hidden&&state==='play'){var dt=last?Math.min(.033,(t-last)/1000):0;last=t;step(dt)}else last=0;
+      if(state==='ready'&&!$('g-d').hidden)step(0);
+      draw();raf=requestAnimationFrame(loop);
+    }
+    function pos(e){var r=cv.getBoundingClientRect(),t=e.touches?e.touches[0]:e;return (t.clientX-r.left)/r.width*W}
+    function down(e){e.preventDefault();px=pos(e);if(state==='ready')launch()}
+    function mv(e){e.preventDefault();px=pos(e)}
+    cv.addEventListener('touchstart',down,{passive:false});cv.addEventListener('touchmove',mv,{passive:false});
+    cv.addEventListener('mousedown',down);cv.addEventListener('mousemove',function(e){if(e.buttons||state!=='over')px=pos(e)});
+    document.addEventListener('keydown',function(e){if($('g-d').hidden)return;if(e.keyCode===37){keys.l=1;e.preventDefault()}if(e.keyCode===39){keys.r=1;e.preventDefault()}if(e.keyCode===32){e.preventDefault();launch()}});
+    document.addEventListener('keyup',function(e){if(e.keyCode===37)keys.l=0;if(e.keyCode===39)keys.r=0});
+    $('k-new').addEventListener('click',function(){reset(true);ev('game_brick_new')});
+    reset(true);raf=requestAnimationFrame(loop);
+  })();
 
   var t=sget('game_tab');if(t&&tabs.indexOf(t)>=0)$('t-'+t).click();
 })();
