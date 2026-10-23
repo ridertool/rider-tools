@@ -106,6 +106,10 @@ h1 mark{background:linear-gradient(transparent 62%,var(--yellow) 62%);color:inhe
 .tool.a .shot img{border-color:var(--bg)}
 .tool.b{background:var(--yellow);color:var(--ink);grid-template-columns:.75fr 1.25fr}
 .tool.b .shot{background:#f3c321;order:-1}
+.tool.c{background:var(--card);color:var(--ink)}
+.tool.c .shot{background:#efe4c8}
+.tool .hd .ic{width:54px;height:54px;border-radius:14px;flex:none;border:2px solid currentColor;background:var(--yellow);display:grid;place-items:center;font-size:30px;line-height:1}
+.tool.c .btn.p{box-shadow:4px 4px 0 var(--yellow)}
 .tool .hd{display:flex;align-items:center;gap:14px}
 .tool .hd img{width:54px;height:54px;border-radius:14px;flex:none;border:2px solid currentColor}
 .tool h3{font-family:var(--display);font-weight:400;margin:0;font-size:34px;line-height:1.1}
@@ -228,8 +232,8 @@ footer a{color:var(--bg)}
 <section id="tools" aria-labelledby="tools-h">
   <div class="wrap">
     <span class="kicker">TOOLS</span>
-    <h2 id="tools-h">두 가지 도구로 하루를 정리해요</h2>
-    <p class="sec-lead">주소 전달은 바로길, 수익 기록은 라이더 장부. 둘 다 무료예요.</p>
+    <h2 id="tools-h">세 가지 도구로 하루를 챙겨요</h2>
+    <p class="sec-lead">주소 전달은 바로길, 수익 기록은 라이더 장부, 메뉴 고민은 오늘 뭐 먹지. 모두 무료예요.</p>
 
     <article class="tool a">
       <div class="tx">
@@ -257,6 +261,20 @@ footer a{color:var(--bg)}
         </ul>
         <div class="acts"><a class="btn y" href="rider/">라이더 장부 열기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
       </div>
+    </article>
+
+    <article class="tool c">
+      <div class="tx">
+        <div class="hd"><span class="ic" aria-hidden="true">🍚</span><div><h3>오늘 뭐 먹지?</h3><p class="tg">종류만 고르면 메뉴 추천</p></div></div>
+        <p class="d">배달 대기 중에 뭐 먹을지 고민될 때, 버튼 한 번으로 메뉴 후보를 받아요.</p>
+        <ul>
+          <li>한식·중식·일식·양식·분식 중에 선택</li>
+          <li>누를 때마다 5~10가지를 새로 추천</li>
+          <li>지도 버튼으로 근처 식당을 바로 검색</li>
+        </ul>
+        <div class="acts"><a class="btn p" href="menu/">메뉴 추천받기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </div>
+      <div class="shot"><img src="img/app-menu.png" width="780" height="1600" alt="오늘 뭐 먹지 첫 화면: 한식·중식 등 종류 선택 버튼과 메뉴 추천받기 버튼"></div>
     </article>
   </div>
 </section>
