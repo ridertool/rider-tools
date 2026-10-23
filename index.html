@@ -221,7 +221,7 @@ footer{margin-top:56px}
 /* ===== 포털형 홈 (2026-10) ===== */
 body{background:#f2f4f7;padding-bottom:0}
 .top{background:rgba(255,255,255,.92)}
-.menu a.m{display:none}.menu a.m[href="news/"],.menu a.m[href="menu/"]{display:inline-flex}
+.menu a.m{display:none}.menu a.m[href="news/"],.menu a.m[href="menu/"],.menu a.m[href="tips/"]{display:inline-flex}
 .menu .btn.s{display:none}
 .lg span{display:none}
 .pt{padding:16px 0 8px}
@@ -266,6 +266,12 @@ body{background:#f2f4f7;padding-bottom:0}
 .how li span{font-size:14px;color:var(--muted);font-weight:600;word-break:keep-all}
 .how li a{color:var(--teal);font-weight:800}
 .adband{margin-top:6px}
+.tp{padding:16px 18px 8px}
+.tp-all{font-weight:800;font-size:14px;color:var(--teal);text-decoration:none}
+.tp-l{list-style:none;margin:4px 0 0;padding:0}
+.tp-l li{border-bottom:1px solid #eceff3}.tp-l li:last-child{border-bottom:0}
+.tp-l a{display:flex;align-items:center;gap:10px;padding:12px 0;text-decoration:none;font-weight:700;word-break:keep-all}
+.tp-l span{font-size:22px}
 #flow{padding-top:28px}
 .wxm-c{white-space:nowrap}.wxm-l{flex:0 0 auto}
 .menu a.m{white-space:nowrap}
@@ -279,6 +285,7 @@ body{background:#f2f4f7;padding-bottom:0}
   <div class="wrap">
     <a class="lg" href="./" aria-label="라이더 도구함 홈"><img src="icon-192.png" alt=""><b>라이더 도구함</b><span>배달·퀵 기사님용<br>무료 도구</span></a>
     <nav class="menu" aria-label="주요 메뉴">
+      <a class="m" href="tips/">꿀팁</a>
       <a class="m" href="menu/">오늘 뭐 먹지?</a>
       <a class="m" href="news/">날씨·뉴스</a>
       
@@ -305,6 +312,16 @@ body{background:#f2f4f7;padding-bottom:0}
       <div class="nw-h"><h2 id="nw-h">실시간 뉴스</h2><div class="nw-t" role="tablist"><button type="button" role="tab" aria-selected="true" data-i="0">속보</button><button type="button" role="tab" aria-selected="false" data-i="1">라이더</button><button type="button" role="tab" aria-selected="false" data-i="2">경제</button></div></div>
       <ul class="nw-l" id="hn"><li class="nw-e">불러오는 중…</li></ul>
       <a class="nw-m" href="news/">뉴스 더 보기 ›</a>
+    </section>
+
+    <section class="tp" aria-labelledby="tp-h">
+      <div class="nw-h"><h2 id="tp-h">배달 꿀팁</h2><a class="tp-all" href="tips/">전체 보기 ›</a></div>
+      <ul class="tp-l">
+        <li><a href="tips/rainy-day.html"><span aria-hidden="true">☔</span>비 오는 날 안전하게 많이 버는 법</a></li>
+        <li><a href="tips/real-income.html"><span aria-hidden="true">💰</span>건당 수익 말고 실수익 계산하는 법</a></li>
+        <li><a href="tips/tax-basics.html"><span aria-hidden="true">🧾</span>배달 종합소득세, 5월에 알아둘 것</a></li>
+        <li><a href="tips/bike-insurance.html"><span aria-hidden="true">🛡️</span>배달용 오토바이 보험 확인할 것</a></li>
+      </ul>
     </section>
 
     <section class="how" aria-labelledby="how-h">
