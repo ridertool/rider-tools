@@ -227,7 +227,7 @@ body{background:#f2f4f7;padding-bottom:0}
 .lg span{display:none}
 .pt{padding:16px 0 8px}
 .pt .wrap{max-width:720px;display:grid;gap:14px}
-.pt section,.pt nav{background:#fff;border-radius:20px;box-shadow:0 1px 2px rgba(22,40,43,.06),0 6px 20px rgba(22,40,43,.05)}
+.pt section,.pt nav,.pt .hero2{background:#fff;border-radius:20px;box-shadow:0 1px 2px rgba(22,40,43,.06),0 6px 20px rgba(22,40,43,.05)}
 .pt h2{font-family:var(--display);font-weight:400;font-size:21px;margin:0;line-height:1.3}
 .wxm{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:linear-gradient(135deg,#e8f4ff,#fff)!important}
 .wxm-l{display:flex;align-items:center;gap:12px}
@@ -272,7 +272,34 @@ body{background:#f2f4f7;padding-bottom:0}
 .tp-l{list-style:none;margin:4px 0 0;padding:0}
 .tp-l li{border-bottom:1px solid #eceff3}.tp-l li:last-child{border-bottom:0}
 .tp-l a{display:flex;align-items:center;gap:10px;padding:12px 0;text-decoration:none;font-weight:700;word-break:keep-all}
-.tp-l span{font-size:22px}
+.tp-l span{display:none}.tp-l a::before{content:"";flex:0 0 8px;height:8px;border-radius:50%;background:var(--brand2)}
+
+/* ===== 브랜드 정리: 딥그린 + 노랑 포인트, 선 아이콘 통일 ===== */
+:root{--brand:#0b4a43;--brand2:#0f6e63}
+.hero2{background:var(--brand)!important;color:#fff;padding:22px 20px 22px!important;box-shadow:none!important}
+.chips{list-style:none;display:flex;gap:6px;margin:0 0 12px;padding:0;flex-wrap:wrap}
+.chips li{font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.14);color:#ffe27a}
+.hero2 h1{font-family:var(--display);font-weight:400;font-size:clamp(26px,7.4vw,34px);line-height:1.25;margin:0 0 8px;color:#fff;word-break:keep-all}
+.hero2 h1 em{font-style:normal;color:var(--yellow)}
+.hero2 p{margin:0;font-size:15.5px;line-height:1.55;color:#d6ece8;font-weight:600;word-break:keep-all}
+.main{display:grid;gap:12px}
+.big{display:flex;align-items:center;gap:14px;min-height:104px;padding:16px 18px;border-radius:20px;background:#fff;text-decoration:none;box-shadow:0 1px 2px rgba(22,40,43,.06),0 6px 20px rgba(22,40,43,.05);border:2px solid transparent}
+.big:active{border-color:var(--brand2)}
+.big .ic{flex:0 0 58px;height:58px;border-radius:18px;background:var(--brand);color:#fff;display:grid;place-items:center}
+.big .tx{flex:1;min-width:0}
+.big b{display:block;font-size:21px;line-height:1.25}
+.big small{display:block;margin-top:3px;font-size:14px;color:var(--muted);font-weight:700;line-height:1.4;word-break:keep-all}
+.big .go{font-size:30px;color:var(--brand2);font-weight:800}
+.sub2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.sub2 a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:92px;padding:12px 6px;border-radius:18px;background:#fff;text-decoration:none;box-shadow:0 1px 2px rgba(22,40,43,.06);font-size:14px;text-align:center}
+.sub2 a:active{background:#eef6f4}
+.sub2 .ic{width:40px;height:40px;border-radius:12px;background:#e6f2ef;color:var(--brand2);display:grid;place-items:center}
+.sub2 b{font-size:14.5px;line-height:1.25;word-break:keep-all}
+.nw-t button{min-height:40px;padding:0 14px}
+.nw-t button[aria-selected=true]{background:var(--brand)}
+.how li::before{background:var(--yellow)}
+.adband{margin:30px 0 10px!important;padding:18px 0!important;background:#e9eef0!important;border:0!important}
+.wxm{margin-top:0}
 #flow{padding-top:28px}
 .wxm-c{white-space:nowrap}.wxm-l{flex:0 0 auto}
 .menu a.m{white-space:nowrap}
@@ -297,20 +324,29 @@ body{background:#f2f4f7;padding-bottom:0}
 <main>
 <div class="pt">
   <div class="wrap">
+    <section class="hero2">
+      <ul class="chips"><li>무료</li><li>가입 없음</li><li>설치 없음</li></ul>
+      <h1>오늘 운행에 필요한 것만 <em>한곳에</em></h1>
+      <p>날씨 확인부터 주소 전달, 수익 기록까지. 라이더를 위한 무료 도구함.</p>
+    </section>
+
     <section class="wxm" aria-label="오늘 날씨">
       <div class="wxm-l"><div class="wxm-ic" id="hw-ic" aria-hidden="true">🌤️</div><div><div class="wxm-t" id="hw-t">--°</div><div class="wxm-c" id="hw-c">날씨 불러오는 중</div></div></div>
       <div class="wxm-r"><div class="wxm-a" id="hw-a" role="status">잠시만요…</div><a href="news/" class="wxm-more">시간별·미세먼지 보기 ›</a></div>
     </section>
 
-    <nav class="grid" aria-label="바로가기">
-      <a href="barogil/"><span class="gi g1"><img src="barogil/icon-192.png" alt=""></span><b>바로길</b><small>주소 전달</small></a>
-      <a href="rider/"><span class="gi g2"><img src="rider/icon-192.png" alt=""></span><b>라이더 장부</b><small>수익 기록</small></a>
-      <a href="menu/"><span class="gi g3">🍚</span><b>오늘 뭐 먹지</b><small>메뉴 추천</small></a>
-      <a href="news/"><span class="gi g4">📰</span><b>날씨·뉴스</b><small>속보·비 예보</small></a>
-    </nav>
+    <div class="main">
+      <a class="big" href="barogil/"><span class="ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11 21 3l-8 18-2-8z"/></svg></span><span class="tx"><b>바로길</b><small>콜 폰의 주소를 내비 폰으로 바로 전달</small></span><span class="go" aria-hidden="true">›</span></a>
+      <a class="big" href="rider/"><span class="ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-6"/></svg></span><span class="tx"><b>라이더 장부</b><small>정산 캡처로 수익·지출 자동 기록</small></span><span class="go" aria-hidden="true">›</span></a>
+      <div class="sub2">
+        <a href="menu/"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v8a2 2 0 0 0 2 2v8M11 3v8M15 3c2.5 1.2 3.5 4 3.5 8H15v10"/></svg></span><b>오늘 뭐 먹지</b></a>
+        <a href="news/"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h12v14H6a2 2 0 0 1-2-2zM16 9h3a1 1 0 0 1 1 1v7a2 2 0 0 1-2 2M7 9h6M7 13h6"/></svg></span><b>날씨·뉴스</b></a>
+        <a href="tips/"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span><b>배달 꿀팁</b></a>
+      </div>
+    </div>
 
     <section class="nw" aria-labelledby="nw-h">
-      <div class="nw-h"><h2 id="nw-h">실시간 뉴스</h2><div class="nw-t" role="tablist"><button type="button" role="tab" aria-selected="true" data-i="0">속보</button><button type="button" role="tab" aria-selected="false" data-i="1">라이더</button><button type="button" role="tab" aria-selected="false" data-i="2">경제</button></div></div>
+      <div class="nw-h"><h2 id="nw-h">라이더 뉴스</h2><div class="nw-t" role="tablist"><button type="button" role="tab" aria-selected="true" data-i="0">라이더</button><button type="button" role="tab" aria-selected="false" data-i="1">속보</button><button type="button" role="tab" aria-selected="false" data-i="2">경제</button></div></div>
       <ul class="nw-l" id="hn"><li class="nw-e">불러오는 중…</li></ul>
       <a class="nw-m" href="news/">뉴스 더 보기 ›</a>
     </section>
@@ -435,7 +471,7 @@ body{background:#f2f4f7;padding-bottom:0}
   }
   wx();
   var GN='https://news.google.com/rss',Q='hl=ko&gl=KR&ceid=KR:ko';
-  var U=[GN+'?'+Q,GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달앱 OR 배달기사 when:3d')+'&'+Q,GN+'/headlines/section/topic/BUSINESS?'+Q];
+  var U=[GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달앱 OR 배달기사 when:3d')+'&'+Q,GN+'?'+Q,GN+'/headlines/section/topic/BUSINESS?'+Q];
   var list=$('hn'),seq=0;
 
   var RAW='https://raw.githubusercontent.com/ridertool/rider-tools/data/news.json';
@@ -455,7 +491,7 @@ body{background:#f2f4f7;padding-bottom:0}
   }
   function lget(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
   function lset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-  var KEYS=['top','rider','biz'];
+  var KEYS=['rider','top','biz'];
   function ago(d){var m=Math.max(0,Math.round((Date.now()-d)/60000));if(m<1)return '방금';if(m<60)return m+'분 전';var h=Math.floor(m/60);return h<24?h+'시간 전':Math.floor(h/24)+'일 전'}
   function draw(items){
     list.innerHTML='';items=items.slice(0,5);
