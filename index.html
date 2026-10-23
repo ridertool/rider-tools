@@ -12,7 +12,7 @@
   gtag('config', 'G-LE3ZXC8N86', { page_location: location.origin + location.pathname });
 </script>
 <meta name="theme-color" content="#f5efe3">
-<title>라이더 도구함 — 배달기사 무료 앱 모음</title>
+<title>라이더 도구함 — 배달기사 날씨·뉴스·무료 앱</title>
 <meta name="description" content="배달·퀵 기사님을 위한 무료 웹앱. 콜 폰에서 내비 폰으로 주소를 바로 보내는 바로길, 쿠팡이츠·배민커넥트 수익과 주유비를 기록하는 라이더 장부.">
 <meta property="og:title" content="라이더 도구함">
 <meta property="og:description" content="배달기사님을 위한 무료 앱 — 바로길(주소 전달), 라이더 장부(수익 기록)">
@@ -217,102 +217,106 @@ footer{margin-top:56px}
 @media (max-width:640px){.route{display:none}.hero{padding-top:32px}h1{margin-bottom:14px}.sub{margin-bottom:20px}}
 .links{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 @media (max-width:640px){.links{grid-template-columns:1fr}}
+
+/* ===== 포털형 홈 (2026-10) ===== */
+body{background:#f2f4f7;padding-bottom:0}
+.top{background:rgba(255,255,255,.92)}
+.menu a.m{display:none}.menu a.m[href="news/"],.menu a.m[href="menu/"]{display:inline-flex}
+.menu .btn.s{display:none}
+.lg span{display:none}
+.pt{padding:16px 0 8px}
+.pt .wrap{max-width:720px;display:grid;gap:14px}
+.pt section,.pt nav{background:#fff;border-radius:20px;box-shadow:0 1px 2px rgba(22,40,43,.06),0 6px 20px rgba(22,40,43,.05)}
+.pt h2{font-family:var(--display);font-weight:400;font-size:21px;margin:0;line-height:1.3}
+.wxm{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:linear-gradient(135deg,#e8f4ff,#fff)!important}
+.wxm-l{display:flex;align-items:center;gap:12px}
+.wxm-ic{font-size:44px;line-height:1}
+.wxm-t{font-family:var(--display);font-size:38px;line-height:1}
+.wxm-c{font-size:13.5px;color:var(--muted);font-weight:700;margin-top:2px}
+.wxm-r{text-align:right;min-width:0}
+.wxm-a{font-weight:800;font-size:14px;line-height:1.4;word-break:keep-all}
+.wxm-a.rain{color:#1d4ed8}.wxm-a.ok{color:#15803d}
+.wxm-more{display:inline-block;margin-top:6px;font-size:13px;font-weight:800;color:var(--teal);text-decoration:none}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:16px 8px}
+.grid a{display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;padding:6px 2px;border-radius:14px}
+.grid a:active{background:#f2f4f7}
+.gi{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:30px;margin-bottom:7px;overflow:hidden}
+.gi img{width:100%;height:100%;display:block}
+.g3{background:#fff1c9}.g4{background:#dff0ff}.g1,.g2{background:#eef2f1}
+.grid b{font-size:14px;line-height:1.25;word-break:keep-all}
+.grid small{font-size:12px;color:var(--muted);font-weight:700}
+.nw{padding:16px 18px 6px}
+.nw-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.nw-t{display:flex;gap:4px}
+.nw-t button{border:0;background:#f2f4f7;color:var(--ink);font:inherit;font-weight:800;font-size:13.5px;min-height:34px;padding:0 12px;border-radius:999px;cursor:pointer}
+.nw-t button[aria-selected=true]{background:var(--ink);color:#fff}
+.nw-l{list-style:none;margin:0;padding:0}
+.nw-l li{border-bottom:1px solid #eceff3}
+.nw-l li:last-child{border-bottom:0}
+.nw-l a{display:block;text-decoration:none;padding:11px 0}
+.nw-l .t{display:block;font-weight:700;line-height:1.4;word-break:keep-all;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.nw-l .s{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;font-weight:700}
+.nw-l .n{display:inline-block;margin-right:5px;padding:0 5px;border-radius:5px;background:#e63946;color:#fff;font-size:11px;font-weight:800;vertical-align:1px}
+.nw-e{padding:14px 0;color:var(--muted);font-weight:700}
+.nw-m{display:block;text-align:center;padding:12px 0 14px;font-weight:800;color:var(--teal);text-decoration:none;border-top:1px solid #eceff3}
+.how{padding:16px 18px}
+.how ol{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px;counter-reset:s}
+.how li{display:grid;grid-template-columns:auto 1fr;gap:0 12px;align-items:center;counter-increment:s;background:#f7f8fa;border-radius:14px;padding:10px 14px}
+.how li::before{content:counter(s);grid-row:span 2;width:30px;height:30px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-family:var(--display);font-size:16px}
+.how li span{font-size:14px;color:var(--muted);font-weight:600;word-break:keep-all}
+.how li a{color:var(--teal);font-weight:800}
+.adband{margin-top:6px}
+#flow{padding-top:28px}
+.wxm-c{white-space:nowrap}.wxm-l{flex:0 0 auto}
+.menu a.m{white-space:nowrap}
+@media (max-width:640px){.menu{display:none}}
+@media (min-width:700px){.pt{padding-top:26px}.gi{width:64px;height:64px}}
 </style>
 </head>
 <body>
-<a class="skip" href="#tools">본문 바로가기</a>
+<a class="skip" href="#hn">본문 바로가기</a>
 <header class="top">
   <div class="wrap">
     <a class="lg" href="./" aria-label="라이더 도구함 홈"><img src="icon-192.png" alt=""><b>라이더 도구함</b><span>배달·퀵 기사님용<br>무료 도구</span></a>
     <nav class="menu" aria-label="주요 메뉴">
       <a class="m" href="menu/">오늘 뭐 먹지?</a>
       <a class="m" href="news/">날씨·뉴스</a>
-      <a class="m" href="#flow">앱처럼 쓰기</a>
-      <a class="m" href="#faq">질문</a>
-      <a class="btn p s" href="#tools">도구 바로가기</a>
+      
     </nav>
   </div>
 </header>
 
 <main>
-<div class="hero">
+<div class="pt">
   <div class="wrap">
-    <ul class="tagline"><li>무료</li><li>가입 없음</li><li>설치 없음</li></ul>
-    <h1>콜 받고, 길 찾고,<br><mark>수익까지</mark> 한곳에서</h1>
-    <p class="lead">설치 없이 휴대폰에서 바로 쓰는 배달·퀵 기사님용 무료 웹 도구</p>
-    <p class="sub">회원가입 없이 바로 시작할 수 있어요.</p>
-    <div class="cta">
-      <a class="btn p" href="barogil/">바로길 열기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="btn g" href="rider/">라이더 장부 열기</a>
-      <a class="btn y" href="menu/">🍚 오늘 뭐 먹지?</a>
-    </div>
-    <div class="route" aria-label="하루 흐름">
-      <div class="stop"><b>콜 받기</b><span>콜 받는 폰에서 주소를 보내요</span></div>
-      <div class="stop"><b>길 찾기</b><span>내비 폰에서 길안내를 열어요</span></div>
-      <div class="stop"><b>수익 확인</b><span>정산 화면 캡처로 장부에 기록해요</span></div>
-    </div>
+    <section class="wxm" aria-label="오늘 날씨">
+      <div class="wxm-l"><div class="wxm-ic" id="hw-ic" aria-hidden="true">🌤️</div><div><div class="wxm-t" id="hw-t">--°</div><div class="wxm-c" id="hw-c">날씨 불러오는 중</div></div></div>
+      <div class="wxm-r"><div class="wxm-a" id="hw-a" role="status">잠시만요…</div><a href="news/" class="wxm-more">시간별·미세먼지 보기 ›</a></div>
+    </section>
+
+    <nav class="grid" aria-label="바로가기">
+      <a href="barogil/"><span class="gi g1"><img src="barogil/icon-192.png" alt=""></span><b>바로길</b><small>주소 전달</small></a>
+      <a href="rider/"><span class="gi g2"><img src="rider/icon-192.png" alt=""></span><b>라이더 장부</b><small>수익 기록</small></a>
+      <a href="menu/"><span class="gi g3">🍚</span><b>오늘 뭐 먹지</b><small>메뉴 추천</small></a>
+      <a href="news/"><span class="gi g4">📰</span><b>날씨·뉴스</b><small>속보·비 예보</small></a>
+    </nav>
+
+    <section class="nw" aria-labelledby="nw-h">
+      <div class="nw-h"><h2 id="nw-h">실시간 뉴스</h2><div class="nw-t" role="tablist"><button type="button" role="tab" aria-selected="true" data-i="0">속보</button><button type="button" role="tab" aria-selected="false" data-i="1">라이더</button><button type="button" role="tab" aria-selected="false" data-i="2">경제</button></div></div>
+      <ul class="nw-l" id="hn"><li class="nw-e">불러오는 중…</li></ul>
+      <a class="nw-m" href="news/">뉴스 더 보기 ›</a>
+    </section>
+
+    <section class="how" aria-labelledby="how-h">
+      <h2 id="how-h">이렇게 쓰세요</h2>
+      <ol>
+        <li><b>콜 받고</b><span>콜 받는 폰에서 <a href="barogil/">바로길</a>로 주소 전송</span></li>
+        <li><b>길 찾고</b><span>내비 폰에서 카카오맵·티맵·네이버 길안내 열기</span></li>
+        <li><b>수익 기록</b><span>정산 화면 캡처 → <a href="rider/">라이더 장부</a>가 자동 정리</span></li>
+      </ol>
+    </section>
   </div>
 </div>
-
-<section id="tools" aria-labelledby="tools-h">
-  <div class="wrap">
-    <span class="kicker">TOOLS</span>
-    <h2 id="tools-h">네 가지 도구로 하루를 챙겨요</h2>
-    <p class="sec-lead">주소 전달은 바로길, 수익 기록은 라이더 장부, 메뉴 고민은 오늘 뭐 먹지, 날씨와 뉴스는 날씨·뉴스. 모두 무료예요.</p>
-
-    <div class="tools">
-    <article class="tool a">
-      <div class="tx">
-        <div class="hd"><img src="barogil/icon-192.png" alt=""><div><h3>바로길</h3><p class="tg">콜 폰 → 내비 폰 주소 전달</p></div></div>
-        <p class="d">콜을 받은 폰에서 주소를 보내면 내비게이션 폰에서 길안내를 바로 열어요.</p>
-        <ul>
-          <li>카카오맵·티맵·네이버 길안내 연결</li>
-          <li>층수·공동현관 메모 같이 전달</li>
-          <li>주소는 암호화돼서 나만 확인할 수 있어요</li>
-        </ul>
-        <div class="acts"><a class="btn p" href="barogil/">바로길 열기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="t" href="barogil/guide.html">사용법 보기</a></div>
-      </div>
-      <div class="shot"><img src="img/app-barogil.png" width="780" height="1600" alt="바로길 첫 화면: 새 연결 코드 만들기와 코드 입력 버튼"></div>
-    </article>
-
-    <article class="tool b">
-      <div class="shot"><img src="img/app-rider.png" width="780" height="1600" alt="라이더 장부 첫 화면: 이번 달 내 손에 남은 돈과 플랫폼별 수익"></div>
-      <div class="tx">
-        <div class="hd"><img src="rider/icon-192.png" alt=""><div><h3>라이더 장부</h3><p class="tg">정산 화면 캡처로 수익 기록</p></div></div>
-        <p class="d">쿠팡이츠·배민커넥트 수익을 정산 화면 캡처로 기록해요.</p>
-        <ul>
-          <li>플랫폼별 수익·건수·건당 평균 정리</li>
-          <li>원천세 등 차감액 자동 계산</li>
-          <li>주유비·식비 기록하고 실수익 확인</li>
-        </ul>
-        <div class="acts"><a class="btn y" href="rider/">라이더 장부 열기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-      </div>
-    </article>
-
-    <article class="tool c">
-      <div class="tx">
-        <div class="hd"><span class="ic" aria-hidden="true">🍚</span><div><h3>오늘 뭐 먹지?</h3><p class="tg">종류만 고르면 메뉴 추천</p></div></div>
-        <p class="d">배달 대기 중에 뭐 먹을지 고민될 때, 버튼 한 번으로 메뉴 후보를 받아요.</p>
-        <ul>
-          <li>한식·중식·일식·양식·분식 중에 선택</li>
-          <li>누를 때마다 5~10가지를 새로 추천</li>
-          <li>지도 버튼으로 근처 식당을 바로 검색</li>
-        </ul>
-        <div class="acts"><a class="btn p" href="menu/">메뉴 추천받기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-      </div>
-      <div class="shot"><img src="img/app-menu.png" width="780" height="1600" alt="오늘 뭐 먹지 첫 화면: 한식·중식 등 종류 선택 버튼과 메뉴 추천받기 버튼"></div>
-    </article>
-
-    <article class="tool d">
-      <div class="tx">
-        <div class="hd"><span class="ic" aria-hidden="true">🌤️</span><div><h3>날씨·뉴스</h3><p class="tg">비 예보부터 속보까지</p></div></div>
-        <p class="d">가게 앞에서 기다리는 5~15분, 실시간 비 예보·미세먼지와 속보·라이더 소식을 자동으로 새로 불러와요.</p>
-        <div class="acts"><a class="btn p" href="news/">날씨·뉴스 보기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
-      </div>
-    </article>
-    </div>
-  </div>
-</section>
 
 <div class="adband"><div class="wrap"><div class="ad-slot" data-size="banner"></div></div></div>
 
@@ -330,22 +334,7 @@ footer{margin-top:56px}
   </div>
 </section>
 
-<section aria-labelledby="feat-h">
-  <div class="wrap">
-    <span class="kicker">FEATURES</span>
-    <h2 id="feat-h">이런 걸 할 수 있어요</h2>
-    <ul class="feat" style="margin-top:30px">
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#cdeee6" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><rect x="8" y="17" width="18" height="30" rx="4.5" fill="#fffaf0"/><circle cx="17" cy="29" r="4.5" fill="#ff8a6b"/><circle cx="17" cy="29" r="1.4" fill="#fffaf0" stroke="none"/><path d="M17 38 v0" /><rect x="38" y="17" width="18" height="30" rx="4.5" fill="#ffd43b"/><circle cx="44" cy="30" r="1.8" fill="#16282b" stroke="none"/><circle cx="50" cy="30" r="1.8" fill="#16282b" stroke="none"/><path d="M44.5 33 Q47 35.5 49.5 33" fill="none"/><circle cx="41" cy="33" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/><circle cx="53" cy="33" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/><path d="M28.5 32 h7 M32.5 28.5 l3.5 3.5 -3.5 3.5" stroke="#0f6e63" stroke-width="3" fill="none"/></g></svg><b>주소 바로 전달</b><span>콜 폰에서 보내면 내비 폰에 바로 떠요</span></li>
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#ffd9cc" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M6 54 C20 46 42 52 58 42" fill="none" stroke="#0f6e63" stroke-dasharray="4 5" stroke-width="3"/><path d="M32 50 C23 39 18 32 18 25 A14 14 0 0 1 46 25 C46 32 41 39 32 50 Z" fill="#ff8a6b"/><circle cx="28" cy="25" r="1.8" fill="#16282b" stroke="none"/><circle cx="36" cy="25" r="1.8" fill="#16282b" stroke="none"/><path d="M29.5 28 Q32 30.5 34.5 28" fill="none"/><circle cx="25" cy="28" r="1.9" fill="#ffd0c4" stroke="none" opacity=".85"/><circle cx="39" cy="28" r="1.9" fill="#ffd0c4" stroke="none" opacity=".85"/></g></svg><b>원터치 길안내</b><span>카카오맵·티맵·네이버지도 중 골라서</span></li>
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#ffe9a8" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M22 31 V23 A10 10 0 0 1 42 23 V31" fill="none" stroke-width="8"/><path d="M22 31 V23 A10 10 0 0 1 42 23 V31" fill="none" stroke="#b9c9c6" stroke-width="3"/><rect x="13" y="29" width="38" height="26" rx="8" fill="#ffd43b"/><circle cx="28" cy="41" r="1.8" fill="#16282b" stroke="none"/><circle cx="36" cy="41" r="1.8" fill="#16282b" stroke="none"/><path d="M29.5 44 Q32 46.5 34.5 44" fill="none"/><circle cx="25" cy="44" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/><circle cx="39" cy="44" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/></g></svg><b>암호화해서 전달</b><span>연결 코드를 아는 폰만 내용을 볼 수 있어요</span></li>
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#d7ecf8" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><rect x="12" y="8" width="26" height="44" rx="5" fill="#fffaf0"/><path d="M18 17 h14 M18 23 h10 M18 29 h12" stroke="#0f6e63" stroke-width="3"/><circle cx="44" cy="44" r="12" fill="#ffd43b"/><path d="M38 39 l2.2 9 3.8 -6.5 3.8 6.5 2.2 -9 M36.5 44 h15" fill="none" stroke-width="2.2"/></g></svg><b>캡처로 수익 입력<i class="new">NEW</i></b><span>정산 화면을 공유하면 바로 읽어요</span></li>
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#cdeee6" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><rect x="13" y="7" width="38" height="50" rx="8" fill="#0f6e63"/><rect x="18" y="12" width="28" height="13" rx="3.5" fill="#fffaf0"/><circle cx="28" cy="17" r="1.8" fill="#16282b" stroke="none"/><circle cx="36" cy="17" r="1.8" fill="#16282b" stroke="none"/><path d="M29.5 20 Q32 22.5 34.5 20" fill="none"/><circle cx="25" cy="20" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/><circle cx="39" cy="20" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/><rect x="18" y="31" width="8" height="7" rx="2.5" fill="#fffaf0"/><rect x="28" y="31" width="8" height="7" rx="2.5" fill="#fffaf0"/><rect x="18" y="41" width="8" height="7" rx="2.5" fill="#fffaf0"/><rect x="28" y="41" width="8" height="7" rx="2.5" fill="#fffaf0"/><rect x="38" y="31" width="8" height="17" rx="2.5" fill="#ffd43b"/><path d="M39.8 44.5 l4.4 -10" stroke-width="1.8"/><circle cx="40" cy="35.5" r="1.1" fill="#16282b" stroke="none"/><circle cx="44" cy="43.5" r="1.1" fill="#16282b" stroke="none"/></g></svg><b>세금 자동 계산</b><span>원천세 3.3% 등 차감액을 알아서 빼요</span></li>
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#ffd9cc" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><rect x="9" y="14" width="46" height="41" rx="8" fill="#fffaf0"/><path d="M9 22 a8 8 0 0 1 8 -8 h30 a8 8 0 0 1 8 8 v4 h-46 z" fill="#ff8a6b"/><path d="M22 9 v9 M42 9 v9" stroke-width="3.2"/><circle cx="28" cy="38" r="1.8" fill="#16282b" stroke="none"/><circle cx="36" cy="38" r="1.8" fill="#16282b" stroke="none"/><path d="M29.5 41 Q32 43.5 34.5 41" fill="none"/><circle cx="25" cy="41" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/><circle cx="39" cy="41" r="1.9" fill="#ff9e8f" stroke="none" opacity=".85"/><circle cx="47" cy="47" r="4" fill="#ffd43b" stroke-width="2"/></g></svg><b>달력으로 한눈에</b><span>날짜별로 남은 돈이 달력에 찍혀요</span></li>
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#ffe9a8" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M26 11 C18 23 13 31 13 38 A13 13 0 0 0 39 38 C39 31 34 23 26 11 Z" fill="#f4a62a"/><circle cx="22.4" cy="38" r="1.8" fill="#16282b" stroke="none"/><circle cx="29.6" cy="38" r="1.8" fill="#16282b" stroke="none"/><path d="M23.5 41 Q26 43.5 28.5 41" fill="none"/><circle cx="19.4" cy="41" r="1.9" fill="#ffd6a0" stroke="none" opacity=".85"/><circle cx="32.6" cy="41" r="1.9" fill="#ffd6a0" stroke="none" opacity=".85"/><path d="M47 13 a7 7 0 0 1 7 7 v6 l2.5 3.5 h-19 l2.5 -3.5 v-6 a7 7 0 0 1 7 -7 z" fill="#ff8a6b"/><circle cx="47" cy="33" r="2" fill="#16282b" stroke="none"/><path d="M58 14 l2 -2 M36 14 l-2 -2" stroke-width="2"/></g></svg><b>정비 알림<i class="new">NEW</i></b><span>엔진오일 등 교체 시기를 놓치지 않게</span></li>
-      <li><svg class="fi" viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="61" rx="17" fill="#d7ecf8" stroke="#16282b" stroke-width="2"/><g stroke="#16282b" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"><path d="M4 30 h6 M3 37 h5" stroke-width="2.5"/><rect x="11" y="17" width="19" height="15" rx="3" fill="#ffd43b"/><path d="M15 22 h11" stroke-width="2"/><path d="M12 44 Q12 34 22 34 H37 L41 44 Z" fill="#0f6e63"/><path d="M39 44 L45 25 H51 M45 25 l-3 -1" fill="none" stroke-width="3"/><circle cx="19" cy="46" r="7" fill="#fffaf0"/><circle cx="19" cy="46" r="2" fill="#16282b" stroke="none"/><circle cx="47" cy="46" r="7" fill="#fffaf0"/><circle cx="47" cy="46" r="2" fill="#16282b" stroke="none"/></g></svg><b>하루 주행거리</b><span>바로길에서 오늘 탄 km를 기록해요</span></li>
-    </ul>
-  </div>
-</section>
+
 
 <section id="faq" aria-labelledby="faq-h">
   <div class="wrap">
@@ -403,6 +392,64 @@ footer{margin-top:56px}
       var v=document.getElementById('visits');v.textContent='오늘 '+j.today.toLocaleString('ko-KR')+' · 전체 '+j.total.toLocaleString('ko-KR');v.hidden=false;
     }).catch(function(){});
   }catch(e){}
+})();
+</script>
+<script>
+(function(){
+  function $(i){return document.getElementById(i)}
+  function ic(c,d){if(c===0)return d?'☀️':'🌙';if(c<=2)return d?'🌤️':'☁️';if(c===3)return '☁️';if(c<=48)return '🌫️';if(c<=57)return '🌦️';if(c<=67)return '🌧️';if(c<=77)return '❄️';if(c<=82)return '🌧️';if(c<=86)return '🌨️';return '⛈️'}
+  function nm(c){if(c===0)return '맑음';if(c<=2)return '대체로 맑음';if(c===3)return '흐림';if(c<=48)return '안개';if(c<=57)return '이슬비';if(c<=67)return '비';if(c<=77)return '눈';if(c<=82)return '소나기';if(c<=86)return '눈 소나기';return '천둥번개'}
+  var CITY=[['서울',37.5665,126.978],['인천',37.4563,126.7052],['수원',37.2636,127.0286],['성남',37.42,127.1265],['고양',37.6584,126.832],['부산',35.1796,129.0756],['대구',35.8714,128.6014],['대전',36.3504,127.3845],['광주',35.1595,126.8526],['울산',35.5384,129.3114],['창원',35.2285,128.6811],['청주',36.6424,127.489],['전주',35.8242,127.148],['제주',33.4996,126.5312]];
+  var i=0;try{i=+localStorage.getItem('wx_city')||0}catch(e){}if(!(i>=0&&i<CITY.length))i=0;var c=CITY[i];
+  function wx(){
+    fetch('https://api.open-meteo.com/v1/forecast?latitude='+c[1]+'&longitude='+c[2]+'&current=temperature_2m,precipitation,weather_code,is_day&hourly=precipitation_probability&timezone=Asia%2FSeoul&forecast_days=2')
+    .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
+      var k=d.current,h=d.hourly,x=h.time.indexOf(k.time.slice(0,13)+':00');if(x<0)x=0;var mx=0,w='';
+      for(var j=x;j<x+6&&j<h.time.length;j++){var p=h.precipitation_probability[j]||0;if(p>mx){mx=p;w=h.time[j].slice(11,13)+'시'}}
+      $('hw-ic').textContent=ic(k.weather_code,k.is_day===1);$('hw-t').textContent=Math.round(k.temperature_2m)+'°';$('hw-c').textContent=c[0]+' · '+nm(k.weather_code);
+      var a=$('hw-a');
+      if(k.precipitation>0){a.textContent='☔ 지금 비 와요. 우의 챙기세요';a.className='wxm-a rain'}
+      else if(mx>=50){a.textContent='☔ '+w+'쯤 비 확률 '+mx+'%';a.className='wxm-a rain'}
+      else{a.textContent='✅ 6시간 안엔 비 걱정 적어요';a.className='wxm-a ok'}
+    }).catch(function(){$('hw-c').textContent=c[0];$('hw-a').textContent='날씨를 불러오지 못했어요'});
+  }
+  wx();
+  var GN='https://news.google.com/rss',Q='hl=ko&gl=KR&ceid=KR:ko';
+  var U=[GN+'?'+Q,GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달앱 OR 배달기사 when:3d')+'&'+Q,GN+'/headlines/section/topic/BUSINESS?'+Q];
+  var list=$('hn'),cache={},seq=0;
+  function ago(d){var m=Math.max(0,Math.round((Date.now()-d)/60000));if(m<1)return '방금';if(m<60)return m+'분 전';var h=Math.floor(m/60);return h<24?h+'시간 전':Math.floor(h/24)+'일 전'}
+  function parse(t){var x=new DOMParser().parseFromString(t,'text/xml'),it=x.querySelectorAll('item'),o=[];for(var i=0;i<it.length&&i<8;i++){var g=function(n){var e=it[i].querySelector(n);return e?e.textContent:''};o.push({title:g('title'),link:g('link'),pub:g('pubDate')})}return o}
+  function js(j){if(!j||j.status!=='ok')throw 0;return j.items.slice(0,8).map(function(a){return{title:a.title,link:a.link,pub:a.pubDate}})}
+  function fetchNews(u){
+    return fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.json()}).then(js)
+    .catch(function(){return fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.text()}).then(parse)});
+  }
+  function draw(items){
+    list.innerHTML='';
+    items=items.slice(0,5);
+    if(!items.length){list.innerHTML='<li class="nw-e">표시할 뉴스가 없어요.</li>';return}
+    items.forEach(function(it){
+      var t=it.title,s='',k=t.lastIndexOf(' - ');if(k>0){s=t.slice(k+3);t=t.slice(0,k)}
+      var d=Date.parse(String(it.pub).replace(' ','T')+(/Z|GMT|[+-]\d\d:?\d\d$/.test(it.pub)?'':'Z'))||Date.parse(it.pub)||0;
+      var li=document.createElement('li'),a=document.createElement('a');a.href=/^https?:\/\//.test(it.link)?it.link:'#';a.target='_blank';a.rel='noopener noreferrer';
+      var tt=document.createElement('span');tt.className='t';
+      if(d&&Date.now()-d<3600000){var n=document.createElement('span');n.className='n';n.textContent='NEW';tt.appendChild(n)}
+      tt.appendChild(document.createTextNode(t));
+      var ss=document.createElement('span');ss.className='s';ss.textContent=[s,d?ago(d):''].filter(Boolean).join(' · ');
+      a.appendChild(tt);a.appendChild(ss);li.appendChild(a);list.appendChild(li);
+    });
+  }
+  function load(i,force){
+    var my=++seq,c=cache[i];
+    if(c&&!force&&Date.now()-c.ts<240000){draw(c.items);return}
+    list.innerHTML='<li class="nw-e">불러오는 중…</li>';
+    fetchNews(U[i]).then(function(items){if(!items.length)throw 0;cache[i]={ts:Date.now(),items:items};if(my===seq)draw(items)})
+    .catch(function(){if(my!==seq)return;if(c)draw(c.items);else list.innerHTML='<li class="nw-e">뉴스를 불러오지 못했어요. <a href="news/" style="color:var(--teal);font-weight:800">뉴스 페이지로 가기</a></li>'});
+  }
+  var cur=0;
+  [].forEach.call(document.querySelectorAll('.nw-t button'),function(b){b.addEventListener('click',function(){cur=+b.dataset.i;[].forEach.call(b.parentNode.children,function(x){x.setAttribute('aria-selected',x===b)});load(cur,false)})});
+  load(0,false);
+  setInterval(function(){if(!document.hidden){load(cur,true);wx()}},300000);
 })();
 </script>
 <script src="ads.js"></script>
