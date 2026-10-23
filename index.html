@@ -345,7 +345,7 @@ body{background:#f2f4f7;padding-bottom:0}
     </section>
 
     <section class="wxm" aria-label="오늘 날씨">
-      <div class="wxm-l"><div class="wxm-ic" id="hw-ic" aria-hidden="true">🌤️</div><div><div class="wxm-t" id="hw-t">--°</div><div class="wxm-c" id="hw-c">날씨 불러오는 중</div></div></div>
+      <div class="wxm-l"><div class="wxm-ic" id="hw-ic" aria-hidden="true">🌤️</div><div><div class="wxm-t" id="hw-t">--°</div><div class="wxm-c" id="hw-c">📍 위치 확인 중…</div></div></div>
       <div class="wxm-r"><div class="wxm-a" id="hw-a" role="status">잠시만요…</div><a href="news/" class="wxm-more">시간별·미세먼지 보기 ›</a></div>
     </section>
 
@@ -470,7 +470,15 @@ body{background:#f2f4f7;padding-bottom:0}
   var CITY=[['서울',37.5665,126.978],['인천',37.4563,126.7052],['수원',37.2636,127.0286],['성남',37.42,127.1265],['고양',37.6584,126.832],['부산',35.1796,129.0756],['대구',35.8714,128.6014],['대전',36.3504,127.3845],['광주',35.1595,126.8526],['울산',35.5384,129.3114],['창원',35.2285,128.6811],['청주',36.6424,127.489],['전주',35.8242,127.148],['제주',33.4996,126.5312]];
   var i=0;try{i=+localStorage.getItem('wx_city')||0}catch(e){}if(!(i>=0&&i<CITY.length))i=0;var c=CITY[i];
   function paint(o){$('hw-ic').textContent=o.ic;$('hw-t').textContent=o.t;$('hw-c').textContent=o.c;var a=$('hw-a');a.textContent=o.a;a.className=o.k}
+  function near(lat,lon){var b=null,bd=1e9;CITY.forEach(function(q){var dy=(q[1]-lat)*111,dx=(q[2]-lon)*111*Math.cos(lat*Math.PI/180),d=Math.sqrt(dx*dx+dy*dy);if(d<bd){bd=d;b=q}});return bd<50?'내 위치 · '+b[0]:'내 위치'}
+  function useLoc(lat,lon){c=[near(lat,lon),lat,lon];try{localStorage.setItem('wx_loc',JSON.stringify({lat:lat,lon:lon,ts:Date.now()}))}catch(e){}}
+  var sl=null;try{sl=JSON.parse(localStorage.getItem('wx_loc'))}catch(e){}
+  if(sl&&sl.lat&&Date.now()-sl.ts<24*3600e3)c=[near(sl.lat,sl.lon),sl.lat,sl.lon];
   try{var wc=JSON.parse(localStorage.getItem('hw_cache'));if(wc&&wc.o&&wc.city===c[0])paint(wc.o)}catch(e){}
+  function locate(){
+    if(!navigator.geolocation)return;
+    navigator.geolocation.getCurrentPosition(function(p){useLoc(Math.round(p.coords.latitude*100)/100,Math.round(p.coords.longitude*100)/100);wx()},function(){},{timeout:8000,maximumAge:600000});
+  }
   function wx(){
     fetch('https://api.open-meteo.com/v1/forecast?latitude='+c[1]+'&longitude='+c[2]+'&current=temperature_2m,precipitation,weather_code,is_day&hourly=precipitation_probability&timezone=Asia%2FSeoul&forecast_days=2')
     .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
@@ -484,6 +492,8 @@ body{background:#f2f4f7;padding-bottom:0}
     }).catch(function(){$('hw-c').textContent=c[0];$('hw-a').textContent='날씨를 불러오지 못했어요'});
   }
   wx();
+  locate();
+  $('hw-t').parentNode.parentNode.addEventListener('click',locate);
   var GN='https://news.google.com/rss',Q='hl=ko&gl=KR&ceid=KR:ko';
   var U=[GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달기사 OR 이륜차 OR 배달 플랫폼 OR 배달앱 수수료 OR 오토바이 단속 when:7d')+'&'+Q,GN+'?'+Q,GN+'/headlines/section/topic/BUSINESS?'+Q];
   var list=$('hn'),seq=0;
