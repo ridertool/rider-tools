@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LE3ZXC8N86"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LE3ZXC8N86', { page_location: location.origin + location.pathname });
+</script>
+<meta name="theme-color" content="#f5efe3">
+<title>대기 시간 미니게임 — 라이더 도구함</title>
+<meta name="description" content="가게 앞에서 음식 기다리는 5~15분, 한 손으로 가볍게 즐기는 무료 미니게임. 2048, 카드 짝맞추기, 숫자 야구.">
+<meta property="og:title" content="대기 시간 미니게임">
+<meta property="og:description" content="음식 기다리는 동안 한 손으로 가볍게! 2048·짝맞추기·숫자야구">
+<meta property="og:type" content="website">
+<link rel="icon" href="../icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="../ads.css">
+<style>
+:root{--bg:#f5efe3;--card:#fffaf0;--ink:#16282b;--muted:#53635f;--line:#d9cfb9;--yellow:#ffd43b;--teal:#0f6e63;--focus:#c2410c;
+  --display:"Black Han Sans","Gothic A1",system-ui,sans-serif;
+  --body:"Gothic A1",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;overflow-x:hidden;-webkit-text-size-adjust:100%}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:520px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.top{position:sticky;top:0;z-index:50;background:rgba(245,239,227,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:2px solid var(--ink);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px}
+.lg{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lg img{width:32px;height:32px;border-radius:9px}
+.lg b{font-family:var(--display);font-weight:400;font-size:20px;white-space:nowrap}
+.back{font-weight:800;font-size:15px;text-decoration:none;padding:8px 12px;border-radius:8px}
+.back:hover{background:var(--ink);color:var(--bg)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(32px,9vw,46px);line-height:1.15;margin:26px 0 6px;word-break:keep-all}
+h1 mark{background:linear-gradient(transparent 62%,var(--yellow) 62%);color:inherit;padding:0 .06em}
+.lead{margin:0 0 14px;color:var(--muted);font-weight:600;word-break:keep-all}
+.warn{margin:0 0 18px;padding:10px 14px;border:2px solid var(--ink);border-radius:12px;background:#ffe9a8;font-size:14px;font-weight:700;word-break:keep-all}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tab{appearance:none;cursor:pointer;min-height:52px;border:2px solid var(--ink);border-radius:14px;background:var(--card);font-weight:800;font-size:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2}
+.tab[aria-selected="true"]{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+.tab small{font-weight:600;font-size:11px;color:var(--muted)}
+.bar{display:flex;align-items:stretch;gap:8px;margin-bottom:12px}
+.stat{flex:1;background:var(--ink);color:var(--bg);border-radius:12px;padding:6px 12px;text-align:center;line-height:1.2}
+.stat small{display:block;font-size:11px;opacity:.75;font-weight:700}
+.stat b{font-size:22px}
+.btn{appearance:none;cursor:pointer;min-height:44px;padding:0 16px;border:2px solid var(--ink);border-radius:12px;background:var(--yellow);font-weight:800;font-size:15px}
+.btn:hover{background:var(--ink);color:var(--bg)}
+.hint{margin:12px 0 0;color:var(--muted);font-size:13.5px;text-align:center}
+.msg{margin:12px 0 0;text-align:center;font-weight:800;min-height:1.5em}
+
+/* 2048 */
+#b2048{position:relative;touch-action:none;user-select:none;-webkit-user-select:none;background:#cdbf9f;border:2px solid var(--ink);border-radius:16px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.c{aspect-ratio:1;min-height:0;border-radius:10px;background:#e3d8bd;display:grid;place-items:center;font-family:var(--display);font-size:clamp(22px,7.5vw,36px);transition:transform .08s}
+.c.pop{animation:pop .14s ease}
+@keyframes pop{from{transform:scale(.8)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.c.pop{animation:none}}
+.v2{background:#fff3d0}.v4{background:#ffe9a8}.v8{background:#ffc66b}.v16{background:#ff9f5a;color:#fff}.v32{background:#ff7a4d;color:#fff}.v64{background:#f0523a;color:#fff}
+.v128{background:#8ed0c4}.v256{background:#4fb5a5}.v512{background:#2b9a8a;color:#fff}.v1024{background:#0f6e63;color:#fff;font-size:clamp(18px,6vw,28px)}.v2048{background:var(--ink);color:var(--yellow);font-size:clamp(18px,6vw,28px)}.vbig{background:#000;color:var(--yellow);font-size:clamp(16px,5vw,24px)}
+
+/* 짝맞추기 */
+#bmem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{appearance:none;cursor:pointer;aspect-ratio:1;border:2px solid var(--ink);border-radius:14px;background:var(--ink);color:var(--yellow);font-size:30px;font-family:var(--display);display:grid;place-items:center;padding:0}
+.card.up{background:var(--card);color:var(--ink);font-size:clamp(28px,9vw,44px)}
+.card.ok{background:#cdeee6;border-color:var(--teal)}
+
+/* 숫자야구 */
+.bb-in{display:flex;justify-content:center;gap:10px;margin:6px 0 14px}
+.bb-in span{width:56px;height:64px;border:2px solid var(--ink);border-radius:12px;background:var(--card);display:grid;place-items:center;font-family:var(--display);font-size:34px}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pad button{appearance:none;cursor:pointer;min-height:54px;border:2px solid var(--ink);border-radius:12px;background:var(--card);font-weight:800;font-size:22px}
+.pad button:active{background:var(--yellow)}
+.pad button:disabled{opacity:.35}
+.pad .act{background:var(--yellow);font-size:16px}
+.hist{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px;max-height:260px;overflow:auto}
+.hist li{display:flex;justify-content:space-between;align-items:center;border:2px solid var(--ink);border-radius:10px;background:var(--card);padding:6px 14px;font-weight:800}
+.hist em{font-style:normal;font-family:var(--display);font-size:20px;letter-spacing:.1em}
+.hist span{color:var(--teal)}
+
+.adband{margin-top:34px;padding:16px 0 18px;background:#ece3d0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+footer{margin-top:44px;background:var(--ink);color:#c9d3d0;padding:26px 0 calc(26px + env(safe-area-inset-bottom,0px));font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px}
+footer a{color:var(--bg)}
+.ad-notice{background:var(--ink);margin:0!important;padding:0 20px 28px;color:#c9d3d0;opacity:1!important;font-size:12.5px!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="lg" href="../" aria-label="라이더 도구함 홈"><img src="../icon-192.png" alt=""><b>라이더 도구함</b></a>
+  <a class="back" href="../">← 홈으로</a>
+</div></header>
+
+<main class="wrap">
+  <h1>대기 시간 <mark>미니게임</mark></h1>
+  <p class="lead">음식 나올 때까지 한 손으로 가볍게! 하던 게임은 자동으로 저장돼요.</p>
+  <p class="warn">⚠️ 가게 앞에서 정차해 기다릴 때만 하세요. 운행·운전 중에는 절대 하지 마세요.</p>
+
+  <div class="tabs" role="tablist" aria-label="게임 선택">
+    <button class="tab" role="tab" id="t-a" aria-selected="true" aria-controls="g-a">2048<small>밀어서 합치기</small></button>
+    <button class="tab" role="tab" id="t-b" aria-selected="false" aria-controls="g-b">짝맞추기<small>같은 그림 찾기</small></button>
+    <button class="tab" role="tab" id="t-c" aria-selected="false" aria-controls="g-c">숫자야구<small>3자리 맞히기</small></button>
+  </div>
+
+  <section id="g-a" role="tabpanel" aria-labelledby="t-a">
+    <div class="bar">
+      <div class="stat"><small>점수</small><b id="a-score">0</b></div>
+      <div class="stat"><small>최고</small><b id="a-best">0</b></div>
+      <button class="btn" id="a-new" type="button">새 게임</button>
+    </div>
+    <div id="b2048" tabindex="0" aria-label="2048 게임판. 손가락으로 밀거나 방향키를 누르세요"></div>
+    <p class="msg" id="a-msg" role="status"></p>
+    <p class="hint">판 위에서 손가락을 상하좌우로 밀어요. 같은 숫자끼리 합쳐서 2048을 만들어 보세요.</p>
+  </section>
+
+  <section id="g-b" role="tabpanel" aria-labelledby="t-b" hidden>
+    <div class="bar">
+      <div class="stat"><small>횟수</small><b id="m-moves">0</b></div>
+      <div class="stat"><small>최고(적을수록)</small><b id="m-best">-</b></div>
+      <button class="btn" id="m-new" type="button">새 게임</button>
+    </div>
+    <div id="bmem"></div>
+    <p class="msg" id="m-msg" role="status"></p>
+    <p class="hint">카드를 두 장씩 뒤집어 같은 그림을 찾아요. 적은 횟수로 끝낼수록 좋아요.</p>
+  </section>
+
+  <section id="g-c" role="tabpanel" aria-labelledby="t-c" hidden>
+    <div class="bar">
+      <div class="stat"><small>시도</small><b id="c-try">0 / 9</b></div>
+      <button class="btn" id="c-new" type="button">새 게임</button>
+    </div>
+    <div class="bb-in" id="c-in" aria-live="polite"><span></span><span></span><span></span></div>
+    <div class="pad" id="c-pad"></div>
+    <p class="msg" id="c-msg" role="status"></p>
+    <ul class="hist" id="c-hist"></ul>
+    <p class="hint">서로 다른 숫자 3개를 맞혀요. 자리와 숫자가 맞으면 S(스트라이크), 숫자만 맞으면 B(볼)예요. 9번 안에 맞히면 성공!</p>
+  </section>
+
+  <div class="adband" style="margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)"><div class="wrap"><div class="ad-slot" data-size="banner"></div></div></div>
+</main>
+
+<footer><div class="wrap">
+  <span>© 라이더 도구함</span>
+  <a href="../">홈</a>
+  <a href="../privacy.html">개인정보처리방침</a>
+</div></footer>
+
+<script>
+(function(){
+  function sget(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function sset(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function $(id){return document.getElementById(id)}
+  function ev(n){if(window.gtag)gtag('event',n)}
+
+  /* 탭 */
+  var tabs=['a','b','c'];
+  tabs.forEach(function(k){$('t-'+k).addEventListener('click',function(){
+    tabs.forEach(function(j){var on=j===k;$('t-'+j).setAttribute('aria-selected',on);$('g-'+j).hidden=!on});
+    sset('game_tab',k);ev('game_tab_'+k);
+  })});
+
+  /* ===== 2048 ===== */
+  var N=4,grid,score=0,best=+sget('g2048_best')||0,over=false,won=false,board=$('b2048');
+  function save(){sset('g2048',JSON.stringify({g:grid,s:score,w:won}))}
+  function empty(){var e=[];for(var r=0;r<N;r++)for(var c=0;c<N;c++)if(!grid[r][c])e.push([r,c]);return e}
+  function spawn(){var e=empty();if(!e.length)return null;var p=e[Math.floor(Math.random()*e.length)];grid[p[0]][p[1]]=Math.random()<.9?2:4;return p}
+  function draw(newPos){
+    board.innerHTML='';
+    for(var r=0;r<N;r++)for(var c=0;c<N;c++){
+      var v=grid[r][c],d=document.createElement('div');
+      d.className='c'+(v?' v'+(v>2048?'big':v):'');
+      if(v)d.textContent=v;
+      if(newPos&&newPos[0]===r&&newPos[1]===c)d.className+=' pop';
+      board.appendChild(d);
+    }
+    $('a-score').textContent=score;$('a-best').textContent=best;
+  }
+  function newGame(){grid=[];for(var r=0;r<N;r++)grid.push([0,0,0,0]);score=0;over=false;won=false;spawn();spawn();$('a-msg').textContent='';draw();save();ev('game_2048_new')}
+  function slide(line){
+    var a=line.filter(Boolean),out=[],gain=0;
+    for(var i=0;i<a.length;i++){if(a[i]===a[i+1]){out.push(a[i]*2);gain+=a[i]*2;i++}else out.push(a[i])}
+    while(out.length<N)out.push(0);return {line:out,gain:gain};
+  }
+  function move(dir){ // 0 left,1 up,2 right,3 down
+    if(over)return;var moved=false,gain=0,ng=[];
+    for(var i=0;i<N;i++){
+      var line=[];for(var j=0;j<N;j++){
+        var r=dir%2===0?i:(dir===1?j:N-1-j), c=dir%2===0?(dir===0?j:N-1-j):i;
+        line.push(grid[r][c]);
+      }
+      var res=slide(line);gain+=res.gain;
+      for(var j2=0;j2<N;j2++){
+        var r2=dir%2===0?i:(dir===1?j2:N-1-j2), c2=dir%2===0?(dir===0?j2:N-1-j2):i;
+        if(grid[r2][c2]!==res.line[j2])moved=true;
+        (ng[r2]=ng[r2]||[])[c2]=res.line[j2];
+      }
+    }
+    if(!moved)return;
+    grid=ng;score+=gain;if(score>best){best=score;sset('g2048_best',best)}
+    var p=spawn();draw(p);
+    if(!won&&grid.some(function(r){return r.indexOf(2048)>=0})){won=true;$('a-msg').textContent='🎉 2048 달성! 계속해도 돼요'}
+    if(!empty().length&&!canMove()){over=true;$('a-msg').textContent='더 움직일 수 없어요. 새 게임을 눌러 보세요'}
+    save();
+  }
+  function canMove(){for(var r=0;r<N;r++)for(var c=0;c<N;c++){var v=grid[r][c];if((c<N-1&&grid[r][c+1]===v)||(r<N-1&&grid[r+1][c]===v))return true}return false}
+  (function init(){
+    var s=null;try{s=JSON.parse(sget('g2048'))}catch(e){}
+    if(s&&s.g&&s.g.length===N){grid=s.g;score=s.s||0;won=!!s.w;over=!empty().length&&!canMove();draw();if(over)$('a-msg').textContent='더 움직일 수 없어요. 새 게임을 눌러 보세요'}
+    else newGame();
+  })();
+  $('a-new').addEventListener('click',newGame);
+  var sx,sy;
+  board.addEventListener('touchstart',function(e){var t=e.touches[0];sx=t.clientX;sy=t.clientY},{passive:true});
+  board.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
+  board.addEventListener('touchend',function(e){
+    var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;
+    if(Math.abs(dx)>Math.abs(dy))move(dx<0?0:2);else move(dy<0?1:3);
+  },{passive:true});
+  document.addEventListener('keydown',function(e){
+    if($('g-a').hidden)return;var k={37:0,38:1,39:2,40:3}[e.keyCode];
+    if(k!==undefined){e.preventDefault();move(k)}
+  });
+
+  /* ===== 짝맞추기 ===== */
+  var EMO=['🍔','🍕','🍗','🍜','🍣','🥟','🍟','🛵'],mem=[],open=[],lock=false,moves=0,found=0,mbest=+sget('gmem_best')||0;
+  function mshow(){$('m-moves').textContent=moves;$('m-best').textContent=mbest||'-'}
+  function mnew(){
+    var a=EMO.concat(EMO);for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}
+    mem=a;open=[];lock=false;moves=0;found=0;$('m-msg').textContent='';
+    var b=$('bmem');b.innerHTML='';
+    a.forEach(function(e,i){
+      var c=document.createElement('button');c.type='button';c.className='card';c.textContent='?';c.setAttribute('aria-label','카드 '+(i+1));
+      c.addEventListener('click',function(){flip(i,c)});b.appendChild(c);
+    });
+    mshow();ev('game_mem_new');
+  }
+  function flip(i,c){
+    if(lock||c.classList.contains('up')||c.classList.contains('ok'))return;
+    c.classList.add('up');c.textContent=mem[i];open.push([i,c]);
+    if(open.length<2)return;
+    moves++;mshow();var A=open[0],B=open[1];open=[];
+    if(mem[A[0]]===mem[B[0]]){
+      A[1].classList.add('ok');B[1].classList.add('ok');found++;
+      if(found===EMO.length){$('m-msg').textContent='🎉 '+moves+'번 만에 완성!';if(!mbest||moves<mbest){mbest=moves;sset('gmem_best',mbest);mshow()}}
+    }else{
+      lock=true;setTimeout(function(){[A,B].forEach(function(x){x[1].classList.remove('up');x[1].textContent='?'});lock=false},650);
+    }
+  }
+  $('m-new').addEventListener('click',mnew);mnew();
+
+  /* ===== 숫자야구 ===== */
+  var ans,cur,tries,done,MAX=9,pad=$('c-pad');
+  function cnew(){
+    var d=[0,1,2,3,4,5,6,7,8,9];for(var i=d.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=d[i];d[i]=d[j];d[j]=t}
+    ans=d.slice(0,3);cur=[];tries=0;done=false;$('c-hist').innerHTML='';$('c-msg').textContent='';cdraw();ev('game_ball_new');
+  }
+  function cdraw(){
+    var s=$('c-in').children;for(var i=0;i<3;i++)s[i].textContent=cur[i]!==undefined?cur[i]:'';
+    $('c-try').textContent=tries+' / '+MAX;
+    [].forEach.call(pad.querySelectorAll('[data-n]'),function(b){b.disabled=done||cur.indexOf(+b.getAttribute('data-n'))>=0||cur.length>=3});
+  }
+  for(var n=1;n<=9;n++)addKey(n);addKey(0);
+  function addKey(n){var b=document.createElement('button');b.type='button';b.textContent=n;b.setAttribute('data-n',n);
+    b.addEventListener('click',function(){if(done||cur.length>=3||cur.indexOf(n)>=0)return;cur.push(n);cdraw()});pad.appendChild(b)}
+  var del=document.createElement('button');del.type='button';del.className='act';del.style.gridColumn='span 2';del.textContent='지움';
+  del.addEventListener('click',function(){cur.pop();cdraw()});pad.appendChild(del);
+  var ok=document.createElement('button');ok.type='button';ok.className='act';ok.textContent='확인';
+  ok.style.gridColumn='span 3';
+  ok.addEventListener('click',function(){
+    if(done)return;if(cur.length<3){$('c-msg').textContent='숫자 3개를 눌러 주세요';return}
+    var s=0,b=0;cur.forEach(function(v,i){if(v===ans[i])s++;else if(ans.indexOf(v)>=0)b++});
+    tries++;var li=document.createElement('li');
+    li.innerHTML='<em>'+cur.join('')+'</em><span>'+(s===0&&b===0?'OUT':s+'S '+b+'B')+'</span>';
+    $('c-hist').insertBefore(li,$('c-hist').firstChild);
+    if(s===3){done=true;$('c-msg').textContent='🎉 '+tries+'번 만에 정답!'}
+    else if(tries>=MAX){done=true;$('c-msg').textContent='아쉬워요! 정답은 '+ans.join('')}
+    else $('c-msg').textContent='';
+    cur=[];cdraw();
+  });
+  pad.appendChild(ok);
+  $('c-new').addEventListener('click',cnew);cnew();
+
+  var t=sget('game_tab');if(t&&tabs.indexOf(t)>=0)$('t-'+t).click();
+})();
+</script>
+<script src="../site-config.js"></script>
+<script src="../ads.js"></script>
+</body>
+</html>

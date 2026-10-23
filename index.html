@@ -107,6 +107,8 @@ h1 mark{background:linear-gradient(transparent 62%,var(--yellow) 62%);color:inhe
 .tool.b{background:var(--yellow);color:var(--ink);grid-template-columns:.75fr 1.25fr}
 .tool.b .shot{background:#f3c321;order:-1}
 .tool.c{background:var(--card);color:var(--ink)}
+.tool.d{background:#cdeee6;color:var(--ink)}
+.tool.d .btn.p{box-shadow:4px 4px 0 var(--yellow)}
 .tool.c .shot{background:#efe4c8}
 .tool .hd .ic{width:54px;height:54px;border-radius:14px;flex:none;border:2px solid currentColor;background:var(--yellow);display:grid;place-items:center;font-size:30px;line-height:1}
 .tool.c .btn.p{box-shadow:4px 4px 0 var(--yellow)}
@@ -199,7 +201,7 @@ section{padding-top:48px}
 .adband+section{padding-top:44px}
 h2{margin-bottom:10px}
 .sec-lead{margin-bottom:22px}
-.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 .tool,.tool.b{grid-template-columns:1fr;border-radius:20px}
 .tool+.tool{margin-top:0}
 .tool .shot,.tool ul{display:none}
@@ -224,6 +226,7 @@ footer{margin-top:56px}
     <a class="lg" href="./" aria-label="라이더 도구함 홈"><img src="icon-192.png" alt=""><b>라이더 도구함</b><span>배달·퀵 기사님용<br>무료 도구</span></a>
     <nav class="menu" aria-label="주요 메뉴">
       <a class="m" href="menu/">오늘 뭐 먹지?</a>
+      <a class="m" href="game/">미니게임</a>
       <a class="m" href="#flow">앱처럼 쓰기</a>
       <a class="m" href="#faq">질문</a>
       <a class="btn p s" href="#tools">도구 바로가기</a>
@@ -254,8 +257,8 @@ footer{margin-top:56px}
 <section id="tools" aria-labelledby="tools-h">
   <div class="wrap">
     <span class="kicker">TOOLS</span>
-    <h2 id="tools-h">세 가지 도구로 하루를 챙겨요</h2>
-    <p class="sec-lead">주소 전달은 바로길, 수익 기록은 라이더 장부, 메뉴 고민은 오늘 뭐 먹지. 모두 무료예요.</p>
+    <h2 id="tools-h">네 가지 도구로 하루를 챙겨요</h2>
+    <p class="sec-lead">주소 전달은 바로길, 수익 기록은 라이더 장부, 메뉴 고민은 오늘 뭐 먹지, 대기 시간엔 미니게임. 모두 무료예요.</p>
 
     <div class="tools">
     <article class="tool a">
@@ -298,6 +301,14 @@ footer{margin-top:56px}
         <div class="acts"><a class="btn p" href="menu/">메뉴 추천받기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
       </div>
       <div class="shot"><img src="img/app-menu.png" width="780" height="1600" alt="오늘 뭐 먹지 첫 화면: 한식·중식 등 종류 선택 버튼과 메뉴 추천받기 버튼"></div>
+    </article>
+
+    <article class="tool d">
+      <div class="tx">
+        <div class="hd"><span class="ic" aria-hidden="true">🎮</span><div><h3>대기 시간 게임</h3><p class="tg">음식 나올 때까지 한 판</p></div></div>
+        <p class="d">가게 앞에서 기다리는 5~15분, 한 손으로 즐기는 2048·짝맞추기·숫자야구예요.</p>
+        <div class="acts"><a class="btn p" href="game/">게임하기 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+      </div>
     </article>
     </div>
   </div>
