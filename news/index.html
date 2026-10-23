@@ -242,17 +242,19 @@ footer a{color:var(--bg)}
     Promise.all([fetch(u).then(function(r){if(!r.ok)throw 0;return r.json()}),fetch(ua).then(function(r){return r.ok?r.json():null}).catch(function(){return null})])
     .then(function(r){if(my===seq)show(r[0],r[1],label)}).catch(function(){if(my===seq)body.innerHTML='<p class="wx-d">날씨를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.</p>'});
   }
+  function dong(lat,lon,cb){fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=16&accept-language=ko&lat='+lat+'&lon='+lon).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){var a=(j&&j.address)||{},g=a.city_district||a.county||'',d=a.suburb||a.quarter||a.neighbourhood||a.village||'';cb(g&&d?g+' '+d:(d||g||''))}).catch(function(){cb('')})}
+  function gotLoc(la,lo){var nm0='';try{localStorage.setItem('wx_loc',JSON.stringify({lat:la,lon:lo,ts:Date.now(),name:''}))}catch(e){}sel.value='loc';get(la,lo,'내 위치');dong(la,lo,function(nn){if(!nn)return;try{localStorage.setItem('wx_loc',JSON.stringify({lat:la,lon:lo,ts:Date.now(),name:nn}))}catch(e){}get(la,lo,nn)})}
   function pick(i){var c=CITY[i];sset('wx_city',i);get(c[1],c[2],c[0])}
   sel.addEventListener('change',function(){if(sel.value!=='loc')pick(+sel.value)});
   $('wx-loc').addEventListener('click',function(){
     if(!navigator.geolocation){body.innerHTML='<p class="wx-d">이 기기에서는 위치를 쓸 수 없어요. 지역을 직접 골라 주세요.</p>';return}
     body.innerHTML='<p class="wx-d">위치 확인 중…</p>';
-    navigator.geolocation.getCurrentPosition(function(p){var la=Math.round(p.coords.latitude*100)/100,lo=Math.round(p.coords.longitude*100)/100;try{localStorage.setItem('wx_loc',JSON.stringify({lat:la,lon:lo,ts:Date.now()}))}catch(e){}sel.value='loc';get(la,lo,'내 위치');if(window.gtag)gtag('event','weather_locate')},
+    navigator.geolocation.getCurrentPosition(function(p){gotLoc(Math.round(p.coords.latitude*1000)/1000,Math.round(p.coords.longitude*1000)/1000);if(window.gtag)gtag('event','weather_locate')},
       function(){body.innerHTML='<p class="wx-d">위치 권한이 없어요. 지역을 직접 골라 주세요.</p>'},{timeout:8000,maximumAge:600000});
   });
   var sl=null;try{sl=JSON.parse(localStorage.getItem('wx_loc'))}catch(e){}
-  if(sl&&sl.lat&&Date.now()-sl.ts<24*3600e3){sel.value='loc';get(sl.lat,sl.lon,'내 위치')}
-  else{var i0=+sget('wx_city');if(!(i0>=0&&i0<CITY.length))i0=0;sel.value=i0;pick(i0);if(navigator.geolocation)navigator.geolocation.getCurrentPosition(function(p){var la=Math.round(p.coords.latitude*100)/100,lo=Math.round(p.coords.longitude*100)/100;try{localStorage.setItem('wx_loc',JSON.stringify({lat:la,lon:lo,ts:Date.now()}))}catch(e){}sel.value='loc';get(la,lo,'내 위치')},function(){},{timeout:8000,maximumAge:600000})}
+  if(sl&&sl.lat&&Date.now()-sl.ts<24*3600e3){sel.value='loc';get(sl.lat,sl.lon,sl.name||'내 위치')}
+  else{var i0=+sget('wx_city');if(!(i0>=0&&i0<CITY.length))i0=0;sel.value=i0;pick(i0);if(navigator.geolocation)navigator.geolocation.getCurrentPosition(function(p){gotLoc(Math.round(p.coords.latitude*1000)/1000,Math.round(p.coords.longitude*1000)/1000)},function(){},{enableHighAccuracy:true,timeout:10000,maximumAge:300000})}
   setInterval(function(){if(!document.hidden&&cur)get(cur[0],cur[1],cur[2])},600000);
 })();
 </script>

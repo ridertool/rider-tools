@@ -471,20 +471,31 @@ body{background:#f2f4f7;padding-bottom:0}
   var i=0;try{i=+localStorage.getItem('wx_city')||0}catch(e){}if(!(i>=0&&i<CITY.length))i=0;var c=CITY[i];
   function paint(o){$('hw-ic').textContent=o.ic;$('hw-t').textContent=o.t;$('hw-c').textContent=o.c;var a=$('hw-a');a.textContent=o.a;a.className=o.k}
   function near(lat,lon){var b=null,bd=1e9;CITY.forEach(function(q){var dy=(q[1]-lat)*111,dx=(q[2]-lon)*111*Math.cos(lat*Math.PI/180),d=Math.sqrt(dx*dx+dy*dy);if(d<bd){bd=d;b=q}});return bd<50?'내 위치 · '+b[0]:'내 위치'}
-  function useLoc(lat,lon){c=[near(lat,lon),lat,lon];try{localStorage.setItem('wx_loc',JSON.stringify({lat:lat,lon:lon,ts:Date.now()}))}catch(e){}}
+  var cond='';
+  function lab(){return c[0]+(cond?' · '+cond:'')}
+  function saveLoc(lat,lon,name){try{localStorage.setItem('wx_loc',JSON.stringify({lat:lat,lon:lon,ts:Date.now(),name:name||''}))}catch(e){}}
+  function dong(lat,lon,cb){
+    fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=16&accept-language=ko&lat='+lat+'&lon='+lon).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){
+      var a=(j&&j.address)||{},g=a.city_district||a.county||'',d=a.suburb||a.quarter||a.neighbourhood||a.village||'';
+      var n=(g&&d?g+' '+d:(d||g||''));cb(n)}).catch(function(){cb('')});
+  }
+  function useLoc(lat,lon){
+    c=[near(lat,lon),lat,lon];saveLoc(lat,lon,'');
+    dong(lat,lon,function(n){if(n){c[0]=n;saveLoc(lat,lon,n);$('hw-c').textContent=lab()}});
+  }
   var sl=null;try{sl=JSON.parse(localStorage.getItem('wx_loc'))}catch(e){}
-  if(sl&&sl.lat&&Date.now()-sl.ts<24*3600e3)c=[near(sl.lat,sl.lon),sl.lat,sl.lon];
+  if(sl&&sl.lat&&Date.now()-sl.ts<24*3600e3)c=[sl.name||near(sl.lat,sl.lon),sl.lat,sl.lon];
   try{var wc=JSON.parse(localStorage.getItem('hw_cache'));if(wc&&wc.o&&wc.city===c[0])paint(wc.o)}catch(e){}
   function locate(){
     if(!navigator.geolocation)return;
-    navigator.geolocation.getCurrentPosition(function(p){useLoc(Math.round(p.coords.latitude*100)/100,Math.round(p.coords.longitude*100)/100);wx()},function(){},{timeout:8000,maximumAge:600000});
+    navigator.geolocation.getCurrentPosition(function(p){useLoc(Math.round(p.coords.latitude*1000)/1000,Math.round(p.coords.longitude*1000)/1000);wx()},function(){},{enableHighAccuracy:true,timeout:10000,maximumAge:300000});
   }
   function wx(){
     fetch('https://api.open-meteo.com/v1/forecast?latitude='+c[1]+'&longitude='+c[2]+'&current=temperature_2m,precipitation,weather_code,is_day&hourly=precipitation_probability&timezone=Asia%2FSeoul&forecast_days=2')
     .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
       var k=d.current,h=d.hourly,x=h.time.indexOf(k.time.slice(0,13)+':00');if(x<0)x=0;var mx=0,w='';
       for(var j=x;j<x+6&&j<h.time.length;j++){var p=h.precipitation_probability[j]||0;if(p>mx){mx=p;w=h.time[j].slice(11,13)+'시'}}
-      var o={ic:ic(k.weather_code,k.is_day===1),t:Math.round(k.temperature_2m)+'°',c:c[0]+' · '+nm(k.weather_code)};
+      cond=nm(k.weather_code);var o={ic:ic(k.weather_code,k.is_day===1),t:Math.round(k.temperature_2m)+'°',c:lab()};
       if(k.precipitation>0){o.a='☔ 지금 비 와요. 우의 챙기세요';o.k='wxm-a rain'}
       else if(mx>=50){o.a='☔ '+w+'쯤 비 확률 '+mx+'%';o.k='wxm-a rain'}
       else{o.a='✅ 6시간 안엔 비 걱정 적어요';o.k='wxm-a ok'}
