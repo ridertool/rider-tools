@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://riderstool.com/sitemap.xml
