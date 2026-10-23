@@ -300,6 +300,20 @@ body{background:#f2f4f7;padding-bottom:0}
 .how li::before{background:var(--yellow)}
 .adband{margin:30px 0 10px!important;padding:18px 0!important;background:#e9eef0!important;border:0!important}
 .wxm{margin-top:0}
+
+/* ===== 절제: 굵기 위계, 그림자 약화, 모서리 14px ===== */
+.pt section,.pt .hero2,.big,.sub2 a{box-shadow:none!important;border:1px solid #e3e8ec;border-radius:14px}
+.hero2{border-color:var(--brand)!important}
+.big{border:1px solid #e3e8ec}.big:active{border-color:var(--brand2)}
+.big .ic{border-radius:14px}.sub2 .ic{border-radius:10px}
+.big small,.nw-l .s,.how li span,.wxm-c,.hero2 p,.tp-l a,.nw-t button,.chips li,.tp-all,.wxm-more,.nw-m{font-weight:500}
+.wxm-a{font-weight:700}
+.nw-l .t{font-weight:600}
+.tp-l a{font-weight:600}
+.nw-t button,.chips li{font-weight:600}
+.nw-t button[aria-selected=true]{font-weight:700}
+.sub2 b{font-weight:600}
+.nw-e{font-weight:500}
 #flow{padding-top:28px}
 .wxm-c{white-space:nowrap}.wxm-l{flex:0 0 auto}
 .menu a.m{white-space:nowrap}
@@ -471,7 +485,7 @@ body{background:#f2f4f7;padding-bottom:0}
   }
   wx();
   var GN='https://news.google.com/rss',Q='hl=ko&gl=KR&ceid=KR:ko';
-  var U=[GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달앱 OR 배달기사 when:3d')+'&'+Q,GN+'?'+Q,GN+'/headlines/section/topic/BUSINESS?'+Q];
+  var U=[GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달기사 OR 이륜차 OR 배달 플랫폼 OR 배달앱 수수료 OR 오토바이 단속 when:7d')+'&'+Q,GN+'?'+Q,GN+'/headlines/section/topic/BUSINESS?'+Q];
   var list=$('hn'),seq=0;
 
   var RAW='https://raw.githubusercontent.com/ridertool/rider-tools/data/news.json';
@@ -486,8 +500,11 @@ body{background:#f2f4f7;padding-bottom:0}
   var rawP=null;
   function fromRaw(){if(!rawP)rawP=tmo(fetch(RAW,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}),5000);return rawP}
   // 정적 JSON(빠름) → 실패하면 RSS 변환 서비스. 캐시가 있으면 먼저 보여주고 뒤에서 갱신
+  var POS=[['라이더',3],['배달기사',3],['배달원',3],['이륜차',3],['오토바이',2],['배달 플랫폼',2],['배달플랫폼',2],['배달앱',1],['수수료',1],['산재',2],['보험',1],['안전',1],['교통',1],['헬멧',2],['단속',1],['배민',1],['쿠팡이츠',1],['요기요',1],['배달비',1],['배달료',1],['택배',1],['플랫폼 노동',2]],NEG=[['소상공인',-2],['프랜차이즈',-2],['점주',-2],['자영업',-2],['맛집',-2],['메뉴',-1]];
+  function sc(t){var n=0;POS.concat(NEG).forEach(function(p){if(t.indexOf(p[0])>=0)n+=p[1]});return n}
+  function rankRider(a){var r=a.map(function(x,i){return{x:x,s:sc(x.t),i:i}}),g=r.filter(function(o){return o.s>=2});if(g.length<3)g=r.filter(function(o){return o.s>=1});if(g.length<3)return a;g.sort(function(p,q){return q.s-p.s||p.i-q.i});return g.map(function(o){return o.x})}
   function getNews(key,u){
-    return fromRaw().then(function(j){var a=j&&j.c&&j.c[key];if(!a||!a.length||Date.now()-j.ts>6*3600e3)throw 0;return norm(a)}).catch(function(){rawP=null;return viaRss(u,key)});
+    return fromRaw().then(function(j){var a=j&&j.c&&j.c[key];if(!a||!a.length||Date.now()-j.ts>6*3600e3)throw 0;return norm(a)}).catch(function(){rawP=null;return viaRss(u,key)}).then(function(a){return key==='rider'?rankRider(a):a});
   }
   function lget(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
   function lset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}

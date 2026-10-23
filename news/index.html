@@ -94,8 +94,8 @@ footer a{color:var(--bg)}
 .nl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .nl li a{display:block;text-decoration:none;border:2px solid var(--line);border-radius:12px;background:#fff;padding:11px 14px}
 .nl li a:hover,.nl li a:focus-visible{border-color:var(--ink)}
-.nl .t{display:block;font-weight:800;line-height:1.4;word-break:keep-all}
-.nl .s{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);font-weight:700}
+.nl .t{display:block;font-weight:600;line-height:1.4;word-break:keep-all}
+.nl .s{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);font-weight:500}
 .nl .new{display:inline-block;margin-right:6px;padding:0 6px;border-radius:6px;background:#e63946;color:#fff;font-size:11px;font-weight:800;vertical-align:1px}
 .note{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
 
@@ -148,7 +148,7 @@ footer a{color:var(--bg)}
   var Q='hl=ko&gl=KR&ceid=KR:ko',GN='https://news.google.com/rss';
   var CATS=[
     ['속보·종합',GN+'?'+Q],
-    ['라이더',GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달앱 OR 배달기사 when:3d')+'&'+Q],
+    ['라이더',GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달기사 OR 이륜차 OR 배달 플랫폼 OR 배달앱 수수료 OR 오토바이 단속 when:7d')+'&'+Q],
     ['경제',GN+'/headlines/section/topic/BUSINESS?'+Q],
     ['사회',GN+'/headlines/section/topic/NATION?'+Q],
     ['스포츠',GN+'/headlines/section/topic/SPORTS?'+Q],
@@ -169,8 +169,11 @@ footer a{color:var(--bg)}
   var rawP=null;
   function fromRaw(){if(!rawP)rawP=tmo(fetch(RAW,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}),5000);return rawP}
   // 정적 JSON(빠름) → 실패하면 RSS 변환 서비스. 캐시가 있으면 먼저 보여주고 뒤에서 갱신
+  var POS=[['라이더',3],['배달기사',3],['배달원',3],['이륜차',3],['오토바이',2],['배달 플랫폼',2],['배달플랫폼',2],['배달앱',1],['수수료',1],['산재',2],['보험',1],['안전',1],['교통',1],['헬멧',2],['단속',1],['배민',1],['쿠팡이츠',1],['요기요',1],['배달비',1],['배달료',1],['택배',1],['플랫폼 노동',2]],NEG=[['소상공인',-2],['프랜차이즈',-2],['점주',-2],['자영업',-2],['맛집',-2],['메뉴',-1]];
+  function sc(t){var n=0;POS.concat(NEG).forEach(function(p){if(t.indexOf(p[0])>=0)n+=p[1]});return n}
+  function rankRider(a){var r=a.map(function(x,i){return{x:x,s:sc(x.t),i:i}}),g=r.filter(function(o){return o.s>=2});if(g.length<3)g=r.filter(function(o){return o.s>=1});if(g.length<3)return a;g.sort(function(p,q){return q.s-p.s||p.i-q.i});return g.map(function(o){return o.x})}
   function getNews(key,u){
-    return fromRaw().then(function(j){var a=j&&j.c&&j.c[key];if(!a||!a.length||Date.now()-j.ts>6*3600e3)throw 0;return norm(a)}).catch(function(){rawP=null;return viaRss(u,key)});
+    return fromRaw().then(function(j){var a=j&&j.c&&j.c[key];if(!a||!a.length||Date.now()-j.ts>6*3600e3)throw 0;return norm(a)}).catch(function(){rawP=null;return viaRss(u,key)}).then(function(a){return key==='rider'?rankRider(a):a});
   }
   function lget(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
   function lset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}

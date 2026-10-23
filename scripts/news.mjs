@@ -3,7 +3,7 @@ import { writeFileSync } from 'node:fs';
 const Q = 'hl=ko&gl=KR&ceid=KR:ko', GN = 'https://news.google.com/rss';
 const FEEDS = {
   top: `${GN}?${Q}`,
-  rider: `${GN}/search?q=${encodeURIComponent('배달 라이더 OR 배달앱 OR 배달기사 when:3d')}&${Q}`,
+  rider: `${GN}/search?q=${encodeURIComponent('배달 라이더 OR 배달기사 OR 이륜차 OR 배달 플랫폼 OR 배달앱 수수료 OR 오토바이 단속 when:7d')}&${Q}`,
   biz: `${GN}/headlines/section/topic/BUSINESS?${Q}`,
   nation: `${GN}/headlines/section/topic/NATION?${Q}`,
   sports: `${GN}/headlines/section/topic/SPORTS?${Q}`,
