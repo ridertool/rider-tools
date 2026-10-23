@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-LE3ZXC8N86"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-LE3ZXC8N86', { page_location: location.origin + location.pathname });
+</script>
+<meta name="theme-color" content="#f5efe3">
+<title>오늘 뭐 먹지? 점심·저녁 메뉴 추천 — 라이더 도구함</title>
+<meta name="description" content="한식·중식·일식·양식·분식 중에 고르고 버튼만 누르면 오늘 먹을 메뉴 후보를 바로 추천해 드려요. 배달 대기 시간에 빠르게 정하는 무료 메뉴 추천.">
+<meta property="og:title" content="오늘 뭐 먹지? 메뉴 추천">
+<meta property="og:description" content="종류만 고르면 메뉴 후보를 바로 추천해 드려요">
+<meta property="og:type" content="website">
+<link rel="icon" href="../icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gothic+A1:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="../ads.css">
+<style>
+:root{--bg:#f5efe3;--card:#fffaf0;--ink:#16282b;--muted:#53635f;--line:#d9cfb9;--yellow:#ffd43b;--teal:#0f6e63;--focus:#c2410c;
+  --display:"Black Han Sans","Gothic A1",system-ui,sans-serif;
+  --body:"Gothic A1",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-text-size-adjust:100%}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:760px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.top{position:sticky;top:0;z-index:50;background:rgba(245,239,227,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:2px solid var(--ink);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px}
+.lg{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lg img{width:32px;height:32px;border-radius:9px}
+.lg b{font-family:var(--display);font-weight:400;font-size:20px;white-space:nowrap}
+.back{font-weight:800;font-size:15px;text-decoration:none;padding:8px 12px;border-radius:8px}
+.back:hover{background:var(--ink);color:var(--bg)}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(36px,9vw,64px);line-height:1.15;margin:36px 0 10px;word-break:keep-all}
+h1 mark{background:linear-gradient(transparent 62%,var(--yellow) 62%);color:inherit;padding:0 .06em}
+.lead{margin:0 0 26px;color:var(--muted);font-size:18px;font-weight:600;word-break:keep-all}
+.step{font-weight:800;font-size:14px;color:var(--teal);margin:0 0 10px}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 22px}
+.cat{appearance:none;font:inherit;cursor:pointer;background:var(--card);color:var(--ink);border:2px solid var(--ink);border-radius:18px;padding:16px 8px 14px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:96px;transition:transform .08s,box-shadow .08s,background .08s}
+.cat .e{font-size:34px;line-height:1}
+.cat b{font-size:19px}
+.cat:hover{box-shadow:4px 4px 0 var(--ink);transform:translate(-1px,-1px)}
+.cat[aria-pressed="true"]{background:var(--yellow);box-shadow:4px 4px 0 var(--ink)}
+.go{appearance:none;font:inherit;cursor:pointer;width:100%;min-height:64px;border:2px solid var(--ink);border-radius:16px;background:var(--ink);color:var(--bg);font-weight:800;font-size:21px;box-shadow:5px 5px 0 var(--yellow);transition:transform .08s,box-shadow .08s}
+.go:hover{transform:translate(-1px,-1px);box-shadow:7px 7px 0 var(--yellow)}
+.go:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--yellow)}
+.hint{margin:12px 0 0;color:var(--muted);font-size:14px;text-align:center}
+#res{margin-top:34px;scroll-margin-top:76px}
+#res h2{font-family:var(--display);font-weight:400;font-size:28px;margin:0 0 4px}
+#res .sub{margin:0 0 16px;color:var(--muted);font-size:15px}
+.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.item{display:flex;align-items:center;gap:14px;background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:12px 14px;animation:pop .25s ease both}
+.item .n{flex:none;width:34px;height:34px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink);display:grid;place-items:center;font-weight:800}
+.item .t{flex:1;min-width:0}
+.item .t b{display:block;font-size:19px;word-break:keep-all}
+.item .t span{font-size:13px;color:var(--muted)}
+.item a{flex:none;font-weight:800;font-size:14px;text-decoration:none;border:2px solid var(--ink);border-radius:10px;padding:8px 12px;min-height:40px;display:inline-flex;align-items:center}
+.item a:hover{background:var(--ink);color:var(--bg)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.item{animation:none}}
+.again{margin-top:16px;display:flex;gap:10px}
+.again button{flex:1;appearance:none;font:inherit;cursor:pointer;min-height:52px;border-radius:12px;border:2px solid var(--ink);background:var(--yellow);font-weight:800;font-size:17px}
+.again button:hover{background:var(--ink);color:var(--bg)}
+.adband{margin-top:48px;padding:18px 0 20px;background:#ece3d0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.info{margin:40px 0 0;color:var(--muted);font-size:15px;word-break:keep-all}
+footer{margin-top:56px;background:var(--ink);color:#c9d3d0;padding:28px 0 calc(28px + env(safe-area-inset-bottom,0px));font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 22px}
+footer a{color:var(--bg)}
+.ad-notice{background:var(--ink);margin:0!important;padding:0 20px 28px;color:#c9d3d0;opacity:1!important;font-size:12.5px!important}
+@media (max-width:420px){.cats{gap:10px}.item a{padding:8px 10px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <a class="lg" href="../" aria-label="라이더 도구함 홈"><img src="../icon-192.png" alt=""><b>라이더 도구함</b></a>
+  <a class="back" href="../">← 홈으로</a>
+</div></header>
+
+<main class="wrap">
+  <h1>오늘 <mark>뭐 먹지?</mark></h1>
+  <p class="lead">종류를 하나 누르고 추천받기! 먹을 메뉴 후보를 바로 보여드려요.</p>
+
+  <p class="step">① 먹고 싶은 종류를 골라요</p>
+  <div class="cats" id="cats" role="group" aria-label="음식 종류">
+    <button class="cat" type="button" data-k="kr" aria-pressed="true"><span class="e">🍚</span><b>한식</b></button>
+    <button class="cat" type="button" data-k="cn" aria-pressed="false"><span class="e">🥢</span><b>중식</b></button>
+    <button class="cat" type="button" data-k="jp" aria-pressed="false"><span class="e">🍣</span><b>일식</b></button>
+    <button class="cat" type="button" data-k="we" aria-pressed="false"><span class="e">🍝</span><b>양식</b></button>
+    <button class="cat" type="button" data-k="sn" aria-pressed="false"><span class="e">🍢</span><b>분식</b></button>
+    <button class="cat" type="button" data-k="any" aria-pressed="false"><span class="e">🎲</span><b>아무거나</b></button>
+  </div>
+
+  <p class="step">② 버튼을 눌러요</p>
+  <button class="go" id="go" type="button">메뉴 추천받기</button>
+  <p class="hint">누를 때마다 새로운 조합이 나와요</p>
+
+  <section id="res" hidden aria-live="polite">
+    <h2 id="rt"></h2>
+    <p class="sub">마음에 드는 메뉴는 지도 버튼으로 근처 식당을 바로 찾아보세요.</p>
+    <ol class="list" id="list"></ol>
+    <div class="again"><button id="again" type="button">🔄 다시 뽑기</button></div>
+  </section>
+
+  <div class="adband" style="margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)"><div class="wrap"><div class="ad-slot" data-size="banner"></div></div></div>
+
+  <p class="info">메뉴 추천은 재미로 참고하는 용도예요. 가격·재료·알레르기는 판매처에서 꼭 확인하세요.</p>
+</main>
+
+<footer><div class="wrap">
+  <span>© 라이더 도구함</span>
+  <a href="../">홈</a>
+  <a href="../privacy.html">개인정보처리방침</a>
+</div></footer>
+
+<script>
+(function(){
+  var D = {
+    kr: ['김치찌개','된장찌개','순두부찌개','부대찌개','제육볶음','불고기','비빔밥','돌솥비빔밥','갈비탕','설렁탕','곰탕','삼계탕','육개장','냉면','칼국수','국밥','순대국','감자탕','찜닭','닭갈비','보쌈','족발','삼겹살','쭈꾸미볶음','생선구이','김치볶음밥','오징어볶음','낙지볶음','해장국','콩나물국밥'],
+    cn: ['짜장면','짬뽕','탕수육','볶음밥','짬뽕밥','간짜장','울면','깐풍기','마파두부','양장피','유린기','라조기','꿔바로우','마라탕','마라샹궈','딤섬','잡채밥','쟁반짜장','고추잡채','팔보채'],
+    jp: ['초밥','회덮밥','돈카츠','우동','라멘','소바','규동','카레라이스','연어덮밥','오코노미야키','타코야끼','텐동','가라아게','치라시스시','냉모밀'],
+    we: ['파스타','크림파스타','토마토파스타','피자','리조또','스테이크','햄버거','샌드위치','샐러드','오믈렛','그라탕','스테이크덮밥','치킨버거','핫도그'],
+    sn: ['떡볶이','순대','튀김','김밥','라볶이','어묵','쫄면','라면','치즈김밥','참치김밥','오므라이스','돈까스','우동','컵밥','주먹밥']
+  };
+  var NAMES = {kr:'한식',cn:'중식',jp:'일식',we:'양식',sn:'분식',any:'아무거나'};
+  var key = 'kr';
+  var cats = document.getElementById('cats');
+  var res = document.getElementById('res'), list = document.getElementById('list'), rt = document.getElementById('rt');
+
+  cats.addEventListener('click', function(e){
+    var b = e.target.closest('.cat'); if(!b) return;
+    key = b.getAttribute('data-k');
+    [].forEach.call(cats.children, function(c){ c.setAttribute('aria-pressed', c===b ? 'true' : 'false'); });
+  });
+
+  function pool(){
+    if (key !== 'any') return D[key];
+    var all = []; Object.keys(D).forEach(function(k){ D[k].forEach(function(m){ if (all.indexOf(m) < 0) all.push(m); }); });
+    return all;
+  }
+  function pick(){
+    var a = pool().slice(), n = 5 + Math.floor(Math.random() * 6); // 5~10개
+    for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a.slice(0, Math.min(n, a.length));
+  }
+  function render(){
+    var items = pick();
+    rt.textContent = NAMES[key] + ' 추천 ' + items.length + '가지';
+    list.innerHTML = '';
+    items.forEach(function(m, i){
+      var li = document.createElement('li'); li.className = 'item'; li.style.animationDelay = (i * 40) + 'ms';
+      var n = document.createElement('span'); n.className = 'n'; n.textContent = i + 1;
+      var t = document.createElement('div'); t.className = 't';
+      var b = document.createElement('b'); b.textContent = m; t.appendChild(b);
+      var a = document.createElement('a'); a.textContent = '📍 근처 식당';
+      a.href = 'https://map.naver.com/p/search/' + encodeURIComponent(m); a.target = '_blank'; a.rel = 'noopener';
+      a.setAttribute('aria-label', m + ' 근처 식당 지도에서 찾기');
+      li.appendChild(n); li.appendChild(t); li.appendChild(a); list.appendChild(li);
+    });
+    res.hidden = false;
+    res.scrollIntoView({behavior: window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+    if (window.gtag) gtag('event', 'menu_recommend', {category: key});
+  }
+  document.getElementById('go').addEventListener('click', render);
+  document.getElementById('again').addEventListener('click', render);
+})();
+</script>
+<script src="../site-config.js"></script>
+<script src="../ads.js"></script>
+</body>
+</html>
