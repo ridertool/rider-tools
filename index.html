@@ -401,55 +401,64 @@ body{background:#f2f4f7;padding-bottom:0}
   function nm(c){if(c===0)return '맑음';if(c<=2)return '대체로 맑음';if(c===3)return '흐림';if(c<=48)return '안개';if(c<=57)return '이슬비';if(c<=67)return '비';if(c<=77)return '눈';if(c<=82)return '소나기';if(c<=86)return '눈 소나기';return '천둥번개'}
   var CITY=[['서울',37.5665,126.978],['인천',37.4563,126.7052],['수원',37.2636,127.0286],['성남',37.42,127.1265],['고양',37.6584,126.832],['부산',35.1796,129.0756],['대구',35.8714,128.6014],['대전',36.3504,127.3845],['광주',35.1595,126.8526],['울산',35.5384,129.3114],['창원',35.2285,128.6811],['청주',36.6424,127.489],['전주',35.8242,127.148],['제주',33.4996,126.5312]];
   var i=0;try{i=+localStorage.getItem('wx_city')||0}catch(e){}if(!(i>=0&&i<CITY.length))i=0;var c=CITY[i];
+  function paint(o){$('hw-ic').textContent=o.ic;$('hw-t').textContent=o.t;$('hw-c').textContent=o.c;var a=$('hw-a');a.textContent=o.a;a.className=o.k}
+  try{var wc=JSON.parse(localStorage.getItem('hw_cache'));if(wc&&wc.o&&wc.city===c[0])paint(wc.o)}catch(e){}
   function wx(){
     fetch('https://api.open-meteo.com/v1/forecast?latitude='+c[1]+'&longitude='+c[2]+'&current=temperature_2m,precipitation,weather_code,is_day&hourly=precipitation_probability&timezone=Asia%2FSeoul&forecast_days=2')
     .then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){
       var k=d.current,h=d.hourly,x=h.time.indexOf(k.time.slice(0,13)+':00');if(x<0)x=0;var mx=0,w='';
       for(var j=x;j<x+6&&j<h.time.length;j++){var p=h.precipitation_probability[j]||0;if(p>mx){mx=p;w=h.time[j].slice(11,13)+'시'}}
-      $('hw-ic').textContent=ic(k.weather_code,k.is_day===1);$('hw-t').textContent=Math.round(k.temperature_2m)+'°';$('hw-c').textContent=c[0]+' · '+nm(k.weather_code);
-      var a=$('hw-a');
-      if(k.precipitation>0){a.textContent='☔ 지금 비 와요. 우의 챙기세요';a.className='wxm-a rain'}
-      else if(mx>=50){a.textContent='☔ '+w+'쯤 비 확률 '+mx+'%';a.className='wxm-a rain'}
-      else{a.textContent='✅ 6시간 안엔 비 걱정 적어요';a.className='wxm-a ok'}
+      var o={ic:ic(k.weather_code,k.is_day===1),t:Math.round(k.temperature_2m)+'°',c:c[0]+' · '+nm(k.weather_code)};
+      if(k.precipitation>0){o.a='☔ 지금 비 와요. 우의 챙기세요';o.k='wxm-a rain'}
+      else if(mx>=50){o.a='☔ '+w+'쯤 비 확률 '+mx+'%';o.k='wxm-a rain'}
+      else{o.a='✅ 6시간 안엔 비 걱정 적어요';o.k='wxm-a ok'}
+      paint(o);try{localStorage.setItem('hw_cache',JSON.stringify({city:c[0],o:o}))}catch(e){}
     }).catch(function(){$('hw-c').textContent=c[0];$('hw-a').textContent='날씨를 불러오지 못했어요'});
   }
   wx();
   var GN='https://news.google.com/rss',Q='hl=ko&gl=KR&ceid=KR:ko';
   var U=[GN+'?'+Q,GN+'/search?q='+encodeURIComponent('배달 라이더 OR 배달앱 OR 배달기사 when:3d')+'&'+Q,GN+'/headlines/section/topic/BUSINESS?'+Q];
-  var list=$('hn'),cache={},seq=0;
-  function ago(d){var m=Math.max(0,Math.round((Date.now()-d)/60000));if(m<1)return '방금';if(m<60)return m+'분 전';var h=Math.floor(m/60);return h<24?h+'시간 전':Math.floor(h/24)+'일 전'}
-  function parse(t){var x=new DOMParser().parseFromString(t,'text/xml'),it=x.querySelectorAll('item'),o=[];for(var i=0;i<it.length&&i<8;i++){var g=function(n){var e=it[i].querySelector(n);return e?e.textContent:''};o.push({title:g('title'),link:g('link'),pub:g('pubDate')})}return o}
-  function js(j){if(!j||j.status!=='ok')throw 0;return j.items.slice(0,8).map(function(a){return{title:a.title,link:a.link,pub:a.pubDate}})}
-  function fetchNews(u){
-    return fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.json()}).then(js)
-    .catch(function(){return fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.text()}).then(parse)});
+  var list=$('hn'),seq=0;
+
+  var RAW='https://raw.githubusercontent.com/ridertool/rider-tools/data/news.json';
+  function tmo(p,ms){return new Promise(function(res,rej){var t=setTimeout(function(){rej(0)},ms);p.then(function(v){clearTimeout(t);res(v)},function(e){clearTimeout(t);rej(e)})})}
+  function norm(a){return a.map(function(x){return{t:x.t,s:x.s||'',l:x.l,d:x.d||0}})}
+  function viaRss(u,k){return Promise.any([
+    tmo(fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(!j||j.status!=='ok')throw 0;return j.items.map(function(a){var t=a.title,s='',i=t.lastIndexOf(' - ');if(i>0){s=t.slice(i+3);t=t.slice(0,i)}return{t:t,s:s,l:a.link,d:Date.parse(String(a.pubDate).replace(' ','T')+'Z')||0}})}),6000),
+    tmo(fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){var x=new DOMParser().parseFromString(t,'text/xml'),o=[];[].forEach.call(x.querySelectorAll('item'),function(it){var g=function(n){var e=it.querySelector(n);return e?e.textContent:''},tt=g('title'),s=g('source'),i=tt.lastIndexOf(' - ');if(i>0){if(!s)s=tt.slice(i+3);tt=tt.slice(0,i)}o.push({t:tt,s:s,l:g('link'),d:Date.parse(g('pubDate'))||0})});if(!o.length)throw 0;return o}),6000)
+  ]).catch(function(){throw 0})}
+  var rawP=null;
+  function fromRaw(){if(!rawP)rawP=tmo(fetch(RAW,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}),5000);return rawP}
+  // 정적 JSON(빠름) → 실패하면 RSS 변환 서비스. 캐시가 있으면 먼저 보여주고 뒤에서 갱신
+  function getNews(key,u){
+    return fromRaw().then(function(j){var a=j&&j.c&&j.c[key];if(!a||!a.length||Date.now()-j.ts>6*3600e3)throw 0;return norm(a)}).catch(function(){rawP=null;return viaRss(u,key)});
   }
+  function lget(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+  function lset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  var KEYS=['top','rider','biz'];
+  function ago(d){var m=Math.max(0,Math.round((Date.now()-d)/60000));if(m<1)return '방금';if(m<60)return m+'분 전';var h=Math.floor(m/60);return h<24?h+'시간 전':Math.floor(h/24)+'일 전'}
   function draw(items){
-    list.innerHTML='';
-    items=items.slice(0,5);
+    list.innerHTML='';items=items.slice(0,5);
     if(!items.length){list.innerHTML='<li class="nw-e">표시할 뉴스가 없어요.</li>';return}
     items.forEach(function(it){
-      var t=it.title,s='',k=t.lastIndexOf(' - ');if(k>0){s=t.slice(k+3);t=t.slice(0,k)}
-      var d=Date.parse(String(it.pub).replace(' ','T')+(/Z|GMT|[+-]\d\d:?\d\d$/.test(it.pub)?'':'Z'))||Date.parse(it.pub)||0;
-      var li=document.createElement('li'),a=document.createElement('a');a.href=/^https?:\/\//.test(it.link)?it.link:'#';a.target='_blank';a.rel='noopener noreferrer';
+      var d=it.d,li=document.createElement('li'),a=document.createElement('a');a.href=/^https?:\/\//.test(it.l)?it.l:'#';a.target='_blank';a.rel='noopener noreferrer';
       var tt=document.createElement('span');tt.className='t';
       if(d&&Date.now()-d<3600000){var n=document.createElement('span');n.className='n';n.textContent='NEW';tt.appendChild(n)}
-      tt.appendChild(document.createTextNode(t));
-      var ss=document.createElement('span');ss.className='s';ss.textContent=[s,d?ago(d):''].filter(Boolean).join(' · ');
+      tt.appendChild(document.createTextNode(it.t));
+      var ss=document.createElement('span');ss.className='s';ss.textContent=[it.s,d?ago(d):''].filter(Boolean).join(' · ');
       a.appendChild(tt);a.appendChild(ss);li.appendChild(a);list.appendChild(li);
     });
   }
-  function load(i,force){
-    var my=++seq,c=cache[i];
-    if(c&&!force&&Date.now()-c.ts<240000){draw(c.items);return}
-    list.innerHTML='<li class="nw-e">불러오는 중…</li>';
-    fetchNews(U[i]).then(function(items){if(!items.length)throw 0;cache[i]={ts:Date.now(),items:items};if(my===seq)draw(items)})
-    .catch(function(){if(my!==seq)return;if(c)draw(c.items);else list.innerHTML='<li class="nw-e">뉴스를 불러오지 못했어요. <a href="news/" style="color:var(--teal);font-weight:800">뉴스 페이지로 가기</a></li>'});
+  function load(i){
+    var my=++seq,ck='nw_'+KEYS[i],c=lget(ck);
+    if(c&&c.items)draw(c.items);else list.innerHTML='<li class="nw-e">불러오는 중…</li>';
+    getNews(KEYS[i],U[i]).then(function(items){if(!items.length)throw 0;lset(ck,{ts:Date.now(),items:items});if(my===seq)draw(items)})
+    .catch(function(){if(my!==seq||(c&&c.items))return;list.innerHTML='<li class="nw-e">뉴스를 불러오지 못했어요. <a href="news/" style="color:var(--teal);font-weight:800">뉴스 페이지로 가기</a></li>'});
   }
   var cur=0;
-  [].forEach.call(document.querySelectorAll('.nw-t button'),function(b){b.addEventListener('click',function(){cur=+b.dataset.i;[].forEach.call(b.parentNode.children,function(x){x.setAttribute('aria-selected',x===b)});load(cur,false)})});
-  load(0,false);
-  setInterval(function(){if(!document.hidden){load(cur,true);wx()}},300000);
+  [].forEach.call(document.querySelectorAll('.nw-t button'),function(b){b.addEventListener('click',function(){cur=+b.dataset.i;[].forEach.call(b.parentNode.children,function(x){x.setAttribute('aria-selected',x===b)});load(cur)})});
+  load(0);
+  setInterval(function(){if(!document.hidden){load(cur);wx()}},300000);
 })();
 </script>
 <script src="ads.js"></script>

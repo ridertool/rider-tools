@@ -156,61 +156,44 @@ footer a{color:var(--bg)}
     ['IT',GN+'/headlines/section/topic/TECHNOLOGY?'+Q],
     ['국제',GN+'/headlines/section/topic/WORLD?'+Q]
   ];
-  var PROX=[
-    function(u){return 'https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(u)},
-    function(u){return 'https://api.allorigins.win/raw?url='+encodeURIComponent(u)}
-  ];
-  var cur=0,tabsEl=$('tabs'),nl=$('nl'),upd=$('upd'),timer=0,seq=0;
-  function sget(k){try{return sessionStorage.getItem(k)}catch(e){return null}}
-  function sset(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+  var cur=0,tabsEl=$('tabs'),nl=$('nl'),upd=$('upd'),timer=0,seq=0,KEYS=['top','rider','biz','nation','sports','ent','tech','world'];
+  var RAW='https://raw.githubusercontent.com/ridertool/rider-tools/data/news.json';
+  function tmo(p,ms){return new Promise(function(res,rej){var t=setTimeout(function(){rej(0)},ms);p.then(function(v){clearTimeout(t);res(v)},function(e){clearTimeout(t);rej(e)})})}
+  function norm(a){return a.map(function(x){return{t:x.t,s:x.s||'',l:x.l,d:x.d||0}})}
+  function viaRss(u,k){return Promise.any([
+    tmo(fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(j){if(!j||j.status!=='ok')throw 0;return j.items.map(function(a){var t=a.title,s='',i=t.lastIndexOf(' - ');if(i>0){s=t.slice(i+3);t=t.slice(0,i)}return{t:t,s:s,l:a.link,d:Date.parse(String(a.pubDate).replace(' ','T')+'Z')||0}})}),6000),
+    tmo(fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(u)).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){var x=new DOMParser().parseFromString(t,'text/xml'),o=[];[].forEach.call(x.querySelectorAll('item'),function(it){var g=function(n){var e=it.querySelector(n);return e?e.textContent:''},tt=g('title'),s=g('source'),i=tt.lastIndexOf(' - ');if(i>0){if(!s)s=tt.slice(i+3);tt=tt.slice(0,i)}o.push({t:tt,s:s,l:g('link'),d:Date.parse(g('pubDate'))||0})});if(!o.length)throw 0;return o}),6000)
+  ]).catch(function(){throw 0})}
+  var rawP=null;
+  function fromRaw(){if(!rawP)rawP=tmo(fetch(RAW,{cache:'no-cache'}).then(function(r){if(!r.ok)throw 0;return r.json()}),5000);return rawP}
+  // 정적 JSON(빠름) → 실패하면 RSS 변환 서비스. 캐시가 있으면 먼저 보여주고 뒤에서 갱신
+  function getNews(key,u){
+    return fromRaw().then(function(j){var a=j&&j.c&&j.c[key];if(!a||!a.length||Date.now()-j.ts>6*3600e3)throw 0;return norm(a)}).catch(function(){rawP=null;return viaRss(u,key)});
+  }
+  function lget(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}}
+  function lset(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
   function ago(d){var m=Math.max(0,Math.round((Date.now()-d)/60000));if(m<1)return '방금';if(m<60)return m+'분 전';var h=Math.floor(m/60);if(h<24)return h+'시간 전';return Math.floor(h/24)+'일 전'}
-  function parseXml(t){
-    var x=new DOMParser().parseFromString(t,'text/xml'),it=x.querySelectorAll('item'),out=[];
-    for(var i=0;i<it.length&&i<30;i++){var g=function(n){var e=it[i].querySelector(n);return e?e.textContent:''};
-      out.push({title:g('title'),link:g('link'),pub:g('pubDate'),src:g('source')})}
-    return out;
-  }
-  function fromJson(j){
-    if(!j||j.status!=='ok'||!j.items)throw 0;
-    return j.items.slice(0,30).map(function(a){return {title:a.title,link:a.link,pub:a.pubDate,src:''}});
-  }
-  function split(it){ // "제목 - 언론사"
-    var t=it.title,s=it.src,k=t.lastIndexOf(' - ');
-    if(k>0){if(!s)s=t.slice(k+3);t=t.slice(0,k)}
-    return {t:t,s:s}
-  }
-  function safe(u){return /^https?:\/\//.test(u)?u:'#'}
   function render(items,ts){
     nl.innerHTML='';
     if(!items.length){var e=document.createElement('li');e.textContent='표시할 뉴스가 없어요.';nl.appendChild(e);return}
     items.forEach(function(it){
-      var p=split(it),d=Date.parse(it.pub.replace(' ','T').replace(/T(\d\d:\d\d:\d\d)$/,'T$1Z'))||Date.parse(it.pub)||0;
-      var li=document.createElement('li'),a=document.createElement('a');
-      a.href=safe(it.link);a.target='_blank';a.rel='noopener noreferrer';
+      var d=it.d,li=document.createElement('li'),a=document.createElement('a');
+      a.href=/^https?:\/\//.test(it.l)?it.l:'#';a.target='_blank';a.rel='noopener noreferrer';
       var t=document.createElement('span');t.className='t';
       if(d&&Date.now()-d<3600000){var n=document.createElement('span');n.className='new';n.textContent='NEW';t.appendChild(n)}
-      t.appendChild(document.createTextNode(p.t));
-      var s=document.createElement('span');s.className='s';s.textContent=[p.s,d?ago(d):''].filter(Boolean).join(' · ');
+      t.appendChild(document.createTextNode(it.t));
+      var s=document.createElement('span');s.className='s';s.textContent=[it.s,d?ago(d):''].filter(Boolean).join(' · ');
       a.appendChild(t);a.appendChild(s);li.appendChild(a);nl.appendChild(li);
     });
     var tm=new Date(ts);upd.textContent=('0'+tm.getHours()).slice(-2)+':'+('0'+tm.getMinutes()).slice(-2)+' 업데이트';
   }
-  function tryProx(i,url,my){
-    if(i>=PROX.length)return Promise.reject(0);
-    return fetch(PROX[i](url)).then(function(r){if(!r.ok)throw 0;return i===0?r.json().then(fromJson):r.text().then(parseXml)})
-      .then(function(x){if(!x.length)throw 0;return x}).catch(function(){return tryProx(i+1,url,my)});
-  }
   function load(force){
-    var my=++seq,c=CATS[cur],key='gnews_'+cur,cached=sget(key);
-    if(cached&&!force){try{var o=JSON.parse(cached);if(Date.now()-o.ts<240000){render(o.items,o.ts);return}}catch(e){}}
-    upd.textContent='불러오는 중…';
-    tryProx(0,c[1],my).then(function(items){
-      if(my!==seq)return;var ts=Date.now();sset(key,JSON.stringify({ts:ts,items:items}));render(items,ts);
-    }).catch(function(){
-      if(my!==seq)return;
-      if(cached){try{var o=JSON.parse(cached);render(o.items,o.ts);upd.textContent='연결이 불안정해 이전 뉴스를 보여줘요';return}catch(e){}}
-      nl.innerHTML='';var e=document.createElement('li');e.textContent='뉴스를 불러오지 못했어요. 잠시 후 새로고침해 주세요.';nl.appendChild(e);upd.textContent='불러오기 실패';
-    });
+    var my=++seq,k=KEYS[cur],ck='nw_'+k,c=lget(ck);
+    if(c&&c.items)render(c.items,c.ts);else{nl.innerHTML='';upd.textContent='불러오는 중…'}
+    if(force)rawP=null;
+    getNews(k,CATS[cur][1]).then(function(items){if(!items.length)throw 0;var ts=Date.now();lset(ck,{ts:ts,items:items});if(my===seq)render(items,ts)})
+    .catch(function(){if(my!==seq)return;if(c&&c.items){upd.textContent='연결이 불안정해 이전 뉴스를 보여줘요';return}
+      nl.innerHTML='';var e=document.createElement('li');e.textContent='뉴스를 불러오지 못했어요. 잠시 후 새로고침해 주세요.';nl.appendChild(e);upd.textContent='불러오기 실패'});
   }
   CATS.forEach(function(c,i){
     var b=document.createElement('button');b.type='button';b.className='tab';b.setAttribute('role','tab');b.textContent=c[0];b.setAttribute('aria-selected',i===0);
