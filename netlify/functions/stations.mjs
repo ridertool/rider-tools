@@ -30,6 +30,6 @@ export const handler = async event => {
     if(!Array.isArray(rows))return reply(502,{code:'UPSTREAM_ERROR'});
     const stations=normalize(rows,q.radius);
     stations.sort((a,b)=>q.sort==='price'?a.price-b.price||a.distance-b.distance:a.distance-b.distance||a.price-b.price);
-    return reply(200,{stations,fetchedAt:new Date().toISOString(),source:'한국석유공사 오피넷'});
+    return reply(200,{stations,upstreamCount:rows.length,sample:rows.slice(0,1),fetchedAt:new Date().toISOString(),source:'한국석유공사 오피넷'});
   }catch{return reply(502,{code:'UPSTREAM_ERROR'});}
 };
