@@ -1,5 +1,6 @@
 (()=>{
 const $=id=>document.getElementById(id),status=$('food-status'),list=$('food-results'),submit=$('food-submit');let controller=null;
+try{const stored=JSON.parse(localStorage.getItem('wx_loc')||'null');if(stored?.name)$('food-area').value=stored.name;}catch{}
 const el=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
 $('food-search').addEventListener('submit',async e=>{
 e.preventDefault();const area=$('food-area').value.trim();if(!area){status.textContent='동네나 역 이름을 입력해주세요.';return;}
