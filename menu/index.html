@@ -112,8 +112,10 @@ footer a{color:var(--bg)}
 
   <section class="nearby-food" aria-labelledby="nearby-title">
     <span class="food-label">배달 대기 중, 든든한 한 끼</span>
-    <h2 id="nearby-title">주변 맛집 찾기</h2>
-    <p>지금 있는 동네나 역 이름을 입력하면 네이버 지역 검색의 가게 목록을 보여드려요.</p>
+    <h2 id="nearby-title">내 주변 맛집 찾기</h2>
+    <p>현재 위치로 내 주변 동네의 맛집을 찾아보세요. 동네·역 이름을 직접 입력해도 돼요.</p>
+    <button id="food-locate" type="button">◎ 현재 위치로 내 주변 맛집 찾기</button>
+    <p class="food-credit">위치 허용 시 좌표를 BigDataCloud에 전달해 동네를 확인하고, 동네 이름과 음식 종류로 네이버에서 검색해요. 위치는 저장하지 않아요.</p>
     <form id="food-search">
       <label for="food-area">동네·역 이름</label>
       <div class="food-inputs"><input id="food-area" placeholder="예: 일산3동, 강남역" maxlength="50" required autocomplete="off"><select id="food-sort" aria-label="맛집 정렬"><option value="random">검색 추천순</option><option value="comment">리뷰 많은순</option></select></div>
@@ -189,6 +191,6 @@ footer a{color:var(--bg)}
 </script>
 <script src="../site-config.js"></script>
 <script src="../ads.js"></script>
-<script src="nearby-food.js" defer></script>
+<script src="nearby-food.js?v=2" defer></script>
 </body>
 </html>

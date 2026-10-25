@@ -1,6 +1,24 @@
 (()=>{
 const $=id=>document.getElementById(id),status=$('food-status'),list=$('food-results'),submit=$('food-submit');let controller=null;
-try{const stored=JSON.parse(localStorage.getItem('wx_loc')||'null');if(stored?.name)$('food-area').value=stored.name;}catch{}
+const locate=$('food-locate');
+locate.addEventListener('click',()=>{
+if(!navigator.geolocation){status.textContent='위치를 사용할 수 없어요. 동네 이름을 입력해주세요.';return;}
+locate.disabled=true;submit.disabled=true;status.textContent='현재 위치를 확인하고 있어요…';
+const done=()=>{locate.disabled=false;submit.disabled=false;};
+navigator.geolocation.getCurrentPosition(async p=>{
+try{
+const lat=String(Math.round(p.coords.latitude*1000)/1000),lon=String(Math.round(p.coords.longitude*1000)/1000);
+status.textContent='현재 동네를 확인하고 있어요…';
+const r=await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?'+new URLSearchParams({latitude:lat,longitude:lon,localityLanguage:'ko'}),{signal:AbortSignal.timeout(10000),cache:'no-store',referrerPolicy:'no-referrer'});
+if(!r.ok)throw new Error();
+const d=await r.json();
+if(d.countryCode&&d.countryCode!=='KR'){status.textContent='국내 맛집만 검색할 수 있어요. 국내 동네 이름을 입력해주세요.';return;}
+const area=[...new Set([d.principalSubdivision,d.city,d.locality].filter(Boolean))].join(' ');
+if(!area)throw new Error();
+$('food-area').value=area;done();$('food-search').requestSubmit();
+}catch{status.textContent='동네를 확인하지 못했어요. 다시 시도하거나 동네 이름을 입력해주세요.';}finally{done();}
+},e=>{done();status.textContent=e.code===1?'브라우저에서 위치를 허용하거나 동네 이름을 입력해주세요.':'위치를 확인하지 못했어요. 다시 시도하거나 동네 이름을 입력해주세요.';},{enableHighAccuracy:true,timeout:12000,maximumAge:0});
+});
 const el=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};
 $('food-search').addEventListener('submit',async e=>{
 e.preventDefault();const area=$('food-area').value.trim();if(!area){status.textContent='동네나 역 이름을 입력해주세요.';return;}
