@@ -76,6 +76,7 @@ footer a{color:var(--bg)}
 .ad-notice{background:var(--ink);margin:0!important;padding:0 20px 28px;color:#c9d3d0;opacity:1!important;font-size:12.5px!important}
 @media (max-width:420px){.cats{gap:10px}.item a{padding:8px 10px}}
 </style>
+<style>.nearby-food{margin:30px 0;border:1px solid #dce5dc;border-radius:20px;background:#fff;padding:24px}.nearby-food h2{font-size:23px;margin:7px 0}.nearby-food p{font-size:13px;color:#697972;line-height:1.8}.food-label{color:#897448;font-size:11px;letter-spacing:.03em}.nearby-food label{display:block;font-size:12px;font-weight:600;margin:18px 0 8px}.food-inputs{display:flex;gap:8px}.food-inputs input,.food-inputs select{border:1px solid #dce5dc;background:#f7f9f5;border-radius:10px;padding:12px;font:inherit;font-size:13px;color:#173c36;min-width:0}.food-inputs input{flex:1}.food-inputs select{max-width:132px}.nearby-food button{width:100%;margin-top:12px;min-height:48px;border:0;border-radius:12px;background:#173f36;color:#fff;font:inherit;font-size:14px;font-weight:700;cursor:pointer}.nearby-food button:disabled{opacity:.6}#food-results{list-style:none;padding:0;margin:0}#food-results li{padding:18px 0;border-bottom:1px solid #e1e7e0}#food-results h3{font-size:16px;margin:0 0 7px}#food-results p{margin:4px 0;font-size:12px}#food-results a{font-size:12px;color:#276b58}.nearby-food .food-credit{font-size:10px;margin-top:20px}</style>
 </head>
 <body>
 <header class="top"><div class="wrap">
@@ -106,6 +107,21 @@ footer a{color:var(--bg)}
     <p class="sub">마음에 드는 메뉴는 지도 버튼으로 근처 식당을 바로 찾아보세요.</p>
     <ol class="list" id="list"></ol>
     <div class="again"><button id="again" type="button">🔄 다시 뽑기</button></div>
+  </section>
+
+
+  <section class="nearby-food" aria-labelledby="nearby-title">
+    <span class="food-label">배달 대기 중, 든든한 한 끼</span>
+    <h2 id="nearby-title">주변 맛집 찾기</h2>
+    <p>지금 있는 동네나 역 이름을 입력하면 네이버 지역 검색의 가게 목록을 보여드려요.</p>
+    <form id="food-search">
+      <label for="food-area">동네·역 이름</label>
+      <div class="food-inputs"><input id="food-area" placeholder="예: 일산3동, 강남역" maxlength="50" required autocomplete="off"><select id="food-sort" aria-label="맛집 정렬"><option value="random">검색 추천순</option><option value="comment">리뷰 많은순</option></select></div>
+      <button id="food-submit" type="submit">주변 맛집 보기</button>
+    </form>
+    <p id="food-status" role="status">위 음식 종류를 선택하면 해당 종류의 식당을 찾아요.</p>
+    <ol id="food-results" aria-label="네이버 지역 검색 맛집 목록"></ol>
+    <p class="food-credit">출처: 네이버 지역 검색 · 최대 5곳 · 네이버지도 앱의 추천 순위와 다를 수 있어요.</p>
   </section>
 
   <div class="adband" style="margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)"><div class="wrap"><div class="ad-slot" data-size="banner"></div></div></div>
@@ -173,5 +189,6 @@ footer a{color:var(--bg)}
 </script>
 <script src="../site-config.js"></script>
 <script src="../ads.js"></script>
+<script src="nearby-food.js" defer></script>
 </body>
 </html>
