@@ -22,7 +22,7 @@ export const handler = async event => {
   const key=process.env.OPINET_API_KEY;
   if(!key)return reply(503,{code:'NOT_CONFIGURED'});
   const [x,y]=proj4('EPSG:4326',KATEC,[q.lon,q.lat]);
-  const params=new URLSearchParams({certkey:key,out:'json',x:String(x),y:String(y),radius:String(q.radius),prodcd:q.fuel,sort:q.sort==='price'?'1':'2'});
+  const params=new URLSearchParams({code:key,certkey:key,out:'json',x:String(x),y:String(y),radius:String(q.radius),prodcd:q.fuel,sort:q.sort==='price'?'1':'2'});
   try{
     const response=await fetch('https://www.opinet.co.kr/api/aroundAll.do?'+params,{signal:AbortSignal.timeout(10000)});
     if(!response.ok)return reply(502,{code:'UPSTREAM_ERROR'});
@@ -33,3 +33,4 @@ export const handler = async event => {
     return reply(200,{stations,upstreamCount:rows.length,sample:rows.slice(0,1),fetchedAt:new Date().toISOString(),source:'한국석유공사 오피넷'});
   }catch{return reply(502,{code:'UPSTREAM_ERROR'});}
 };
+
