@@ -320,6 +320,7 @@ body{background:#f2f4f7;padding-bottom:0}
 @media (max-width:640px){.menu{display:none}}
 @media (min-width:700px){.pt{padding-top:26px}}
 </style>
+<link rel="stylesheet" href="premium.css">
 </head>
 <body>
 <a class="skip" href="#hn">본문 바로가기</a>
@@ -327,6 +328,7 @@ body{background:#f2f4f7;padding-bottom:0}
   <div class="wrap">
     <a class="lg" href="./" aria-label="라이더 도구함 홈"><img src="icon-192.png" alt=""><b>라이더 도구함</b><span>배달·퀵 기사님용<br>무료 도구</span></a>
     <nav class="menu" aria-label="주요 메뉴">
+      <a class="m" href="#fuel">주변 주유소</a>
       <a class="m" href="tips/">꿀팁</a>
       <a class="m" href="menu/">오늘 뭐 먹지?</a>
       <a class="m" href="news/">날씨·뉴스</a>
@@ -358,6 +360,24 @@ body{background:#f2f4f7;padding-bottom:0}
         <a href="tips/"><span class="ic"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span><b>배달 꿀팁</b></a>
       </div>
     </div>
+
+
+    <section class="fuel" id="fuel" aria-labelledby="fuel-title">
+      <span class="fuel-kicker">A SMARTER PIT STOP</span>
+      <h2 id="fuel-title">가까이, 더 합리적으로.</h2>
+      <p class="fuel-intro">운행 중 주유도 간편하게.<br>내 주변 주유소의 거리와 가격을 비교하세요.</p>
+      <div class="fuel-controls">
+        <label>유종<select id="fuel-type"><option value="B027">휘발유</option><option value="D047">경유</option><option value="K015">LPG</option><option value="B034">고급휘발유</option></select></label>
+        <label>검색 반경<select id="fuel-radius"><option value="1000">1 km 이내</option><option value="3000" selected>3 km 이내</option><option value="5000">5 km 이내</option></select></label>
+      </div>
+      <button type="button" class="fuel-locate" id="fuel-locate">⌖ 내 위치로 주유소 찾기</button>
+      <div class="fuel-sort" role="group" aria-label="주유소 정렬"><button type="button" data-sort="distance" aria-pressed="true">가까운순</button><button type="button" data-sort="price" aria-pressed="false">가격 낮은순</button></div>
+      <div id="fuel-status" class="fuel-status" role="status">실시간 유가 서비스 연결을 준비 중입니다. 연결 전에는 아래 지도에서 주변 주유소를 확인할 수 있어요.</div>
+      <p id="fuel-summary" class="fuel-summary" hidden></p>
+      <ul id="fuel-results" class="fuel-results" aria-label="주변 주유소 검색 결과"></ul>
+      <div class="fuel-links"><a href="https://map.kakao.com/?q=%EC%A3%BC%EB%B3%80%20%EC%A3%BC%EC%9C%A0%EC%86%8C" target="_blank" rel="noopener noreferrer">지도에서 주유소 찾기 ↗</a><a href="https://www.opinet.co.kr/" target="_blank" rel="noopener noreferrer">오피넷 가격 확인 ↗</a></div>
+      <p class="fuel-foot">위치는 검색 버튼을 누르고 동의할 때만 주유소 조회에 사용해요. 거리 기준은 직선거리이며 실제 이동 거리와 다를 수 있어요. 유가 출처: 한국석유공사 오피넷 · 주유 전 현장 가격을 확인하세요.</p>
+    </section>
 
     <section class="nw" aria-labelledby="nw-h">
       <div class="nw-h"><h2 id="nw-h">라이더 뉴스</h2><div class="nw-t" role="tablist"><button type="button" role="tab" aria-selected="true" data-i="0">라이더</button><button type="button" role="tab" aria-selected="false" data-i="1">속보</button><button type="button" role="tab" aria-selected="false" data-i="2">경제</button></div></div>
@@ -557,5 +577,6 @@ body{background:#f2f4f7;padding-bottom:0}
 </script>
 <script src="ads.js"></script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});</script>
+<script src="fuel.js" defer></script>
 </body>
 </html>

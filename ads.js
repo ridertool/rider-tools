@@ -1,3 +1,5 @@
+// Shared public-page theme; keep the navigation and bookkeeping apps' layouts independent.
+(function(){if(/^\/(?:news(?:\/|$)|menu(?:\/|$)|tips(?:\/|$)|privacy\.html)/.test(location.pathname)){var l=document.createElement('link');l.rel='stylesheet';l.href=new URL('premium.css',document.currentScript.src).href;document.head.appendChild(l);}})();
 // 광고 자리 채우기: <div class="ad-slot" data-size="banner|box"></div>
 // 우선순위: 애드센스 → 애드핏 → 쿠팡파트너스. 설정이 없으면 자리를 숨김.
 (function () {
