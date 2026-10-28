@@ -1,6 +1,6 @@
 // 라이더 도구함 홈 화면 캐시 (항상 최신 우선, 오프라인이면 저장본)
-const CACHE = 'ridertool-home-v31';
-const FILES = ['/', '/index.html', '/privacy.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/maskable-512.png', '/premium.css', '/fuel.js', '/ads.css', '/site-config.js', '/ads.js'];
+const CACHE = 'ridertool-home-v32';
+const FILES = ['/', '/index.html', '/privacy.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png', '/maskable-512.png', '/premium.css', '/mobile.css', '/fuel.js', '/ads.css', '/site-config.js', '/ads.js'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES))); self.skipWaiting(); });
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith('ridertool-home-') && k !== CACHE).map(k => caches.delete(k)))));
