@@ -500,7 +500,10 @@ body{background:#f2f4f7;padding-bottom:0}
       var a=(j&&j.address)||{},g=a.city_district||a.county||'',d=a.suburb||a.quarter||a.neighbourhood||a.village||'';
       var n=(g&&d?g+' '+d:(d||g||''));cb(n)}).catch(function(){cb('')});
   }
+  function km(a,b,x,y){var dy=(a-x)*111,dx=(b-y)*111*Math.cos(a*Math.PI/180);return Math.sqrt(dx*dx+dy*dy)}
   function useLoc(lat,lon){
+    var prev=null;try{prev=JSON.parse(localStorage.getItem('wx_loc'))}catch(e){}
+    if(prev&&prev.name&&prev.lat&&km(lat,lon,prev.lat,prev.lon)<1){c=[prev.name,lat,lon];saveLoc(lat,lon,prev.name);return}
     c=[near(lat,lon),lat,lon];saveLoc(lat,lon,'');
     dong(lat,lon,function(n){if(n){c[0]=n;saveLoc(lat,lon,n);$('hw-c').textContent=lab()}});
   }
@@ -509,7 +512,7 @@ body{background:#f2f4f7;padding-bottom:0}
   try{var wc=JSON.parse(localStorage.getItem('hw_cache'));if(wc&&wc.o&&wc.city===c[0])paint(wc.o)}catch(e){}
   function locate(){
     if(!navigator.geolocation)return;
-    navigator.geolocation.getCurrentPosition(function(p){useLoc(Math.round(p.coords.latitude*1000)/1000,Math.round(p.coords.longitude*1000)/1000);wx()},function(){},{enableHighAccuracy:true,timeout:10000,maximumAge:300000});
+    navigator.geolocation.getCurrentPosition(function(p){useLoc(Math.round(p.coords.latitude*1000)/1000,Math.round(p.coords.longitude*1000)/1000);wx()},function(e){if(e&&e.code===1){var m=document.querySelector('.wxm-more');if(m){m.textContent='위치가 꺼져 있어요 · 지역 바꾸기 ›'}}},{enableHighAccuracy:true,timeout:10000,maximumAge:300000});
   }
   function wx(){
     fetch('https://api.open-meteo.com/v1/forecast?latitude='+c[1]+'&longitude='+c[2]+'&current=temperature_2m,precipitation,weather_code,is_day&hourly=precipitation_probability&timezone=Asia%2FSeoul&forecast_days=2')
