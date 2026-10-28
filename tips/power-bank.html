@@ -94,8 +94,8 @@ footer a{color:var(--bg)}
 .nl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .nl li a{display:block;text-decoration:none;border:2px solid var(--line);border-radius:12px;background:#fff;padding:11px 14px}
 .nl li a:hover,.nl li a:focus-visible{border-color:var(--ink)}
-.nl .t{display:block;font-weight:800;line-height:1.4;word-break:keep-all}
-.nl .s{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);font-weight:700}
+.nl .t{display:block;font-weight:600;line-height:1.4;word-break:keep-all}
+.nl .s{display:block;margin-top:3px;font-size:12.5px;color:var(--muted);font-weight:500}
 .nl .new{display:inline-block;margin-right:6px;padding:0 6px;border-radius:6px;background:#e63946;color:#fff;font-size:11px;font-weight:800;vertical-align:1px}
 .note{margin:12px 0 0;font-size:12.5px;color:var(--muted)}
 
@@ -137,6 +137,11 @@ footer a{color:var(--bg)}
 .tl b{display:block;line-height:1.35;word-break:keep-all}
 .tl small{display:block;color:var(--muted);font-weight:600;line-height:1.45;margin-top:2px;word-break:keep-all}
 .disc{margin:22px 0 0;font-size:13px;color:var(--muted)}
+.sq{width:100%;box-sizing:border-box;margin:14px 0 10px;padding:12px 14px;border:1.5px solid var(--line,#e4dfd2);border-radius:12px;font:inherit;font-size:16px;background:#fff}
+.ct{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
+.ct button{flex:none;border:1.5px solid var(--line,#e4dfd2);background:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-weight:700;font-size:14px;cursor:pointer}
+.ct button.on{background:var(--brand,#0b4a43);color:#fff;border-color:var(--brand,#0b4a43)}
+.tl li[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -190,6 +195,16 @@ footer a{color:var(--bg)}
     <a href="customer-manners.html">🤝 고객 응대와 분쟁 줄이는 법</a>
     <a href="fuel-saving.html">⛽ 오토바이 연료비 줄이는 운행 습관</a>
     <a href="accident-guide.html">🚑 배달 중 사고가 났을 때 대처 순서</a>
+    <a href="delivery-routes.html">🧭 콜 고르는 기준과 동선 짜는 법</a>
+    <a href="apartment-entry.html">🏢 아파트·고층 건물 배달, 시간 줄이는 요령</a>
+    <a href="tire-guide.html">🛞 오토바이 타이어, 언제 갈고 어떻게 고를까</a>
+    <a href="peak-hours.html">⏰ 시간대별 콜 패턴 읽고 일하는 시간 정하기</a>
+    <a href="winter-ice.html">🧊 빙판·블랙아이스 구간, 겨울 운행 안전</a>
+    <a href="traffic-law-basics.html">🚦 배달 라이더가 자주 걸리는 단속 항목 정리</a>
+    <a href="stress-care.html">🌿 감정노동·피로 관리: 오래 일하려면 쉬는 법</a>
+    <a href="record-keeping.html">🗂️ 영수증·기록 정리법: 5월 세금 신고 대비</a>
+    <a href="gear-checklist.html">🎒 배달 가방에 항상 넣어 둘 물건 체크리스트</a>
+    <a href="vehicle-cost.html">🧮 오토바이 한 달 고정비 계산하기</a>
   </div>
   <div class="adband" style="margin-left:calc(50%% - 50vw);margin-right:calc(50%% - 50vw)"><div class="wrap"><div class="ad-slot" data-size="banner"></div></div></div>
 </main>
@@ -198,8 +213,8 @@ footer a{color:var(--bg)}
   <a href="../">홈</a>
   <a href="../privacy.html">개인정보처리방침</a>
 </div></footer>
-<script src="../site-config.js"></script>
 <script src="../nav.js" defer></script>
+<script src="../site-config.js"></script>
 <script src="../ads.js"></script>
 </body>
 </html>
