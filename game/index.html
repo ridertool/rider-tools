@@ -215,6 +215,7 @@ button:focus-visible{outline:2px solid var(--trim2);outline-offset:2px}
   <button class="chip gild" id="pauseBtn">일시정지</button>
   <button class="chip gild" id="soundBtn">소리 켜짐</button>
   <button class="chip gild" id="gfxBtn" hidden>3D 켜짐</button>
+  <button class="chip gild fsBtn" hidden>전체화면</button>
 </div>
 <div id="top" class="gild"><div class="team b"><span class="crest"></span><span id="sb">0</span></div><span id="clock">00:00</span><div class="team r"><span id="sr">0</span><span class="crest"></span></div></div>
 <div id="miniWrap" class="gild"><canvas id="mini"></canvas></div>
@@ -259,6 +260,7 @@ button:focus-visible{outline:2px solid var(--trim2);outline-offset:2px}
 
 <div class="overlay" id="menu">
   <a class="chip gild" href="../" style="position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);left:12px;z-index:5;text-decoration:none">← 라이더 도구함</a>
+  <button class="chip gild fsBtn" hidden style="position:absolute;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:5">⛶ 전체화면</button>
   <div class="menu-wrap">
   <header class="menu-head">
     <div class="lbl">1 대 1 · 미드 라인 결투</div>
@@ -2777,4 +2779,14 @@ requestAnimationFrame(loop);
 })();
 </script>
 
+<script>
+(function(){var d=document,el=d.documentElement;
+var can=!!(el.requestFullscreen||el.webkitRequestFullscreen);
+function isFs(){return !!(d.fullscreenElement||d.webkitFullscreenElement)}
+function upd(){d.querySelectorAll('.fsBtn').forEach(function(b){b.hidden=!can;b.textContent=(b.closest('#tl')?'':'⛶ ')+(isFs()?'전체화면 끄기':'전체화면')})}
+function tog(){try{if(isFs()){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{var r=(el.requestFullscreen||el.webkitRequestFullscreen).call(el,{navigationUI:'hide'});if(r&&r.catch)r.catch(function(){})}}catch(e){}}
+d.querySelectorAll('.fsBtn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();tog()})});
+d.addEventListener('fullscreenchange',function(){upd();setTimeout(function(){window.dispatchEvent(new Event('resize'))},150)});
+d.addEventListener('webkitfullscreenchange',upd);upd();})();
+</script>
 </body></html>
