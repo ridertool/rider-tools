@@ -5,7 +5,7 @@
 <meta property="og:title" content="별빛 전장 — 쉬는 시간 1대1 미니 전략 게임">
 <meta property="og:description" content="영웅을 골라 컴퓨터와 1대1. 설치 없이 바로 플레이.">
 <meta property="og:type" content="website"><meta property="og:image" content="https://riderstool.com/game/img/key.webp">
-<link rel="canonical" href="https://riderstool.com/game/"><link rel="icon" href="../icon-192.png"><meta name="theme-color" content="#060b0a"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<link rel="canonical" href="https://riderstool.com/game/"><link rel="icon" href="../icon-192.png"><meta name="theme-color" content="#060b0a"><link rel="manifest" href="manifest.webmanifest"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="별빛 전장"><link rel="apple-touch-icon" href="icon-192.png"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>별빛 전장 — 쉬는 시간 미니 전략 게임 | 라이더 도구함</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Do+Hyeon&family=Gothic+A1:wght@400;600;800&display=swap">
@@ -2781,10 +2781,11 @@ requestAnimationFrame(loop);
 
 <script>
 (function(){var d=document,el=d.documentElement;
-var can=!!(el.requestFullscreen||el.webkitRequestFullscreen);
+var can=!!(el.requestFullscreen||el.webkitRequestFullscreen);var sa=(navigator.standalone===true)||matchMedia('(display-mode: fullscreen), (display-mode: standalone)').matches;var guide=!can&&!sa;
 function isFs(){return !!(d.fullscreenElement||d.webkitFullscreenElement)}
-function upd(){d.querySelectorAll('.fsBtn').forEach(function(b){b.hidden=!can;b.textContent=(b.closest('#tl')?'':'⛶ ')+(isFs()?'전체화면 끄기':'전체화면')})}
-function tog(){try{if(isFs()){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{var r=(el.requestFullscreen||el.webkitRequestFullscreen).call(el,{navigationUI:'hide'});if(r&&r.catch)r.catch(function(){})}}catch(e){}}
+function upd(){d.querySelectorAll('.fsBtn').forEach(function(b){b.hidden=!(can||guide);b.textContent=(b.closest('#tl')?'':'⛶ ')+(isFs()?'전체화면 끄기':'전체화면')})}
+function showGuide(){var g=d.getElementById('fsGuide');if(g){g.hidden=false;return}g=d.createElement('div');g.id='fsGuide';g.style.cssText='position:fixed;inset:0;z-index:9999;background:rgba(3,6,10,.86);display:flex;align-items:center;justify-content:center;padding:20px';g.innerHTML='<div style="max-width:360px;background:#121a20;border:2px solid #b08a3e;border-radius:16px;padding:22px 20px;color:#ecf1ea;font:600 16px/1.6 system-ui,sans-serif"><div style="font-size:20px;font-weight:800;color:#e9c977;margin-bottom:10px">아이폰에서 전체화면으로 하기</div>아이폰 브라우저는 웹페이지 전체화면을 막아 두었어요. 대신 <b>홈 화면에 추가</b>하면 주소창 없이 앱처럼 꽉 찬 화면으로 열려요.<ol style="margin:12px 0 0 20px;padding:0"><li>아래쪽 <b>공유 버튼</b>(네모에 위 화살표)이나 ··· 메뉴를 눌러요</li><li><b>홈 화면에 추가</b>를 눌러요</li><li>홈 화면의 <b>별빛 전장</b> 아이콘으로 들어가요</li></ol><button id="fsGuideX" style="margin-top:16px;width:100%;padding:12px;border-radius:10px;border:0;background:#e9c977;color:#1b1030;font-weight:800;font-size:16px">알겠어요</button></div>';d.body.appendChild(g);d.getElementById('fsGuideX').onclick=function(){g.hidden=true}}
+function tog(){if(guide){showGuide();return}try{if(isFs()){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{var r=(el.requestFullscreen||el.webkitRequestFullscreen).call(el,{navigationUI:'hide'});if(r&&r.catch)r.catch(function(){})}}catch(e){}}
 d.querySelectorAll('.fsBtn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();tog()})});
 d.addEventListener('fullscreenchange',function(){upd();setTimeout(function(){window.dispatchEvent(new Event('resize'))},150)});
 d.addEventListener('webkitfullscreenchange',upd);upd();})();
